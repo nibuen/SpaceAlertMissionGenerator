@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:baselineAligned="false"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" android:orientation="vertical">  
+        <LinearLayout android:layout_height="wrap_content" 
+	    android:layout_width="fill_parent" 
+	    android:id="@+id/linearLayout1"
+	    android:layout_weight=".05"
+	    android:background="@color/gray_color">
+	        <TextView android:textSize="16sp" android:text="Mission Type" android:layout_width="fill_parent" android:layout_height="fill_parent" android:cursorVisible="false" android:id="@+id/missionTypeTextView" android:scrollbars="vertical" android:gravity="center"></TextView>	    
+    </LinearLayout>    
+    <LinearLayout android:layout_height="0px" android:layout_width="fill_parent" android:id="@+id/linearLayout2"
+        android:layout_weight=".80"
+        android:gravity="center">            
+	    <ScrollView android:id="@+id/missionScrollView" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_margin="5dip">
+	        <TextView android:textSize="20sp" android:layout_width="fill_parent" android:layout_height="fill_parent" android:cursorVisible="false" android:id="@+id/missionTextView" android:scrollbars="vertical"></TextView>
+	    </ScrollView>
+    </LinearLayout>
+    <LinearLayout android:layout_height="wrap_content" 
+	    android:layout_width="fill_parent" 
+	    android:id="@+id/linearLayout3"
+	    android:layout_weight=".05"
+	    android:background="@color/gray_color">
+	        <TextView android:textSize="25sp" android:text="0:00" android:layout_width="fill_parent" android:layout_height="fill_parent" android:cursorVisible="false" android:id="@+id/missionClockTextView" android:scrollbars="vertical" android:gravity="center"></TextView>	    
+    </LinearLayout>    
+    <LinearLayout android:layout_height="wrap_content" 
+	    android:layout_width="fill_parent" 
+	    android:id="@+id/linearLayout4"
+	    android:layout_weight=".1"
+	    android:layout_marginTop="2dip">
+        <ToggleButton android:textSize="20sp" android:text="ToggleButton" android:id="@+id/togglePlayMission" android:layout_height="fill_parent" android:layout_width="fill_parent" android:textOff="@string/button_paused" android:textOn="@string/button_playing"></ToggleButton>
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Space Alert Mission Generator</string>
+    <string name="unconfirmed_reports">Unconfirmed Reports</string>
+    <string name="start_mission">Start Mission</string>
+    <string name="start">Start</string>
+    <string name="mission_reset">Reset</string>
+    <string name="mission_new">New</string>
+    <string name="mission_options">Options</string>
+    <string name="mission_type">Type</string>
+    
+    <string name="pref_mission">Mission Parameters</string>
+    <string name="pref_mission_voice">Language</string>
+    <string name="pref_unconfirmedReports_title">Unconfirmed Reports</string>
+    <string name="pref_unconfirmedReports_summary">Whether to allow chance of unconfirmed reports to the mission.</string>
+  	<string name="pref_mission_length_summary">The approximate mission length in seconds.</string>
+  	<string name="pref_mission_length_title">Avg. Mission Length: %1$d</string>   
+  	<string name="pref_threat_difficulty_title">Threat Difficulty: %1$d</string> 
+	<string name="pref_mission_length_dialog_title">Mission Length</string>   
+  	<string name="pref_threat_difficulty_dialog_title">Threat Difficulty</string>   	
+  	<string name="pref_threat_difficulty_summary">Cumulative threat for the mission. (Normal=1, Serious=2)</string>
+  	<string name="pref_voice_title">Sound Pack</string>   	
+  	<string name="pref_voice_summary">Sound files and Text to use. See read me in com.boarbeard on storage to add your own.</string>  	
+ 	<string name="pref_incoming_data_title">Incoming Data: %1$d - %2$d</string>   	
+ 	<string name="pref_incoming_data_dialog_title">Incoming Data</string>   	
+	<string name="pref_incoming_data_summary">Range of incoming data to allow.</string>
+  	
+  	<string name="mission_about">About</string>
+  	<string name="mission_help">Help</string>
+
+	<string name="mission_random">Random</string>
+  	<string name="mission_first_test_run">First Test Run</string>
+  	<string name="mission_second_test_run">Second Test Run</string>
+  	<string name="mission_simulation_1">Simulation 1</string>
+  	<string name="mission_simulation_2">Simulation 2</string>
+  	<string name="mission_simulation_3">Simulation 3</string>
+  	<string name="mission_advanced_simulation_1">Advanced Simulation 1</string>
+  	<string name="mission_advanced_simulation_2">Advanced Simulation 2</string>
+  	<string name="mission_advanced_simulation_3">Advanced Simulation 3</string>
+  	<string name="mission_real_mission_1">Mission 1</string>
+  	<string name="mission_real_mission_2">Mission 2</string>
+  	<string name="mission_real_mission_3">Mission 3</string>
+  	<string name="mission_real_mission_4">Mission 4</string>
+  	<string name="mission_real_mission_5">Mission 5</string>
+  	<string name="mission_real_mission_6">Mission 6</string>
+  	<string name="mission_real_mission_7">Mission 7</string>
+  	<string name="mission_real_mission_8">Mission 8</string><string name="media_failed">Sound file failed to play.</string>
+  	<string name="button_playing">Playing</string>
+  	<string name="button_paused">Paused</string>
+  	<string name="pref_choose_mission">Choose Mission Type</string>
+	<string name="pref_logColors_title">Log Colors</string>
+    <string name="pref_logColors_summary">Display log entrys in different colors. Otherwise they are white.</string>
+    
+</resources>

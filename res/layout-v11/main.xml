@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:baselineAligned="false"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="fill_parent"
+        android:layout_height="0px"
+        android:layout_weight=".80"
+        android:gravity="center" >
+
+        <ScrollView
+            android:id="@+id/missionScrollView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_margin="5dip" >
+
+            <TextView
+                android:id="@+id/missionTextView"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:cursorVisible="false"
+                android:scrollbars="vertical"
+                android:textSize="20sp" >
+            </TextView>
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight=".05"
+        android:background="@color/gray_color" >
+
+        <TextView
+            android:id="@+id/missionClockTextView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:cursorVisible="false"
+            android:gravity="center"
+            android:scrollbars="vertical"
+            android:text="0:00"
+            android:textSize="25sp" >
+        </TextView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout4"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dip"
+        android:layout_weight=".1" >
+
+        <ToggleButton
+            android:id="@+id/togglePlayMission"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="ToggleButton"
+            android:textOff="@string/button_paused"
+            android:textOn="@string/button_playing"
+            android:textSize="20sp" >
+        </ToggleButton>
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Space Alert Mission Generator</string>
+    <string name="unconfirmed_reports">Unbestätigter Bericht</string>
+    <string name="start_mission">Mission starten</string>
+    <string name="start">Starten</string>
+    <string name="mission_reset">Reset</string>
+    <string name="mission_new">Neu</string>
+    <string name="mission_options">Optionen</string>
+    <string name="mission_type">Typ</string>
+    
+    <string name="pref_mission">Missions Parameter</string>
+    <string name="pref_mission_voice">Sprache</string>
+    <string name="pref_unconfirmedReports_title">Unbestätigte Berichte</string>
+    <string name="pref_unconfirmedReports_summary">Unbestätigte Berichte erlauben.</string>
+  	<string name="pref_mission_length_summary">Die geschätzte Dauer der Mission in Sekunden.</string>
+  	<string name="pref_mission_length_title">Missionsdauer ca.: %1$d</string>   
+  	<string name="pref_threat_difficulty_title">Bedrohungsgrad: %1$d</string> 
+	<string name="pref_mission_length_dialog_title">Missionsdauer</string>   
+  	<string name="pref_threat_difficulty_dialog_title">Bedrohungsgrad</string>   	
+  	<string name="pref_threat_difficulty_summary">Addierte Schwierigkeit der Bedrohungen. (Normal=1, Ernst=2)</string>
+  	<string name="pref_voice_title">Sprach-Pakete</string>   	
+  	<string name="pref_voice_summary">Sprach-Files und Text. Siehe readme im Ordner com.boarbeard.</string>  	
+ 	<string name="pref_incoming_data_title">Eingehende Daten: %1$d - %2$d</string>   	
+ 	<string name="pref_incoming_data_dialog_title">Eingehende Daten</string>   	
+	<string name="pref_incoming_data_summary">Spielraum der eingehenden Daten</string>
+  	
+  	<string name="mission_about">Info</string>
+  	<string name="mission_help">Hilfe</string>
+
+	<string name="mission_random">Zufallsmission</string>
+  	<string name="mission_first_test_run">Erster Testlauf</string>
+  	<string name="mission_second_test_run">Zweiter Testlauf</string>
+  	<string name="mission_simulation_1">Simulation 1</string>
+  	<string name="mission_simulation_2">Simulation 2</string>
+  	<string name="mission_simulation_3">Simulation 3</string>
+  	<string name="mission_advanced_simulation_1">Fortgeschrittene Simulation 1</string>
+  	<string name="mission_advanced_simulation_2">Fortgeschrittene Simulation 2</string>
+  	<string name="mission_advanced_simulation_3">Fortgeschrittene Simulation 3</string>
+  	<string name="mission_real_mission_1">Mission 1</string>
+  	<string name="mission_real_mission_2">Mission 2</string>
+  	<string name="mission_real_mission_3">Mission 3</string>
+  	<string name="mission_real_mission_4">Mission 4</string>
+  	<string name="mission_real_mission_5">Mission 5</string>
+  	<string name="mission_real_mission_6">Mission 6</string>
+  	<string name="mission_real_mission_7">Mission 7</string>
+  	<string name="mission_real_mission_8">Mission 8</string>
+  	<string name="media_failed">Sound file konnte nicht abgespielt werden.</string>
+  	<string name="button_playing">Mission läuft</string>
+  	<string name="button_paused">Angehalten</string>
+  	<string name="pref_choose_mission">Wähle Missionstyp</string>
+	<string name="pref_logColors_title">Protokoll Farben</string>
+    <string name="pref_logColors_summary">Stellt die Protkolleinträge in verschiedenen Farben dar. Sonst in weiß.</string>
+    
+</resources>

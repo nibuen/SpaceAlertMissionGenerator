@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mission>
+  <phase>
+    <phaseBegin weight="8" minGap="10" maxGap="10" />
+    <incomingData/>
+    <communicationDown minDuration="5" maxDuration="15"/>
+    <threat minGap="25" maxGap="50" />
+    <communicationDown minDuration="5" maxDuration="15"/>
+    <incomingData weight="2"/>
+    <threat minGap="20" maxGap="60"/>
+    <incomingData weight="2"/>
+    <communicationDown weight="2" minDuration="5" maxDuration="15"/>
+    <threat minGap="20" maxGap="35"/>
+    <communicationDown minDuration="5" maxDuration="15"/>
+    <timeMark time="120" />
+    <dataTransfer weight="4"/>
+    <incomingData weight="2"/>
+    <threat minGap="20" maxGap="20"/>
+    <phaseWarning weight="8" minGap="5" maxGap="15" />
+    <communicationDown weight="2" minDuration="5" maxDuration="15"/>
+    <incomingData weight="4"/>
+    <dataTransfer weight="2"/>
+    <ambushThreat minGap="20" maxGap="20"/>
+    <phaseEnd weight="8"/>
+  </phase>
+  <phase>
+    <phaseBegin weight="-1" minGap="10" maxGap="15"/>
+    <communicationDown minDuration="20" maxDuration="30"/>
+    <incomingData weight="2"/>
+    <threat minGap="20" maxGap="35"/>
+    <communicationDown weight="2" minDuration="10" maxDuration="20"/>
+    <incomingData weight="2"/>
+    <dataTransfer weight="4"/>
+    <threat minGap="25" maxGap="55"/>
+    <timeMark time="90" />
+    <communicationDown weight="3" minDuration="10" maxDuration="20"/>
+    <dataTransfer weight="4"/>
+    <incomingData/>
+    <threat minGap="30" maxGap="45"/>
+    <communicationDown minDuration="10" maxDuration="10"/>
+    <incomingData/>
+    <threat minGap="20" maxGap="20"/>
+    <dataTransfer weight="2"/>
+    <phaseWarning weight="8" minGap="5" maxGap="20"/>
+    <incomingData weight="3"/>
+    <dataTransfer weight="4"/>
+    <communicationDown minDuration="5" maxDuration="10"/>
+    <ambushThreat minGap="20" maxGap="20"/>
+    <phaseEnd weight="8"/>
+  </phase>
+  <phase>
+    <phaseBegin weight="-1" minGap="15" maxGap="25"/>
+    <incomingData weight="2"/>
+    <communicationDown minDuration="5" maxDuration="30" weight="8"/>
+    <dataTransfer weight="6"/>
+    <communicationDown minDuration="5" maxDuration="10" weight="2"/>
+    <communicationDown minDuration="10" maxDuration="25" />
+    <phaseWarning weight="8"/>
+    <dataTransfer weight="2"/>
+    <communicationDown minDuration="10" maxDuration="20" />    
+    <phaseEnd weight="8"/>
+  </phase>
+</mission>

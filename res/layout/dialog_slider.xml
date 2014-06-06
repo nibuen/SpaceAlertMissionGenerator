@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+	>
+    
+       <TextView
+           android:id="@+id/current_value"
+           android:layout_width="fill_parent"
+           android:layout_height="wrap_content"
+           android:textColor="@color/white_color"
+           android:gravity="center"
+           android:textSize="20sp" />
+           
+       <com.boarbeard.ui.widget.DualSliderView
+           android:id="@+id/seek_bar"
+           android:layout_width="fill_parent"
+           android:layout_height="70dp"
+		 />
+                        
+   </LinearLayout>
+
+   <!-- 
+   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_root"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <TextView android:id="@+id/text_interval"
+        android:textSize="20sp"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+    <com.boardgamegeek.ui.widget.DualSliderView
+        android:id="@+id/num_players_slider"
+        android:layout_width="fill_parent"
+        android:layout_height="120px" />
+    -->

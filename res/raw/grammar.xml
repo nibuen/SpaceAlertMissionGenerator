@@ -1,0 +1,49 @@
+﻿<Settings>
+  <Grammar>English</Grammar>
+  
+  <CommunicationsDownHeader>Communications Down</CommunicationsDownHeader>
+  <CommunicationsDownNoise></CommunicationsDownNoise>
+  <CommunicationsDownFooter>Communications Restored</CommunicationsDownFooter>
+
+  <AnnounceBeginFirstPhase>Begin First Phase</AnnounceBeginFirstPhase>
+  <AnnounceFirstPhaseEndsInOneMinute>First Phase Ends in 60 seconds</AnnounceFirstPhaseEndsInOneMinute>
+  <AnnounceFirstPhaseEndsInTwentySeconds>First Phase Ends in 20 seconds</AnnounceFirstPhaseEndsInTwentySeconds>
+  <AnnounceFirstPhaseEnds>First Phase Ends</AnnounceFirstPhaseEnds>
+  <AnnounceSecondPhaseBegins>Second Phase Begins</AnnounceSecondPhaseBegins>
+  <AnnounceSecondPhaseEndsInOneMinute>Second Phase Ends in 60 seconds</AnnounceSecondPhaseEndsInOneMinute>
+  <AnnounceSecondPhaseEndsInTwentySeconds>Second Phase Ends in 20 seconds</AnnounceSecondPhaseEndsInTwentySeconds>
+  <AnnounceSecondPhaseEnds>Second Phase Ends</AnnounceSecondPhaseEnds>
+  <AnnounceThirdPhaseBegins>Third Phase Begins</AnnounceThirdPhaseBegins>
+  <AnnounceThirdPhaseEndsInOneMinute>Third Phase Ends in 60 seconds</AnnounceThirdPhaseEndsInOneMinute>
+  <AnnounceThirdPhaseEndsInTwentySeconds>Third Phase Ends in 20 seconds</AnnounceThirdPhaseEndsInTwentySeconds>
+  <AnnounceThirdPhaseEnds>Third Phase Ends</AnnounceThirdPhaseEnds>
+
+  <IncomingData>Incoming Data</IncomingData>
+  <DataTransfer>Data Transfer</DataTransfer>
+
+  <AlertHeader>Alert!!!</AlertHeader>
+  <InternalThreat>Internal Threat</InternalThreat>
+  <SeriousInternalThreat>Serious Internal Threat</SeriousInternalThreat>
+  <Repeat>Repeat</Repeat>
+  <UnconfirmedReport>Unconfirmed Report</UnconfirmedReport>
+
+  <TimeTPlus1>Time T+1</TimeTPlus1>
+  <TimeTPlus2>Time T+2</TimeTPlus2>
+  <TimeTPlus3>Time T+3</TimeTPlus3>
+  <TimeTPlus4>Time T+4</TimeTPlus4>
+  <TimeTPlus5>Time T+5</TimeTPlus5>
+  <TimeTPlus6>Time T+6</TimeTPlus6>
+  <TimeTPlus7>Time T+7</TimeTPlus7>
+  <TimeTPlus8>Time T+8</TimeTPlus8>
+
+  <RedAlertLevel0></RedAlertLevel0>
+  <RedAlertLevel1></RedAlertLevel1>
+  <RedAlertLevel2></RedAlertLevel2>
+  <RedAlertLevel3></RedAlertLevel3>
+
+  <Threat>Threat</Threat>
+  <SeriousThreat>Serious Threat</SeriousThreat>
+  <ZoneBlue>Zone Blue</ZoneBlue>
+  <ZoneRed>Zone Red</ZoneRed>
+  <ZoneWhite>Zone White</ZoneWhite>
+</Settings>

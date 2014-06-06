@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="@string/mission_type" android:id="@+id/menuTypeMission" android:icon="@drawable/ic_menu_more">
+        <!-- NOTE: will be hidden by main activity on Honeycomb --></item>
+    <item android:title="@string/mission_reset" android:id="@+id/menuResetMission" android:icon="@drawable/ic_menu_rotate" android:showAsAction="ifRoom"></item>
+    <item android:id="@+id/menuNewMission" android:title="@string/mission_new" android:icon="@drawable/ic_menu_add" android:showAsAction="ifRoom"></item>
+    <item android:id="@+id/menuMissionOptions" android:title="@string/mission_options" android:icon="@drawable/ic_menu_edit"></item>
+    <item android:id="@+id/menuMissionAbout" android:title="@string/mission_about" android:icon="@drawable/ic_menu_info_details"></item>
+    <item android:id="@+id/menuMissionHelp" android:title="@string/mission_help" android:icon="@drawable/ic_menu_help"></item>
+</menu>
