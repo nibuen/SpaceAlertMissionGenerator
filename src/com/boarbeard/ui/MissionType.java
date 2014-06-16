@@ -57,7 +57,19 @@ public enum MissionType {
 	RealMission7(R.string.mission_real_mission_7, ConstructedMissions
 			.realmission7()), //
 	RealMission8(R.string.mission_real_mission_8, ConstructedMissions
-			.realmission8());
+			.realmission8()),
+	DoubleActionEasyMission1(R.string.double_action_easy_mission_1,
+			ConstructedMissions.doubleActionEasierMission1()),
+	DoubleActionEasyMission2(R.string.double_action_easy_mission_2,
+			ConstructedMissions.doubleActionEasierMission2()), 
+	DoubleActionMission1(R.string.double_action_mission_1,
+			ConstructedMissions.doubleActionMission1()),
+	DoubleActionMission2(R.string.double_action_mission_2,
+			ConstructedMissions.doubleActionMission2()),
+	DoubleActionMission3(R.string.double_action_mission_3,
+			ConstructedMissions.doubleActionMission4()),
+	DoubleActionMission4(R.string.double_action_mission_4, ConstructedMissions.doubleActionMission4());
+
 
 	private int resId;
 	private EventList eventList;
