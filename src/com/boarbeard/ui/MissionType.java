@@ -67,7 +67,7 @@ public enum MissionType {
 	DoubleActionMission2(R.string.double_action_mission_2,
 			ConstructedMissions.doubleActionMission2()),
 	DoubleActionMission3(R.string.double_action_mission_3,
-			ConstructedMissions.doubleActionMission4()),
+			ConstructedMissions.doubleActionMission3()),
 	DoubleActionMission4(R.string.double_action_mission_4, ConstructedMissions.doubleActionMission4());
 
 
