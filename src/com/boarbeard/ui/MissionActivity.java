@@ -51,7 +51,7 @@ public class MissionActivity extends Activity {
 
 	private MissionType missionType = MissionType.Random;
 
-	// Enable to dump the entire mission to the mission immediatly after the mission is selected.
+	// Enable to dump the entire mission to the mission immediately after the mission is selected.
 	// Usable for debuging.
 	private static final boolean DUMP_MISSON_TREE = false;
 
