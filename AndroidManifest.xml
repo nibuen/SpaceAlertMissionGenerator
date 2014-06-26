@@ -1,22 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="com.boarbeard"
-      android:versionCode="8" android:versionName="2.3">
+    package="com.boarbeard"
+    android:versionCode="8"
+    android:versionName="2.3" >
 
-	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="15"/>
-	<uses-permission android:name="android.permission.WAKE_LOCK"></uses-permission>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-sdk
+        android:minSdkVersion="7"
+        android:targetSdkVersion="19" />
 
-    <application android:icon="@drawable/space_alert_logo" android:name="SpaceAlertApplication" android:label="@string/app_name" android:theme="@style/SpaceAlertTheme">
-        <activity android:label="@string/app_name" android:name=".ui.MissionActivity" android:screenOrientation="fullSensor" android:multiprocess="false" android:configChanges="orientation|screenSize">
+    <uses-permission android:name="android.permission.WAKE_LOCK" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
+    </uses-permission>
+
+    <application
+        android:name="SpaceAlertApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/space_alert_logo"
+        android:label="@string/app_name"
+        android:theme="@style/SpaceAlertTheme" >
+        <activity
+            android:name=".ui.MissionActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/app_name"
+            android:multiprocess="false"
+            android:screenOrientation="fullSensor" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.PreferencesActivity"></activity>
-        <activity android:name=".ui.AboutActivity"></activity>
-        <activity android:name=".ui.HelpActivity"></activity>
-
+        <activity android:name=".ui.PreferencesActivity" >
+        </activity>
+        <activity android:name=".ui.AboutActivity" >
+        </activity>
+        <activity android:name=".ui.HelpActivity" >
+        </activity>
     </application>
+
 </manifest>
