@@ -27,3 +27,4 @@ proguard/
 
 #SVN Files
 .svn/
+*.prefs

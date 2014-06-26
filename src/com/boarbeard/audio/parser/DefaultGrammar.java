@@ -80,10 +80,7 @@ public class DefaultGrammar extends Grammar {
 		addElement(Element.TimeTPlus7, "Time T+7", R.raw.time_t_plus_7, context);
 		addElement(Element.TimeTPlus8, "Time T+8", R.raw.time_t_plus_8, context);
 
-		addElement(Element.RedAlertLevel0, "", R.raw.red_alert_0, context);
 		addElement(Element.RedAlertLevel1, "", R.raw.red_alert_1, context);
-		addElement(Element.RedAlertLevel2, "", R.raw.red_alert_2, context);
-		addElement(Element.RedAlertLevel3, "", R.raw.red_alert_3, context);
 
 		addElement(Element.Threat, "Threat", R.raw.threat, context);
 		addElement(Element.SeriousThreat, "Serious Threat",

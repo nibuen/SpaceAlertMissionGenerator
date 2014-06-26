@@ -23,10 +23,7 @@ internal_threat.mp3
 operation_ends_in_1_minute.mp3
 operation_ends_in_20_seconds.mp3
 operation_ends.mp3
-red_alert_0.mp3
 red_alert_1.mp3
-red_alert_2.mp3
-red_alert_3.mp3
 repeat.mp3
 second_phase_begins.mp3
 second_phase_ends_in_1_minute.mp3

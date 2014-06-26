@@ -229,9 +229,6 @@ public class EnglishParser extends EventListParser {
 
 	@Override
 	public void createAmbiance(MediaPlayerSequence output) {
-		output.addAudioClip(grammar.getAudioOnly(Element.RedAlertLevel0));
 		output.addAudioClip(grammar.getAudioOnly(Element.RedAlertLevel1));
-		output.addAudioClip(grammar.getAudioOnly(Element.RedAlertLevel2));
-		output.addAudioClip(grammar.getAudioOnly(Element.RedAlertLevel3));
 	}
 }
