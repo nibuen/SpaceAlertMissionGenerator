@@ -68,10 +68,7 @@ public abstract class Grammar {
 		TimeTPlus7("time_t_plus_7"), //
 		TimeTPlus8("time_t_plus_8"), //
 
-		RedAlertLevel0("red_alert_0"), //
 		RedAlertLevel1("red_alert_1"), //
-		RedAlertLevel2("red_alert_2"), //
-		RedAlertLevel3("red_alert_3"), //
 
 		// English specific elements
 		Threat("threat"), //
