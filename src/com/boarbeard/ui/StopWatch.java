@@ -9,7 +9,7 @@ public class StopWatch {
 	 * @param millis
 	 * @return
 	 */
-	private static CharSequence formatTime(long millis) {
+	public  static CharSequence formatTime(long millis) {
 		long seconds = millis / 1000;
 		long minutes = seconds / 60;
 		seconds = seconds % 60;
