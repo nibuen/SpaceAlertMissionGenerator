@@ -68,7 +68,7 @@ public class MissionTimer {
 
 	private final Runnable jobRunner = new Runnable() {
 		/**
-		 * {@link SystemClock#uptimeMillis()} when the runner is planed to run
+		 * {@link SystemClock#elapsedRealtime()} when the runner is planed to run
 		 * next
 		 */
 		private long nextRuntime = Long.MAX_VALUE;
@@ -77,7 +77,7 @@ public class MissionTimer {
 			if (jobQueue.isEmpty()) {
 				return;
 			}
-			if (SystemClock.uptimeMillis() >= nextRuntime) {
+			if (SystemClock.elapsedRealtime() >= nextRuntime) {
 				// Handler won't run again
 				nextRuntime = Long.MAX_VALUE;
 			}
@@ -117,14 +117,14 @@ public class MissionTimer {
 		if (isPaused()) {
 			return pauseTime - startTime;
 		} else if (isRunning()) {
-			return SystemClock.uptimeMillis() - startTime;
+			return SystemClock.elapsedRealtime() - startTime;
 		} else {
 			return 0;
 		}
 	}
 
 	public void pause() {
-		pauseTime = SystemClock.uptimeMillis();
+		pauseTime = SystemClock.elapsedRealtime();
 		handler.removeCallbacks(jobRunner);
 	}
 
@@ -137,7 +137,7 @@ public class MissionTimer {
 	}
 
 	public void start() {
-		startTime = SystemClock.uptimeMillis() - missionTimeMillis();
+		startTime = SystemClock.elapsedRealtime() - missionTimeMillis();
 		pauseTime = Long.MIN_VALUE;
 		handler.post(jobRunner);
 	}

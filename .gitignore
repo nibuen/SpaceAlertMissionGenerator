@@ -28,3 +28,11 @@ proguard/
 #SVN Files
 .svn/
 *.prefs
+
+# Intellij
+.idea/
+*.iml
+*.iws
+
+# Mac
+.DS_Store
