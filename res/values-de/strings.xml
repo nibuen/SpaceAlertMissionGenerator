@@ -45,12 +45,25 @@
   	<string name="mission_real_mission_6">Mission 6</string>
   	<string name="mission_real_mission_7">Mission 7</string>
   	<string name="mission_real_mission_8">Mission 8</string>
+  	
+  	<!-- Long strings for double action missions. Commented out until UI-problems with long mission 
+  	titles has been solved.
   	<string name="double_action_easy_mission_1">Doppelaktionen Vereinfachte Mission 1</string>
   	<string name="double_action_easy_mission_2">Doppelaktionen Vereinfachte Mission 2</string>
   	<string name="double_action_mission_1">Doppelaktionen Standard Mission 1</string>
   	<string name="double_action_mission_2">Doppelaktionen Standard Mission 2</string>
   	<string name="double_action_mission_3">Doppelaktionen Standard Mission 3</string>
-  	<string name="double_action_mission_4">Doppelaktionen Standard Mission 4</string>
+  	<string name="double_action_mission_4">Doppelaktionen Standard Mission 4</string> -->
+
+  	<!-- Temporary abbreviated strings until ui-problems with long mission titles has been
+  	solved. -->
+  	<string name="double_action_easy_mission_1">Doppel Vereinfachte 1</string>
+  	<string name="double_action_easy_mission_2">Doppel Vereinfachte 2</string>
+  	<string name="double_action_mission_1">Doppel Standard 1</string>
+  	<string name="double_action_mission_2">Doppel Standard 2</string>
+  	<string name="double_action_mission_3">Doppel Standard 3</string>
+  	<string name="double_action_mission_4">Doppel Standard 4</string>
+
   	<string name="media_failed">Sound file konnte nicht abgespielt werden.</string>
   	<string name="button_playing">Mission läuft</string>
   	<string name="button_paused">Angehalten</string>
