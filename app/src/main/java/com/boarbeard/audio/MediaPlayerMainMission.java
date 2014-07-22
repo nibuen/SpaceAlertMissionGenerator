@@ -65,7 +65,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 
 			// Even when a running sound was paused, you have to update the
 			// startTime for the next file
-			startTime += SystemClock.elapsedRealtime() - pauseTime;
+			startTime += SystemClock.uptimeMillis() - pauseTime;
 
 			if (activeMediaPlayer == null) {
 				mediaPlayerBackgroundSounds.start();
@@ -79,7 +79,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 			return;
 		}
 
-		startTime = SystemClock.elapsedRealtime();
+		startTime = SystemClock.uptimeMillis();
 		playNextAudio();
 	}
 
@@ -169,7 +169,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 		stopWatch.pause();
 		mediaPlayerBackgroundSounds.pause();
 		missionActivity.toggleOff();
-		pauseTime = SystemClock.elapsedRealtime();
+		pauseTime = SystemClock.uptimeMillis();
 		mHandler.removeCallbacks(mPlayNextAudioTask);
 
 		if (activeMediaPlayer != null && activeMediaPlayer.isPlaying()) {
@@ -203,7 +203,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 			long nextTime = startTime
 					+ mediaPlayerList.get(playerIndex).getStartTime();
 			if (activeMediaPlayer == null
-					&& nextTime > SystemClock.elapsedRealtime()) {
+					&& nextTime > SystemClock.uptimeMillis()) {
 				mediaPlayerBackgroundSounds.start();
 			}
 
