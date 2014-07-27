@@ -3,7 +3,6 @@ package com.boarbeard.audio;
 import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -12,9 +11,11 @@ import com.boarbeard.audio.parser.EventListParserFactory;
 import com.boarbeard.ui.MissionActivity;
 import com.boarbeard.ui.StopWatch;
 
+import java.util.concurrent.TimeUnit;
+
 public class MediaPlayerMainMission extends MediaPlayerSequence {
 
-	private Handler mHandler = new Handler();
+	private Handler timerHandler = new Handler();
 
 	private long startTime;
 	private long pauseTime;
@@ -65,7 +66,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 
 			// Even when a running sound was paused, you have to update the
 			// startTime for the next file
-			startTime += SystemClock.uptimeMillis() - pauseTime;
+			startTime += System.nanoTime() - pauseTime;
 
 			if (activeMediaPlayer == null) {
 				mediaPlayerBackgroundSounds.start();
@@ -73,13 +74,13 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 				activeMediaPlayer.start();
 			}
 			if (activeMediaPlayer == null || activeMediaPlayer.isLooping()) {
-				mHandler.postAtTime(mPlayNextAudioTask, startTime
-						+ mediaPlayerList.get(playerIndex).getStartTime());
+				postAtTime(mPlayNextAudioTask, startTime
+                        + mediaPlayerList.get(playerIndex).getStartTimeNanos());
 			}
 			return;
 		}
 
-		startTime = SystemClock.uptimeMillis();
+		startTime = System.nanoTime();
 		playNextAudio();
 	}
 
@@ -169,8 +170,8 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 		stopWatch.pause();
 		mediaPlayerBackgroundSounds.pause();
 		missionActivity.toggleOff();
-		pauseTime = SystemClock.uptimeMillis();
-		mHandler.removeCallbacks(mPlayNextAudioTask);
+		pauseTime = System.nanoTime();
+		timerHandler.removeCallbacks(mPlayNextAudioTask);
 
 		if (activeMediaPlayer != null && activeMediaPlayer.isPlaying()) {
 			activeMediaPlayer.pause();
@@ -201,16 +202,20 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 		playerIndex++;
 		if (mediaPlayerList.size() > playerIndex) {
 			long nextTime = startTime
-					+ mediaPlayerList.get(playerIndex).getStartTime();
+					+ mediaPlayerList.get(playerIndex).getStartTimeNanos();
 			if (activeMediaPlayer == null
-					&& nextTime > SystemClock.uptimeMillis()) {
+					&& nextTime > System.nanoTime()) {
 				mediaPlayerBackgroundSounds.start();
 			}
 
-			mHandler.postAtTime(mPlayNextAudioTask, nextTime);
+			postAtTime(mPlayNextAudioTask, nextTime);
 		} else {
 			stop();
 		}
 	}
 
+    private void postAtTime(Runnable runnable, long timeInNanos) {
+        long timeInMillis = TimeUnit.MILLISECONDS.convert(timeInNanos, TimeUnit.NANOSECONDS);
+        timerHandler.postAtTime(runnable, timeInMillis);
+    }
 }

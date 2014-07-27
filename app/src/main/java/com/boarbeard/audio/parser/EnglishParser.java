@@ -41,7 +41,7 @@ public class EnglishParser extends EventListParser {
 
 	@Override
 	protected void visitWhiteNoiseRestored(WhiteNoiseRestored event,
-			int startTime, MediaPlayerSequence output) {
+			long startTime, MediaPlayerSequence output) {
 
 		output.addAudioClip(coloredLike(
 				event,
@@ -55,27 +55,27 @@ public class EnglishParser extends EventListParser {
 		return mediaInfo;
 	}
 
-	private MediaInfo at(int startTime, MediaInfo mediaInfo) {
-		mediaInfo.setStartTime(startTime);
+	private MediaInfo at(long startTime, MediaInfo mediaInfo) {
+		mediaInfo.setStartTimeNanos(startTime);
 		return mediaInfo;
 	}
 
 	@Override
-	protected void visitIncomingData(IncomingData event, int startTime,
+	protected void visitIncomingData(IncomingData event, long startTime,
 			MediaPlayerSequence output) {
 		output.addAudioClip(coloredLike(event,
 				at(startTime, grammar.getMediaInfo(Element.IncomingData))));
 	}
 
 	@Override
-	protected void visitDataTransfer(DataTransfer event, int startTime,
+	protected void visitDataTransfer(DataTransfer event, long startTime,
 			MediaPlayerSequence output) {
 		output.addAudioClip(coloredLike(event,
 				at(startTime, grammar.getMediaInfo(Element.DataTransfer))));
 	}
 
 	@Override
-	protected void visitThreat(Threat event, int startTime,
+	protected void visitThreat(Threat event, long startTime,
 			MediaPlayerSequence output) {
 
 		MediaInfo alert = coloredLike(event,
@@ -89,7 +89,7 @@ public class EnglishParser extends EventListParser {
 		buildThreatDetails(event, startTime, output);
 	}
 
-	protected String buildThreatDetails(Threat event, int startTime,
+	protected String buildThreatDetails(Threat event, long startTime,
 			MediaPlayerSequence output) {
 		StringBuilder sb = new StringBuilder();
 
@@ -111,7 +111,7 @@ public class EnglishParser extends EventListParser {
 	}
 
 	protected void appendThreatLocation(StringBuilder sb, Threat event,
-			int startTime, MediaPlayerSequence output) {
+			long startTime, MediaPlayerSequence output) {
 		if (event.getThreatLevel() == Threat.THREAT_LEVEL_SERIOUS) {
 			sb.append("<b>");
 			if (event.getThreatPosition() == Threat.THREAT_POSITION_INTERNAL) {
@@ -150,14 +150,14 @@ public class EnglishParser extends EventListParser {
 	}
 
 	protected StringBuilder appendMedia(StringBuilder text, Element element,
-			int startTime, MediaPlayerSequence output) {
+			long startTime, MediaPlayerSequence output) {
 		text.append(grammar.getText(element));
 		output.addAudioClip(at(startTime, grammar.getAudioOnly(element)));
 		return text;
 	}
 
 	@Override
-	protected void visitWhiteNoise(WhiteNoise event, int startTime,
+	protected void visitWhiteNoise(WhiteNoise event, long startTime,
 			MediaPlayerSequence output) {
 		output.addAudioClip(coloredLike(
 				event,
@@ -172,7 +172,7 @@ public class EnglishParser extends EventListParser {
 	}
 
 	@Override
-	protected void visitAnnouncement(Announcement event, int startTime,
+	protected void visitAnnouncement(Announcement event, long startTime,
 			MediaPlayerSequence output) {
 
 		final Element elem;

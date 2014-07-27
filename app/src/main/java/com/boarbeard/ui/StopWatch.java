@@ -1,16 +1,21 @@
 package com.boarbeard.ui;
 
+import android.os.Handler;
 import android.widget.TextView;
 
-import com.boarbeard.MissionTimer;
+import java.util.concurrent.TimeUnit;
 
 public class StopWatch {
-	/**
-	 * @param millis
+
+    private volatile long startTime;
+    private volatile long pauseTime;
+
+    /**
+	 * @param nanos
 	 * @return
 	 */
-	private static CharSequence formatTime(long millis) {
-		long seconds = millis / 1000;
+	private static CharSequence formatTime(long nanos) {
+		long seconds = TimeUnit.SECONDS.convert(nanos, TimeUnit.NANOSECONDS);
 		long minutes = seconds / 60;
 		seconds = seconds % 60;
 
@@ -23,53 +28,70 @@ public class StopWatch {
 
 	private final TextView timeTextView;
 
-	private final MissionTimer timer;
+    private Handler timerHandler = new Handler();
 
 	private final Runnable mUpdateTimeTask = new Runnable() {
 		public void run() {
-			long now = timer.missionTimeMillis();
-			timeTextView.setText(formatTime(now));
-			long nextRun = now + 1000 - now % 1000; // next full second
-			timer.runAtTime(this, nextRun);
+            updateClock();
+            timerHandler.postDelayed(this, 500); // Update clock twice a second
 		}
 	};
 
-	public StopWatch(TextView display) {
-		this(display, new MissionTimer());
-	}
-
 	/**
 	 * @param display
-	 * @param timer
-	 */
-	public StopWatch(TextView display, MissionTimer timer) {
-		super();
+     * */
+	public StopWatch(TextView display) {
 		this.timeTextView = display;
-		this.timer = timer;
-		mUpdateTimeTask.run();
+        reset();
 	}
 
 	public void start() {
-		timer.start();
+        startTime = System.nanoTime() - missionTimeInNanos();
+        pauseTime = Long.MIN_VALUE;
+        timerHandler.post(mUpdateTimeTask);
 	}
 
 	public void pause() {
-		timer.pause();
+        pauseTime = System.nanoTime();
+        timerHandler.removeCallbacks(mUpdateTimeTask);
 	}
 
 	public void stop() {
-		timer.pause();
+		pause();
 	}
 
-	public void reset() {
-		timer.reset();
-		mUpdateTimeTask.run();
-	}
+    public void reset() {
+        startTime = Long.MIN_VALUE;
+        pauseTime = Long.MIN_VALUE;
+        updateClock();
+    }
 
-	@Override
+    public long missionTimeInNanos() {
+        if (isPaused()) {
+            return pauseTime - startTime;
+        } else if (isRunning()) {
+            return System.nanoTime() - startTime;
+        } else {
+            return 0;
+        }
+    }
+
+    public boolean isPaused() {
+        return pauseTime > startTime;
+    }
+
+    public boolean isRunning() {
+        return pauseTime < startTime;
+    }
+
+    private void updateClock() {
+        long now = missionTimeInNanos();
+        timeTextView.setText(formatTime(now));
+    }
+
+    @Override
 	public String toString() {
-
-		return formatTime(timer.missionTimeMillis()).toString();
+        return formatTime(missionTimeInNanos()).toString();
 	}
 
 }

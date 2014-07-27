@@ -1,7 +1,5 @@
 package com.boarbeard.audio.parser;
 
-import java.util.Map.Entry;
-
 import android.util.Log;
 
 import com.boarbeard.audio.MediaPlayerSequence;
@@ -14,6 +12,9 @@ import com.boarbeard.generator.beimax.event.Threat;
 import com.boarbeard.generator.beimax.event.WhiteNoise;
 import com.boarbeard.generator.beimax.event.WhiteNoiseRestored;
 
+import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
+
 public abstract class EventListParser {
 
 	private static final String LOG_TAG = EventListParser.class.getName();
@@ -21,13 +22,13 @@ public abstract class EventListParser {
 	public void parse(EventList input, MediaPlayerSequence output) {
 
 		for (Entry<Integer, Event> entry : input.getEntrySet()) {
-			dispatch(entry.getValue(), entry.getKey() * 1000, output);
+			dispatch(entry.getValue(), TimeUnit.NANOSECONDS.convert(entry.getKey(), TimeUnit.SECONDS), output);
 		}
 	}
 
 	public abstract void createAmbiance(MediaPlayerSequence output);
 
-	private void dispatch(Event event, int startTime, MediaPlayerSequence output) {
+	private void dispatch(Event event, long startTime, MediaPlayerSequence output) {
 		if (event instanceof Announcement) {
 			visitAnnouncement((Announcement) event, startTime, output);
 		} else if (event instanceof DataTransfer) {
@@ -48,20 +49,20 @@ public abstract class EventListParser {
 	}
 
 	protected abstract void visitWhiteNoiseRestored(WhiteNoiseRestored event,
-			int startTime, MediaPlayerSequence output);
+			long startTime, MediaPlayerSequence output);
 
 	protected abstract void visitIncomingData(IncomingData event,
-			int startTime, MediaPlayerSequence output);
+			long startTime, MediaPlayerSequence output);
 
 	protected abstract void visitDataTransfer(DataTransfer event,
-			int startTime, MediaPlayerSequence output);
+			long startTime, MediaPlayerSequence output);
 
-	protected abstract void visitThreat(Threat event, int startTime,
+	protected abstract void visitThreat(Threat event, long startTime,
 			MediaPlayerSequence output);
 
-	protected abstract void visitWhiteNoise(WhiteNoise event, int startTime,
+	protected abstract void visitWhiteNoise(WhiteNoise event, long startTime,
 			MediaPlayerSequence output);
 
 	protected abstract void visitAnnouncement(Announcement event,
-			int startTime, MediaPlayerSequence output);
+			long startTime, MediaPlayerSequence output);
 }

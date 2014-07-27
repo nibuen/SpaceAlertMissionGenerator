@@ -9,7 +9,7 @@ public class MediaInfo {
 	private Uri resUri;
 	private int duration;
 	private boolean loopUntilNext;
-	private int startTime;
+	private long startTimeNanos;
 	private String description;
 	private String timeColor; // Color of the time when printed in log
 	private String textColor; // Color of the text when printed in log
@@ -59,12 +59,12 @@ public class MediaInfo {
 		this.description = description;
 	}
 
-	public void setStartTime(int time) {
-		startTime = time;
+	public void setStartTimeNanos(long startTimeNanos) {
+		this.startTimeNanos = startTimeNanos;
 	}
 
-	public int getStartTime() {
-		return startTime;
+	public long getStartTimeNanos() {
+		return startTimeNanos;
 	}
 
 	public String getTimeColor() {

@@ -1,12 +1,12 @@
 package com.boarbeard.audio.parser;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
-
 import com.boarbeard.audio.MediaPlayerSequence;
 import com.boarbeard.audio.parser.Grammar.Element;
 import com.boarbeard.generator.beimax.event.Threat;
+
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * Parser which supports German Grammars.
@@ -29,7 +29,7 @@ public class GermanParser extends EnglishParser {
 
 	@Override
 	protected void appendThreatLocation(StringBuilder sb, Threat event,
-			int startTime, MediaPlayerSequence output) {
+			long startTime, MediaPlayerSequence output) {
 		final Element location;
 
 		if (event.getThreatLevel() == Threat.THREAT_LEVEL_SERIOUS) {
