@@ -548,6 +548,285 @@ public class ConstructedMissions {
 		return eventList;
 	}
 	
+	public static EventList doubleActionEasierMission1() {
+		EventList eventList = new EventList();
+		int firstPhase = sec(4, 45);
+		int secondPhase = sec(8, 55);
+		int thirdPhase = sec(12, 25);
+		eventList.addPhaseEvents(firstPhase + 10, secondPhase - firstPhase, thirdPhase - secondPhase);
+		
+		//Phase 1
+		eventList.addEvent(sec(0, 10), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_EXTERNAL, 2));
+
+		eventList.addEvent(sec(0, 45), threat(false, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 3));
+		eventList.addEvent(sec(1, 30), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_INTERNAL, 3));
+		eventList.addEvent(sec(1, 55), new DataTransfer());
+		eventList.addEvent(sec(2, 20), new IncomingData());
+		
+		eventList.addWhiteNoiseEvents(sec(2, 50), 10);
+		eventList.addEvent(sec(3, 20), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 4));
+		eventList.addEvent(sec(3, 55), new IncomingData());
+		eventList.addEvent(sec(4, 05), new DataTransfer());
+
+		
+		//Phase 2
+		eventList.addWhiteNoiseEvents(sec(5, 20), 20);
+		eventList.addEvent(sec(5, 55), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 6));
+		eventList.addEvent(sec(6, 15), new IncomingData());
+		eventList.addEvent(sec(6, 25), new DataTransfer());
+		eventList.addWhiteNoiseEvents(sec(7, 35), 15);
+		eventList.addEvent(sec(6, 45), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 7));
+		
+		eventList.addEvent(sec(7, 15), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_EXTERNAL, 8));
+		eventList.addWhiteNoiseEvents(sec(7, 35), 25);
+		eventList.addEvent(sec(8, 20), new DataTransfer());
+		
+		//Phase 3
+		eventList.addWhiteNoiseEvents(sec(9, 15), 20);
+		eventList.addEvent(sec(9, 50), new DataTransfer());
+		eventList.addEvent(sec(10, 30), new DataTransfer());
+		
+		return eventList;
+	}
+	
+	
+	public static EventList doubleActionEasierMission2() {
+		EventList eventList = new EventList();
+		int firstPhase = sec(4, 45);
+		int secondPhase = sec(8, 55);
+		int thirdPhase = sec(12, 55);
+		eventList.addPhaseEvents(firstPhase + 10, secondPhase - firstPhase, thirdPhase - secondPhase);
+		
+		//Phase 1
+		eventList.addEvent(sec(0, 10), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 1));
+		eventList.addEvent(sec(1, 00), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_INTERNAL, 2));
+
+		eventList.addEvent(sec(1, 35), new IncomingData());
+		eventList.addEvent(sec(2, 00), new DataTransfer());
+		eventList.addEvent(sec(2, 30), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 3));
+		eventList.addEvent(sec(3, 30), new DataTransfer());
+		eventList.addEvent(sec(3, 55), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 4));
+		
+		//Phase 2
+
+		eventList.addEvent(sec(5, 00), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 5));
+		eventList.addWhiteNoiseEvents(sec(5, 20), 20);
+		eventList.addEvent(sec(5, 45), new DataTransfer());
+		eventList.addEvent(sec(6, 05), threat(false, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_EXTERNAL, 7));
+		eventList.addEvent(sec(6, 40), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_INTERNAL, 7));
+		eventList.addEvent(sec(7, 05), new IncomingData());
+
+		eventList.addEvent(sec(7, 25), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 8));
+		
+		eventList.addEvent(sec(8, 10), new DataTransfer());
+		
+		//Phase 3
+		eventList.addWhiteNoiseEvents(sec(9, 10), 10);
+		eventList.addEvent(sec(9, 55), new DataTransfer());
+		eventList.addWhiteNoiseEvents(sec(10, 35), 30);
+		eventList.addEvent(sec(12, 10), new DataTransfer());
+
+		return eventList;
+	}
+	
+	public static EventList doubleActionMission1() {
+		EventList eventList = new EventList();
+		int firstPhase = sec(4, 45);
+		int secondPhase = sec(8, 55);
+		int thirdPhase = sec(13, 25);
+		eventList.addPhaseEvents(firstPhase + 10, secondPhase - firstPhase, thirdPhase - secondPhase);
+		
+		//Phase 1
+		eventList.addEvent(sec(0, 15), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_EXTERNAL, 2));
+		eventList.addEvent(sec(1, 00), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_INTERNAL, 2));
+		eventList.addEvent(sec(1, 30), new IncomingData());
+		eventList.addEvent(sec(1, 55), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 3));
+		eventList.addWhiteNoiseEvents(sec(2, 30), 10);
+		eventList.addEvent(sec(3, 05), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_INTERNAL, 4));
+		eventList.addEvent(sec(4, 00), new DataTransfer());
+		
+		//Phase 2
+		eventList.addEvent(sec(5, 00), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 5));
+		eventList.addEvent(sec(5, 20), threat(false, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_EXTERNAL, 6));
+		eventList.addWhiteNoiseEvents(sec(6, 00), 10);
+		eventList.addEvent(sec(6, 30), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_EXTERNAL, 7));
+		eventList.addEvent(sec(6, 55), new DataTransfer());
+		eventList.addEvent(sec(7, 15), new IncomingData());
+		eventList.addEvent(sec(7, 30), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_EXTERNAL, 8));
+		eventList.addEvent(sec(8, 10), new DataTransfer());
+		
+		//Phase 3
+		eventList.addWhiteNoiseEvents(sec(9, 15), 15);
+		eventList.addEvent(sec(10, 00), new DataTransfer());
+		eventList.addWhiteNoiseEvents(sec(11, 00), 10);
+		
+		return eventList;
+	}
+	
+	public static EventList doubleActionMission2() {
+		EventList eventList = new EventList();
+		int firstPhase = sec(4, 45);
+		int secondPhase = sec(9, 35);
+		int thirdPhase = sec(13, 25);
+		eventList.addPhaseEvents(firstPhase + 10, secondPhase - firstPhase, thirdPhase - secondPhase);
+		
+		//Phase 1
+		eventList.addEvent(sec(0, 15), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 1)); 
+		eventList.addEvent(sec(0, 40), new IncomingData());		
+		eventList.addEvent(sec(1, 05), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_EXTERNAL, 2)); 
+		eventList.addEvent(sec(2, 00), threat(false, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 3)); 
+		eventList.addEvent(sec(2, 35), new DataTransfer());
+		eventList.addWhiteNoiseEvents(sec(3, 00), 10);
+		eventList.addEvent(sec(3, 25), new DataTransfer());
+		eventList.addEvent(sec(3, 55), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_INTERNAL, 4)); 
+		
+		//Phase 2
+		eventList.addEvent(sec(5, 05), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 5)); 
+		eventList.addEvent(sec(5, 30), new DataTransfer());
+		eventList.addEvent(sec(5, 45), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_EXTERNAL, 6)); 
+		eventList.addEvent(sec(6, 10), new IncomingData());
+		eventList.addWhiteNoiseEvents(sec(6, 25), 15);
+		eventList.addEvent(sec(6, 50), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_INTERNAL, 7)); 
+		eventList.addEvent(sec(7, 20), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 7)); 
+		eventList.addEvent(sec(7, 45), new DataTransfer());
+		eventList.addEvent(sec(8, 05), threat(false, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 8)); 
+		eventList.addWhiteNoiseEvents(sec(8, 55), 15);
+
+		//Phase 3
+		eventList.addWhiteNoiseEvents(sec(10, 05), 30);
+		eventList.addEvent(sec(10, 50), new DataTransfer());
+		eventList.addEvent(sec(12, 35), new DataTransfer());
+		
+		return eventList;
+	}
+	
+	public static EventList doubleActionMission3() {
+		EventList eventList = new EventList();
+		int firstPhase = sec(4, 50);
+		int secondPhase = sec(9, 15);
+		int thirdPhase = sec(12, 55);
+		eventList.addPhaseEvents(firstPhase + 10, secondPhase - firstPhase, thirdPhase - secondPhase);
+		
+		//Phase 1
+		eventList.addEvent(sec(0, 15), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_INTERNAL, 2)); 
+		eventList.addEvent(sec(0, 40), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_EXTERNAL, 2)); 
+		eventList.addEvent(sec(1, 05), new IncomingData());
+		eventList.addWhiteNoiseEvents(sec(1, 30), 20);
+		eventList.addEvent(sec(2, 15), new DataTransfer());
+		eventList.addEvent(sec(2, 35), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_EXTERNAL, 3)); 
+		eventList.addEvent(sec(3, 25), new DataTransfer());
+		eventList.addEvent(sec(4, 00), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 4)); 
+
+		
+		//Phase 2
+		eventList.addEvent(sec(5, 05), threat(false, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_INTERNAL, 5)); 
+		eventList.addEvent(sec(5, 35), new IncomingData());
+		eventList.addEvent(sec(6, 00), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_EXTERNAL, 6)); 
+		eventList.addEvent(sec(6, 35), new DataTransfer());
+		eventList.addEvent(sec(6, 50), new DataTransfer());
+		eventList.addWhiteNoiseEvents(sec(7, 10), 10);
+		eventList.addEvent(sec(7, 30), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_INTERNAL, 7)); 
+		eventList.addEvent(sec(8, 25), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 8)); 
+
+		//Phase 3
+		eventList.addEvent(sec(9, 30), new DataTransfer());
+		eventList.addWhiteNoiseEvents(sec(10, 30), 25);
+		eventList.addEvent(sec(11, 00), new DataTransfer());
+		eventList.addWhiteNoiseEvents(sec(12, 05), 15);
+		
+		return eventList;
+	}
+	
+	public static EventList doubleActionMission4() {
+		EventList eventList = new EventList();
+		int firstPhase = sec(5, 05);
+		int secondPhase = sec(9, 55);
+		int thirdPhase = sec(13, 55);
+		eventList.addPhaseEvents(firstPhase + 10, secondPhase - firstPhase, thirdPhase - secondPhase);
+		
+		//Phase 1
+		eventList.addEvent(sec(0, 10), threat(false, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 1)); 
+		eventList.addEvent(sec(0, 40), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_INTERNAL, 2)); 
+		eventList.addEvent(sec(1, 30), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_EXTERNAL, 3)); 
+		eventList.addEvent(sec(1, 55), new IncomingData());
+		eventList.addEvent(sec(2, 10), new IncomingData());
+		eventList.addEvent(sec(2, 30), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 4));
+		eventList.addEvent(sec(3, 00), new DataTransfer());
+		eventList.addEvent(sec(3, 25), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_INTERNAL, 4)); 
+		eventList.addWhiteNoiseEvents(sec(3, 45), 5);
+		eventList.addEvent(sec(4, 20), new DataTransfer());
+		
+		//Phase 2
+		eventList.addEvent(sec(5, 25), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 5)); 
+		eventList.addEvent(sec(5, 50), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_SERIOUS,
+				Threat.THREAT_POSITION_EXTERNAL, 6)); 
+		eventList.addEvent(sec(6, 20), new DataTransfer());
+		eventList.addEvent(sec(6, 50), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 7)); 
+		eventList.addEvent(sec(7, 10), threat(false, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_INTERNAL, 7)); 
+		eventList.addWhiteNoiseEvents(sec(7, 45), 15);
+		eventList.addEvent(sec(8, 15), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
+				Threat.THREAT_POSITION_EXTERNAL, 8)); 
+		eventList.addEvent(sec(8, 40), new DataTransfer());
+		eventList.addWhiteNoiseEvents(sec(9, 05), 10);
+
+		//Phase 3
+		eventList.addWhiteNoiseEvents(sec(10, 10), 10);
+		eventList.addWhiteNoiseEvents(sec(10, 30), 10);
+		eventList.addWhiteNoiseEvents(sec(10, 50), 20);
+		eventList.addEvent(sec(11, 40), new DataTransfer());
+		eventList.addEvent(sec(12, 20), new DataTransfer());
+		
+		return eventList;
+	}
+	
 	private static int sec(int minutes, int seconds) {
 		
 		return (minutes * 60 + seconds);
