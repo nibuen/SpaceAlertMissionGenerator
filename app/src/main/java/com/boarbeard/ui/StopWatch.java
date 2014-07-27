@@ -14,7 +14,7 @@ public class StopWatch {
 	 * @param nanos
 	 * @return
 	 */
-	private static CharSequence formatTime(long nanos) {
+	public static CharSequence formatTime(long nanos) {
 		long seconds = TimeUnit.SECONDS.convert(nanos, TimeUnit.NANOSECONDS);
 		long minutes = seconds / 60;
 		seconds = seconds % 60;

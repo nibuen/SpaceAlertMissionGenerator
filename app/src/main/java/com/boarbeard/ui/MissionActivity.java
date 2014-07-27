@@ -51,6 +51,10 @@ public class MissionActivity extends Activity {
 
 	private MissionType missionType = MissionType.Random;
 
+	// Enable to dump the entire mission to the mission log immediately after the mission is 
+	// selected. Usable for debugging.
+	private static final boolean DUMP_MISSON_TREE = false;
+
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -208,6 +212,11 @@ public class MissionActivity extends Activity {
 
 		EventListParserFactory.getInstance().getParser(this)
 				.parse(missionType.getEventList(preferences), sequence);
+		
+		if (DUMP_MISSON_TREE) {
+			((MediaPlayerMainMission) sequence).dumpMissionTreeToLog();
+		}
+		
 	}
 
 	private void showMissionTypeDialog() {

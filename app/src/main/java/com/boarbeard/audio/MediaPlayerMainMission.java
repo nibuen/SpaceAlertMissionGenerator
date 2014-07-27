@@ -93,8 +93,6 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 	}
 
 	private synchronized void playNextAudio() {
-		boolean bLogColors;
-
 		if (activeMediaPlayer != null) {
 			// TODO reuse player
 			activeMediaPlayer.release();
@@ -104,32 +102,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 		activeMediaPlayer = MediaPlayer.create(missionActivity,
 				mediaInfo.getResUri());
 
-		if (!TextUtils.isEmpty(mediaInfo.toString())) {
-
-			bLogColors = preferences.getBoolean("logColorsPreference", true);
-
-			// Display log in colors (if preference is set to true)
-			// Note: Some parts are now bold, regardless of the color settings
-			// (Time, Unconfirmed, Serious - like the printed cards)
-			if ((mediaInfo.getTimeColor() == null) || (bLogColors == false)) {
-				missionLog = missionLog + "<b>" + stopWatch.toString()
-						+ "</b> -- ";
-			} else {
-				missionLog = missionLog + "<b><font color=\""
-						+ mediaInfo.getTimeColor() + "\">"
-						+ stopWatch.toString() + "</b></font> -- ";
-			}
-
-			if ((mediaInfo.getTimeColor() == null) || (bLogColors == false)) {
-				missionLog = missionLog + mediaInfo.toString() + "<br>";
-			} else {
-				missionLog = missionLog + "<font color=\""
-						+ mediaInfo.getTextColor() + "\">"
-						+ mediaInfo.toString() + "</font><br>";
-			}
-
-			missionActivity.updateMissionLog(missionLog);
-		}
+		updateMissionLog(mediaInfo);
 
 		if (mediaInfo.isLoopUntilNext()
 				&& playerIndex + 1 < mediaPlayerList.size()) {
@@ -165,6 +138,37 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 		}
 	}
 
+	private void updateMissionLog(final MediaInfo mediaInfo) {
+		boolean bLogColors;
+		if (!TextUtils.isEmpty(mediaInfo.toString())) {
+
+			bLogColors = preferences.getBoolean("logColorsPreference", true);
+
+			// Display log in colors (if preference is set to true)
+			// Note: Some parts are now bold, regardless of the color settings
+			// (Time, Unconfirmed, Serious - like the printed cards)
+			if ((mediaInfo.getTimeColor() == null) || (bLogColors == false)) {
+				missionLog = missionLog + "<b>" + stopWatch.toString()
+						+ "</b> -- ";
+
+			} else {
+				missionLog = missionLog + "<b><font color=\""
+						+ mediaInfo.getTimeColor() + "\">"
+						+ StopWatch.formatTime(mediaInfo.getStartTimeNanos()) + "</b></font> -- ";
+			}
+
+			if ((mediaInfo.getTimeColor() == null) || (bLogColors == false)) {
+				missionLog = missionLog + mediaInfo.toString() + "<br>";
+			} else {
+				missionLog = missionLog + "<font color=\""
+						+ mediaInfo.getTextColor() + "\">"
+						+ mediaInfo.toString() + "</font><br>";
+			}
+
+			missionActivity.updateMissionLog(missionLog);
+		}
+	}
+
 	public synchronized void pause() {
 		paused = true;
 		stopWatch.pause();
@@ -196,7 +200,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void planNextAudioTask() {
 		playerIndex++;
@@ -218,4 +222,16 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
         long timeInMillis = TimeUnit.MILLISECONDS.convert(timeInNanos, TimeUnit.NANOSECONDS);
         timerHandler.postAtTime(runnable, timeInMillis);
     }
+
+	/*
+	 * Dumps the entire mission to the mission log.
+	 */
+	public void dumpMissionTreeToLog() {
+		int i = 0;
+		while (mediaPlayerList.size() > i) {
+			final MediaInfo mediaInfo = mediaPlayerList.get(i);
+			updateMissionLog(mediaInfo);
+			i++;
+		}
+	}
 }
