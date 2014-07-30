@@ -131,10 +131,10 @@ public class EventList {
 		returnValue2 = addEvent(time + whitenoise.getLengthInSeconds(),
 				whitenoiserestored);
 
-		if (returnValue1 == false) {
+		if (!returnValue1) {
 			System.err.println("retunValue1 was false!");
 		}
-		if (returnValue2 == false) {
+		if (!returnValue2) {
 			System.err.println("retunValue2 was false!");
 		}
 
@@ -176,10 +176,7 @@ public class EventList {
 		// lowest or highest keys?
 		int lowest = events.firstKey();
 		if (lowest > time) { // there is no key before?
-			if (time + length > lowest)
-				return false; // too long
-			else
-				return true; // ok
+            return time + length <= lowest;
 		}
 		int highest = events.lastKey();
 		int lengthOfLastEvent = events.get(highest).getLengthInSeconds();
@@ -194,28 +191,9 @@ public class EventList {
 
 		// check event after
 		int after = ceilingKey(beforeKey + 1); // next event after before key
-		if (time + length > after)
-			return false;
+        return time + length <= after;
 
-		return true;
-	}
-
-	/**
-	 * return the next event for a given time
-	 * 
-	 * @param time
-	 * @return map.entry
-	 */
-
-	public Entry<Integer, Event> getNextEvent(int time) {
-		// last key?
-		if (time > events.lastKey())
-			return null;
-
-		HashMap<Integer, Event> map = new HashMap<Integer, Event>(1);
-		map.put(ceilingKey(time), events.get(ceilingKey(time)));
-		return map.entrySet().iterator().next();
-	}
+    }
 
 	/**
 	 * returns the entry set itself
