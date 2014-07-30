@@ -59,24 +59,33 @@ public enum MissionType {
 	RealMission8(R.string.mission_real_mission_8, ConstructedMissions
 			.realmission8()),
 	DoubleActionEasyMission1(R.string.double_action_easy_mission_1,
-			ConstructedMissions.doubleActionEasierMission1()),
+			ConstructedMissions.doubleActionEasierMission1(), R.string.double_action_mission_introduction),
 	DoubleActionEasyMission2(R.string.double_action_easy_mission_2,
-			ConstructedMissions.doubleActionEasierMission2()), 
+			ConstructedMissions.doubleActionEasierMission2(), R.string.double_action_mission_introduction),
 	DoubleActionMission1(R.string.double_action_mission_1,
-			ConstructedMissions.doubleActionMission1()),
+			ConstructedMissions.doubleActionMission1(), R.string.double_action_mission_introduction),
 	DoubleActionMission2(R.string.double_action_mission_2,
-			ConstructedMissions.doubleActionMission2()),
+			ConstructedMissions.doubleActionMission2(), R.string.double_action_mission_introduction),
 	DoubleActionMission3(R.string.double_action_mission_3,
-			ConstructedMissions.doubleActionMission3()),
-	DoubleActionMission4(R.string.double_action_mission_4, ConstructedMissions.doubleActionMission4());
+			ConstructedMissions.doubleActionMission3(), R.string.double_action_mission_introduction),
+	DoubleActionMission4(R.string.double_action_mission_4,
+            ConstructedMissions.doubleActionMission4(), R.string.double_action_mission_introduction);
 
 
 	private int resId;
 	private EventList eventList;
+    private int missionIntroductionResId;
 
-	MissionType(int resId, EventList eventList) {
+    MissionType(int resId, EventList eventList) {
+        this.eventList = eventList;
+        this.resId = resId;
+        this.missionIntroductionResId = -1;
+    }
+
+	MissionType(int resId, EventList eventList, int missionIntroductionResId) {
 		this.eventList = eventList;
 		this.resId = resId;
+        this.missionIntroductionResId = missionIntroductionResId;
 	}
 
 	public EventList getEventList(SharedPreferences preferences) {
@@ -86,7 +95,7 @@ public enum MissionType {
 	public int getResId() {
 		return resId;
 	}
-
+    public int getMissionIntroductionResId() { return missionIntroductionResId; }
 	public String toString(Context context) {
 		return context.getString(getResId());
 	}

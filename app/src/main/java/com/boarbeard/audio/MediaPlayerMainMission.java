@@ -54,6 +54,9 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 	}
 
 	public synchronized void start() {
+        // Clear the mission introduction
+        missionLog = "";
+
 		if (mediaPlayerList.size() <= playerIndex) {
 			init();
 		}
@@ -234,4 +237,13 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 			i++;
 		}
 	}
+
+    /*
+     * Prints the mission introduction to the log.
+    */
+    public void printMissionIntroduction(String missionIntroduction) {
+        missionLog = "<b><i> " + missionIntroduction + "</i></b><br>";
+        missionActivity.updateMissionLog(missionLog);
+    }
+
 }

@@ -216,7 +216,12 @@ public class MissionActivity extends Activity {
 		if (DUMP_MISSON_TREE) {
 			((MediaPlayerMainMission) sequence).dumpMissionTreeToLog();
 		}
-		
+
+        if (missionType.getMissionIntroductionResId() >= 0) {
+            ((MediaPlayerMainMission) sequence).
+                    printMissionIntroduction(getResources().
+                            getString(missionType.getMissionIntroductionResId()));
+        }
 	}
 
 	private void showMissionTypeDialog() {
