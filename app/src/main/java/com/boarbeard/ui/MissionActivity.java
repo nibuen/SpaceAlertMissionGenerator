@@ -109,7 +109,7 @@ public class MissionActivity extends Activity {
 				MissionType.toStringValues(this));
 
 		final ActionBar actionBar = getActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		actionBar.setListNavigationCallbacks(spinner,
 				new OnNavigationListener() {
 
