@@ -732,43 +732,45 @@ public class ConstructedMissions {
     public static EventList doubleActionEasierMission5() {
         EventList eventList = new EventList();
         int firstPhase = sec(4, 55);
-        int secondPhase = sec(9, 05);
-        int thirdPhase = sec(12, 55);
+        int secondPhase = sec(9, 25);
+        int thirdPhase = sec(13, 25);
         eventList.addPhaseEvents(firstPhase + 10, secondPhase - firstPhase, thirdPhase - secondPhase);
 
         //Phase 1
-        eventList.addEvent(sec(0, 10), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+        eventList.addEvent(sec(0, 10), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_NORMAL,
                 Threat.THREAT_POSITION_EXTERNAL, 1));
-        eventList.addWhiteNoiseEvents(sec(0, 45), 15);
-        eventList.addEvent(sec(1, 15), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_SERIOUS,
+        eventList.addEvent(sec(0, 40), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
                 Threat.THREAT_POSITION_EXTERNAL, 2));
-        eventList.addEvent(sec(1, 50), new DataTransfer());
-        eventList.addEvent(sec(2, 15), new IncomingData());
-        eventList.addEvent(sec(2, 35), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_SERIOUS,
-                Threat.THREAT_POSITION_INTERNAL, 4));
-        eventList.addEvent(sec(3, 20), new DataTransfer());
-        eventList.addEvent(sec(3, 50), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
-                Threat.THREAT_POSITION_EXTERNAL, 4));
+        eventList.addEvent(sec(1, 10), new IncomingData());
+        eventList.addEvent(sec(1, 30), threat(false, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_NORMAL,
+                Threat.THREAT_POSITION_INTERNAL, 2));
+        eventList.addEvent(sec(2, 10), new DataTransfer());
+        eventList.addEvent(sec(2, 25), new DataTransfer());
+        eventList.addEvent(sec(2, 45), threat(true, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
+                Threat.THREAT_POSITION_EXTERNAL, 3));
+        eventList.addWhiteNoiseEvents(sec(3, 10), 15);
+        eventList.addEvent(sec(4, 10), new IncomingData());
 
         //Phase 2
-        eventList.addEvent(sec(5, 00), new IncomingData());
-        eventList.addEvent(sec(5, 10), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_SERIOUS,
+        eventList.addEvent(sec(5, 05), threat(true, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
                 Threat.THREAT_POSITION_EXTERNAL, 5));
-        eventList.addEvent(sec(5, 45), new DataTransfer());
-        eventList.addEvent(sec(6, 10), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_NORMAL,
+        eventList.addEvent(sec(5, 30), new DataTransfer());
+        eventList.addEvent(sec(5, 50), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_SERIOUS,
+                Threat.THREAT_POSITION_INTERNAL, 5));
+        eventList.addEvent(sec(6, 40), threat(false, Threat.THREAT_SECTOR_BLUE, Threat.THREAT_LEVEL_NORMAL,
                 Threat.THREAT_POSITION_EXTERNAL, 6));
-        eventList.addWhiteNoiseEvents(sec(6, 35), 25);
-        eventList.addEvent(sec(7, 05), threat(false, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_SERIOUS,
-                Threat.THREAT_POSITION_INTERNAL, 7));
-        eventList.addEvent(sec(7, 35), new DataTransfer());
-        eventList.addEvent(sec(8, 15), threat(false, Threat.THREAT_SECTOR_RED, Threat.THREAT_LEVEL_NORMAL,
-                Threat.THREAT_POSITION_EXTERNAL, 8));
+        eventList.addEvent(sec(7, 10), threat(true, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_NORMAL,
+                Threat.THREAT_POSITION_EXTERNAL, 7));
+        eventList.addWhiteNoiseEvents(sec(7, 35), 25);
+        eventList.addEvent(sec(8, 05), new DataTransfer());
+        eventList.addEvent(sec(8, 35), threat(false, Threat.THREAT_SECTOR_WHITE, Threat.THREAT_LEVEL_NORMAL,
+                Threat.THREAT_POSITION_INTERNAL, 8));
 
         //Phase 3
-        eventList.addWhiteNoiseEvents(sec(9, 25), 15);
         eventList.addEvent(sec(10, 00), new DataTransfer());
-        eventList.addWhiteNoiseEvents(sec(11, 15), 15);
-        eventList.addEvent(sec(12, 20), new DataTransfer());
+        eventList.addWhiteNoiseEvents(sec(10, 30), 25);
+        eventList.addEvent(sec(11, 20), new DataTransfer());
+        eventList.addWhiteNoiseEvents(sec(12, 40), 10);
         return eventList;
     }
 
