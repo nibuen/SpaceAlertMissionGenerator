@@ -79,7 +79,7 @@ public enum MissionType {
     MissionType(int resId, EventList eventList) {
         this.eventList = eventList;
         this.resId = resId;
-        this.missionIntroductionResId = -1;
+        this.missionIntroductionResId = 0;
     }
 
 	MissionType(int resId, EventList eventList, int missionIntroductionResId) {

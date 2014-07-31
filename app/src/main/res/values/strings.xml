@@ -63,9 +63,7 @@
   	<string name="double_action_mission_2">Double Standard 2</string>
   	<string name="double_action_mission_3">Double Standard 3</string>
   	<string name="double_action_mission_4">Double Standard 4</string>
-
-    <string name="double_action_mission_introduction">Please note: The Double action cards from the expansion \"Space Alert - The new Frontier\" is required to play this mission.</string>
-
+    <string name="double_action_mission_introduction">Please note: The double action cards from the expansion \"Space Alert - The New Frontier\" is required to play this mission.</string>
     <string name="media_failed">Sound file failed to play.</string>
   	<string name="button_playing">Playing</string>
   	<string name="button_paused">Paused</string>
