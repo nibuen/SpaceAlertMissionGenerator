@@ -76,7 +76,7 @@ public class Announcement implements Event {
 		case ANNOUNCEMENT_PH3_TWENTYSECS:
 			return 5;
 		case ANNOUNCEMENT_PH3_ENDS:
-			return 12;
+			return 10;
 		}
 		return -1; // error
 	}
