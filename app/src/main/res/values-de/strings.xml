@@ -59,10 +59,21 @@
   	solved. -->
   	<string name="double_action_easy_mission_1">Doppel Vereinfachte 1</string>
   	<string name="double_action_easy_mission_2">Doppel Vereinfachte 2</string>
+    <string name="double_action_easy_mission_3">Doppel Vereinfachte 3</string>
+    <string name="double_action_easy_mission_4">Doppel Vereinfachte 4</string>
+    <string name="double_action_easy_mission_5">Doppel Vereinfachte 5</string>
   	<string name="double_action_mission_1">Doppel Standard 1</string>
-  	<string name="double_action_mission_2">Doppel Standard 2</string>
-  	<string name="double_action_mission_3">Doppel Standard 3</string>
-  	<string name="double_action_mission_4">Doppel Standard 4</string>
+    <string name="double_action_mission_2">Doppel Standard 2</string>
+    <string name="double_action_mission_3">Doppel Standard 3</string>
+    <string name="double_action_mission_4">Doppel Standard 4</string>
+    <string name="double_action_mission_5">Doppel Standard 5</string>
+    <string name="double_action_mission_6">Doppel Standard 6</string>
+    <string name="double_action_mission_7">Doppel Standard 7</string>
+    <string name="double_action_mission_8">Doppel Standard 8</string>
+    <string name="double_action_mission_9">Doppel Standard 9</string>
+    <string name="double_action_mission_10">Doppel Standard 10</string>
+    <string name="double_action_mission_11">Doppel Standard 11</string>
+    <string name="double_action_mission_12">Doppel Standard 12</string>
 
   	<string name="media_failed">Sound file konnte nicht abgespielt werden.</string>
   	<string name="button_playing">Mission läuft</string>
