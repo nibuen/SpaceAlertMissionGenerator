@@ -17,3 +17,8 @@ android {
         }
     }
 }
+
+dependencies {
+    //noinspection GradleDependency
+    compile "com.android.support:support-v4:20.0.+"
+}

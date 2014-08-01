@@ -84,7 +84,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 		playNextAudio();
 	}
 
-	public synchronized void init() {
+    public synchronized void init() {
 		playerIndex = 0;
 		activeMediaPlayer = null;
 		missionLog = "";
@@ -169,34 +169,22 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 		}
 	}
 
+    @Override
 	public synchronized void pause() {
-		paused = true;
+        super.pause();
 		stopWatch.pause();
 		mediaPlayerBackgroundSounds.pause();
 		missionActivity.toggleOff();
 		pauseTime = System.nanoTime();
 		timerHandler.removeCallbacks(mPlayNextAudioTask);
-
-		if (activeMediaPlayer != null && activeMediaPlayer.isPlaying()) {
-			activeMediaPlayer.pause();
-		}
 	}
 
+    @Override
 	public synchronized void stop() {
-		stopped = true;
-		if (activeMediaPlayer != null) {
-			activeMediaPlayer.stop();
-			activeMediaPlayer.release();
-			activeMediaPlayer = null;
-		}
+        super.stop();
 		missionActivity.toggleOff();
 		mediaPlayerBackgroundSounds.stop();
 		stopWatch.stop();
-	}
-
-	public void reset() {
-		stop();
-		init();
 	}
 
 	/**
