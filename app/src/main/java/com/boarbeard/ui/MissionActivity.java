@@ -58,7 +58,7 @@ public class MissionActivity extends Activity {
 
 	private MissionType missionType = MissionType.Random;
 
-	// Enable to dump the entire mission to the mission log immediately after the mission is 
+	// Enable to dump the entire mission to the mission log immediately after the mission is
 	// selected. Usable for debugging.
 	private static final boolean DUMP_MISSON_TREE = false;
 
@@ -127,7 +127,7 @@ public class MissionActivity extends Activity {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see android.app.Activity#onResume()
 	 */
 	@Override
@@ -156,7 +156,7 @@ public class MissionActivity extends Activity {
 
     /**
 	 * Request that the visibility of the status bar of the main view be changed
-	 * 
+	 *
 	 * @param visibility
 	 *            Bitwise-or of flags {@link View#SYSTEM_UI_FLAG_LOW_PROFILE} or
 	 *            {@link View#SYSTEM_UI_FLAG_HIDE_NAVIGATION}.
@@ -217,11 +217,11 @@ public class MissionActivity extends Activity {
 
 		EventListParserFactory.getInstance().getParser(this)
 				.parse(missionType.getEventList(preferences), sequence);
-		
+
 		if (DUMP_MISSON_TREE) {
 			((MediaPlayerMainMission) sequence).dumpMissionTreeToLog();
 		}
-		
+
 	}
 
 	private void showMissionTypeDialog() {
@@ -259,7 +259,7 @@ public class MissionActivity extends Activity {
 				wakeLock.acquire();
 
 			sequence.start();
-            notificationUpdate(true);
+            toggleOn();
 
             setSystemUiVisibility(systemUiMode = View.SYSTEM_UI_FLAG_LOW_PROFILE);
 		}
@@ -269,7 +269,7 @@ public class MissionActivity extends Activity {
 		if (sequence != null) {
 
 			sequence.pause();
-            notificationUpdate(false);
+            toggleOff();
 
             if (wakeLock.isHeld())
 				wakeLock.release();
@@ -281,7 +281,7 @@ public class MissionActivity extends Activity {
 		if (sequence != null) {
 
 			sequence.stop();
-            notificationUpdate(false);
+            toggleOff();
 
 			if (wakeLock.isHeld())
 				wakeLock.release();
@@ -298,8 +298,14 @@ public class MissionActivity extends Activity {
 		});
 	}
 
-	public void toggleOff() {
+    public void toggleOn() {
+        togglebutton.setChecked(true);
+        notificationUpdate(true);
+    }
+
+    public void toggleOff() {
 		togglebutton.setChecked(false);
+        notificationUpdate(false);
 	}
 
 	@Override
@@ -311,6 +317,18 @@ public class MissionActivity extends Activity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        // Get an instance of the NotificationManager service
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+
+        // Cancel any ongoing notifications
+        notificationManager.cancelAll();
+    }
 
     private void notificationUpdate(boolean isRunning) {
         int notificationId = 001;
@@ -325,7 +343,8 @@ public class MissionActivity extends Activity {
                         .setSmallIcon(R.drawable.space_alert_logo)
                         .setContentText(missionType.toString(this))
                         .setContentTitle(getString(R.string.app_name))
-                        .setContentIntent(viewPendingIntent);
+                        .setContentIntent(viewPendingIntent)
+                        .setOngoing(true);
 
         // Intent to stop/start the mission
         Intent mediaIntent = new Intent(this, MissionActivity.class);
