@@ -21,7 +21,7 @@ public enum MissionType {
 		@Override
 		public EventList getEventList(SharedPreferences preferences) {
 
-			MissionImpl mission = new MissionImpl(preferences);
+			MissionImpl mission = new MissionImpl(MissionImpl.parsePreferences(preferences));
 			mission.generateMission();
 			return mission.getMissionEvents();
 		}
