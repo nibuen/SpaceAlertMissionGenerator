@@ -5,17 +5,22 @@ import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PowerManager;
 import android.preference.PreferenceManager;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,7 +40,9 @@ import com.boarbeard.audio.parser.EventListParserFactory;
 
 public class MissionActivity extends Activity {
 
-	private int systemUiMode = View.SYSTEM_UI_FLAG_VISIBLE;
+    private static final String MEDIA_ACTION = "com.boarbeard.spacealert.media.action";
+
+    private int systemUiMode = View.SYSTEM_UI_FLAG_VISIBLE;
 
 	private MediaPlayerSequence sequence;
 
@@ -83,16 +90,7 @@ public class MissionActivity extends Activity {
 		togglebutton.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				if (togglebutton.isChecked()) {
-					if (sequence == null) {
-						createMission();
-						startMission();
-					} else {
-						startMission();
-					}
-				} else {
-					pauseMission();
-				}
+                toggleMission(togglebutton.isChecked());
 			}
 		});
 		setupActionBar();
@@ -149,7 +147,14 @@ public class MissionActivity extends Activity {
 		setSystemUiVisibility(systemUiMode);
 	}
 
-	/**
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if(MEDIA_ACTION.equals(intent.getAction())) {
+            toggleMission(intent.getBooleanExtra(Intent.EXTRA_SUBJECT, false));
+        }
+    }
+
+    /**
 	 * Request that the visibility of the status bar of the main view be changed
 	 * 
 	 * @param visibility
@@ -235,19 +240,38 @@ public class MissionActivity extends Activity {
 		alertDialog.show();
 	}
 
+    private void toggleMission(boolean start) {
+        if (start) {
+            if (sequence == null) {
+                createMission();
+                startMission();
+            } else {
+                startMission();
+            }
+        } else {
+            pauseMission();
+        }
+    }
+
 	private void startMission() {
 		if (sequence != null) {
 			if (!wakeLock.isHeld())
 				wakeLock.acquire();
+
 			sequence.start();
-			setSystemUiVisibility(systemUiMode = View.SYSTEM_UI_FLAG_LOW_PROFILE);
+            notificationUpdate(true);
+
+            setSystemUiVisibility(systemUiMode = View.SYSTEM_UI_FLAG_LOW_PROFILE);
 		}
 	}
 
 	private void pauseMission() {
 		if (sequence != null) {
+
 			sequence.pause();
-			if (wakeLock.isHeld())
+            notificationUpdate(false);
+
+            if (wakeLock.isHeld())
 				wakeLock.release();
 		}
 		setSystemUiVisibility(systemUiMode = View.SYSTEM_UI_FLAG_VISIBLE);
@@ -255,7 +279,10 @@ public class MissionActivity extends Activity {
 
 	private void stopMission() {
 		if (sequence != null) {
+
 			sequence.stop();
+            notificationUpdate(false);
+
 			if (wakeLock.isHeld())
 				wakeLock.release();
 		}
@@ -284,4 +311,44 @@ public class MissionActivity extends Activity {
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+
+    private void notificationUpdate(boolean isRunning) {
+        int notificationId = 001;
+
+        // Intent to bring you back to app
+        Intent viewIntent = new Intent(this, MissionActivity.class);
+        PendingIntent viewPendingIntent =
+                PendingIntent.getActivity(this, 0, viewIntent, 0);
+
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.space_alert_logo)
+                        .setContentText(missionType.toString(this))
+                        .setContentTitle(getString(R.string.app_name))
+                        .setContentIntent(viewPendingIntent);
+
+        // Intent to stop/start the mission
+        Intent mediaIntent = new Intent(this, MissionActivity.class);
+        mediaIntent.setAction(MEDIA_ACTION);
+        mediaIntent.putExtra(Intent.EXTRA_SUBJECT, new Boolean(!isRunning));
+        PendingIntent startStopIntent =
+                PendingIntent.getActivity(this, 0, mediaIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        if(isRunning) {
+            notificationBuilder.addAction(android.R.drawable.ic_media_pause,
+                    getString(R.string.button_playing), startStopIntent);
+        }
+        else {
+            notificationBuilder.addAction(android.R.drawable.ic_media_play,
+                    getString(R.string.button_paused), startStopIntent);
+
+        }
+
+        // Get an instance of the NotificationManager service
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
+
+        // Build the notification and issues it with notification manager.
+        notificationManager.notify(notificationId, notificationBuilder.build());
+    }
 }

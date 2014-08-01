@@ -18,11 +18,12 @@
         android:allowBackup="true"
         android:icon="@drawable/space_alert_logo"
         android:label="@string/app_name"
-        android:theme="@style/SpaceAlertTheme" >
+        android:theme="@style/SpaceAlertTheme">
         <activity
             android:name=".ui.MissionActivity"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
+            android:launchMode="singleTop"
             android:multiprocess="false"
             android:screenOrientation="fullSensor" >
             <intent-filter>
