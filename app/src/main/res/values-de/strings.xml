@@ -66,6 +66,7 @@
 
   	<string name="media_failed">Sound file konnte nicht abgespielt werden.</string>
   	<string name="button_playing">Mission läuft</string>
+    <string name="double_action_mission_introduction">Bitte beachten: Die Doppelaktionskarten aus der Erweiterung \"Space Alert - Unendliche Weiten\" sind erforderlich, um diese Mission zu spielen.</string>
   	<string name="button_paused">Angehalten</string>
   	<string name="pref_choose_mission">Wähle Missionstyp</string>
 	<string name="pref_logColors_title">Protokoll Farben</string>
