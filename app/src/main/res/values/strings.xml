@@ -50,10 +50,22 @@
   	titles has been solved.
   	<string name="double_action_easy_mission_1">Double Action Easy Mission 1</string>
   	<string name="double_action_easy_mission_2">Double Action Easy Mission 2</string>
+  	<string name="double_action_easy_mission_1">Double Action Easy Mission 3</string>
+  	<string name="double_action_easy_mission_2">Double Action Easy Mission 4</string>
+  	<string name="double_action_easy_mission_1">Double Action Easy Mission 5</string>
+  	<string name="double_action_easy_mission_2">Double Action Easy Mission 6</string>
   	<string name="double_action_mission_1">Double Action Standard Mission 1</string>
   	<string name="double_action_mission_2">Double Action Standard Mission 2</string>
   	<string name="double_action_mission_3">Double Action Standard Mission 3</string>
-  	<string name="double_action_mission_4">Double Action Standard Mission 4</string> -->
+  	<string name="double_action_mission_4">Double Action Standard Mission 4</string>
+  	<string name="double_action_mission_2">Double Action Standard Mission 5</string>
+  	<string name="double_action_mission_3">Double Action Standard Mission 6</string>
+  	<string name="double_action_mission_4">Double Action Standard Mission 7</string>
+  	<string name="double_action_mission_2">Double Action Standard Mission 8</string>
+  	<string name="double_action_mission_3">Double Action Standard Mission 9</string>
+  	<string name="double_action_mission_4">Double Action Standard Mission 10</string>
+  	<string name="double_action_mission_2">Double Action Standard Mission 11</string>
+  	<string name="double_action_mission_3">Double Action Standard Mission 12</string>-->
 
 	<!-- Temporary abbreviated strings until ui-problems with long mission titles has been
 	solved. -->

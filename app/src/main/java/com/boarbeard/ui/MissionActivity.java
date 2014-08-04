@@ -60,7 +60,7 @@ public class MissionActivity extends Activity {
 
 	// Enable to dump the entire mission to the mission log immediately after the mission is
 	// selected. Usable for debugging.
-	private static final boolean DUMP_MISSION_TREE = true;
+	private static final boolean DUMP_MISSION_TREE = false;
 
 	/** Called when the activity is first created. */
 	@Override
