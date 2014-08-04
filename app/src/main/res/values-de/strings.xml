@@ -50,10 +50,22 @@
   	titles has been solved.
   	<string name="double_action_easy_mission_1">Doppelaktionen Vereinfachte Mission 1</string>
   	<string name="double_action_easy_mission_2">Doppelaktionen Vereinfachte Mission 2</string>
-  	<string name="double_action_mission_1">Doppelaktionen Standard Mission 1</string>
+  	<string name="double_action_easy_mission_1">Doppelaktionen Vereinfachte Mission 3</string>
+  	<string name="double_action_easy_mission_2">Doppelaktionen Vereinfachte Mission 4</string>
+  	<string name="double_action_easy_mission_1">Doppelaktionen Vereinfachte Mission 5</string>
+  	<string name="double_action_easy_mission_2">Doppelaktionen Vereinfachte Mission 6</string>
+    <string name="double_action_mission_1">Doppelaktionen Standard Mission 1</string>
   	<string name="double_action_mission_2">Doppelaktionen Standard Mission 2</string>
   	<string name="double_action_mission_3">Doppelaktionen Standard Mission 3</string>
-  	<string name="double_action_mission_4">Doppelaktionen Standard Mission 4</string> -->
+  	<string name="double_action_mission_4">Doppelaktionen Standard Mission 4</string>
+    <string name="double_action_mission_1">Doppelaktionen Standard Mission 5</string>
+  	<string name="double_action_mission_2">Doppelaktionen Standard Mission 6</string>
+  	<string name="double_action_mission_3">Doppelaktionen Standard Mission 7</string>
+  	<string name="double_action_mission_4">Doppelaktionen Standard Mission 8</string>
+    <string name="double_action_mission_1">Doppelaktionen Standard Mission 9</string>
+  	<string name="double_action_mission_2">Doppelaktionen Standard Mission 10</string>
+  	<string name="double_action_mission_3">Doppelaktionen Standard Mission 11</string>
+  	<string name="double_action_mission_4">Doppelaktionen Standard Mission 12</string>-->
 
   	<!-- Temporary abbreviated strings until ui-problems with long mission titles has been
   	solved. -->
