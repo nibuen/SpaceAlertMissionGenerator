@@ -85,6 +85,14 @@ public enum MissionType {
     DoubleActionMission7(R.string.double_action_mission_7,
             ConstructedMissions.doubleActionMission7(), R.string.double_action_mission_introduction),
     DoubleActionMission8(R.string.double_action_mission_8, ConstructedMissions.doubleActionMission8(),
+            R.string.double_action_mission_introduction),
+    DoubleActionMission9(R.string.double_action_mission_9, ConstructedMissions.doubleActionMission9(),
+            R.string.double_action_mission_introduction),
+    DoubleActionMission10(R.string.double_action_mission_10, ConstructedMissions.doubleActionMission10(),
+            R.string.double_action_mission_introduction),
+    DoubleActionMission11(R.string.double_action_mission_11, ConstructedMissions.doubleActionMission11(),
+            R.string.double_action_mission_introduction),
+    DoubleActionMission12(R.string.double_action_mission_12, ConstructedMissions.doubleActionMission12(),
             R.string.double_action_mission_introduction);
 
 	private int resId;
