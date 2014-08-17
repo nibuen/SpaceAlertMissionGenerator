@@ -60,7 +60,7 @@ public class MissionActivity extends Activity {
 
 	// Enable to dump the entire mission to the mission log immediately after the mission is
 	// selected. Usable for debugging.
-	private static final boolean DUMP_MISSON_TREE = false;
+	private static final boolean DUMP_MISSION_TREE = false;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -218,15 +218,16 @@ public class MissionActivity extends Activity {
 		EventListParserFactory.getInstance().getParser(this)
 				.parse(missionType.getEventList(preferences), sequence);
 
-		if (DUMP_MISSON_TREE) {
-			((MediaPlayerMainMission) sequence).dumpMissionTreeToLog();
-		}
-
         if (missionType.getMissionIntroductionResId() != 0) {
             ((MediaPlayerMainMission) sequence).
                     printMissionIntroduction(getResources().
                             getString(missionType.getMissionIntroductionResId()));
         }
+
+        if (DUMP_MISSION_TREE) {
+            ((MediaPlayerMainMission) sequence).dumpMissionTreeToLog();
+        }
+
 	}
 
 	private void showMissionTypeDialog() {
