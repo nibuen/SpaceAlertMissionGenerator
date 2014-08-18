@@ -54,9 +54,10 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 	}
 
 	public synchronized void start() {
-        // Clear the mission introduction
-        missionLog = "";
-
+        // Clear the mission introduction when the mission is started (not resumed after a pause)
+        if (stopWatch.missionTimeInNanos() == 0) {
+            missionLog = "";
+        }
 		if (mediaPlayerList.size() <= playerIndex) {
 			init();
 		}
