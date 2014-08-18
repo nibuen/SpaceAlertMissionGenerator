@@ -35,12 +35,18 @@
             android:persistent="true"
             android:summary="@string/pref_incoming_data_summary"
             android:title="@string/pref_incoming_data_title" />
+        <Preference android:title="@string/pref_restore_default_settings_title"
+            android:key="restoreDefaultSettings"
+            android:summary="@string/pref_restore_default_settings_summary"/>
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_display_settings">
         <CheckBoxPreference android:key="logColorsPreference"
 			android:defaultValue="true"
 			android:title="@string/pref_logColors_title"
 			android:persistent="true"
         	android:summary="@string/pref_logColors_summary" />        
-</PreferenceCategory>
+    </PreferenceCategory>
 	<PreferenceCategory android:title="@string/pref_mission_voice">
 		<ListPreference android:key="voice_choices" android:title="@string/pref_voice_title" android:summary="@string/pref_voice_summary"
             android:defaultValue="0" />
