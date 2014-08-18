@@ -6,13 +6,16 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.PreferenceActivity;
+import android.preference.Preference;
 
 import com.boarbeard.R;
 import com.boarbeard.audio.parser.DefaultGrammar;
 import com.boarbeard.audio.parser.EventListParserFactory;
 import com.boarbeard.io.ExternalMedia;
+import com.boarbeard.ui.widget.SeekBarPreference;
 
 public class PreferencesActivity extends PreferenceActivity implements
 		OnSharedPreferenceChangeListener {
@@ -39,9 +42,47 @@ public class PreferencesActivity extends PreferenceActivity implements
 		addPreferencesFromResource(R.xml.preferences);
 
 		onCreateVoicePreferences();
+        initRestoreDefaultSettings();
 	}
 
-	private void onCreateVoicePreferences() {
+    /*
+     * Handles the restore default settings option
+     */
+    private void initRestoreDefaultSettings() {
+        Preference restoreButton = (Preference)findPreference("restoreDefaultSettings");
+        if (restoreButton!=null) {
+            restoreButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference arg0) {
+                    CheckBoxPreference unconfirmedReports = (CheckBoxPreference)
+                            (Preference)findPreference("unconfirmedReportsPreference");
+                    if (unconfirmedReports != null) {
+                        unconfirmedReports.setChecked(getResources().
+                                getBoolean(R.bool.pref_unconfirmed_reports_default_value));
+                    }
+
+                    SeekBarPreference missionLength = (SeekBarPreference)
+                            findPreference("missionLengthPreference");
+                    if (missionLength != null) {
+                        missionLength.restoreDefaultValues();
+                    }
+                    SeekBarPreference threatDifficulty = (SeekBarPreference)
+                            findPreference("threatDifficultyPreference");
+                    if (threatDifficulty != null) {
+                        threatDifficulty.restoreDefaultValues();
+                    }
+                    SeekBarPreference nbrIncommingData = (SeekBarPreference)
+                            findPreference("numberIncomingData");
+                    if (nbrIncommingData != null) {
+                        nbrIncommingData.restoreDefaultValues();
+                    }
+                    return true;
+                }
+            });
+        }
+    }
+
+    private void onCreateVoicePreferences() {
 		ListPreference listPreferenceCategory = (ListPreference) findPreference("voice_choices");
 		if (listPreferenceCategory != null) {
 			List<Uri> mediaFolderList = ExternalMedia.getMediaFolders(this);

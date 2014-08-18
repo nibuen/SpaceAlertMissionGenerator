@@ -152,4 +152,17 @@ public class SeekBarPreference extends DialogPreference implements com.boarbeard
 		return min + " - " + max;
 	}
 
+    public void restoreDefaultValues() {
+        // Restore the first value
+        mCurrentValue = mDefaultValue;
+        persistInt(mCurrentValue);
+
+        // Restore the second value
+        mCurrentSecondValue = mDefaultSecondValue;
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this.getContext());
+        settings.edit().putInt(getKey() + "SecondValue", mCurrentSecondValue).commit();
+
+        // Notify that the values has been updated
+        notifyChanged();
+    }
 }
