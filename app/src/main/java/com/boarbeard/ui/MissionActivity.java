@@ -10,23 +10,21 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ScrollView;
 import android.widget.SpinnerAdapter;
@@ -52,8 +50,6 @@ public class MissionActivity extends Activity {
 	private ScrollView scrollView;
 	private ToggleButton togglebutton;
 
-	private PowerManager.WakeLock wakeLock;
-
 	private StopWatch stopWatch;
 
 	private MissionType missionType = MissionType.Random;
@@ -67,10 +63,6 @@ public class MissionActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-
-		PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-		wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK,
-				"Mission Wake Lock");
 
 		missionTypeTextView = (TextView) findViewById(R.id.missionTypeTextView);
 		if (missionTypeTextView != null) {
@@ -261,24 +253,20 @@ public class MissionActivity extends Activity {
 
 	private void startMission() {
 		if (sequence != null) {
-			if (!wakeLock.isHeld())
-				wakeLock.acquire();
-
+            setKeepScreenOn(true);
 			sequence.start();
             toggleOn();
 
             setSystemUiVisibility(systemUiMode = View.SYSTEM_UI_FLAG_LOW_PROFILE);
-		}
+        }
 	}
 
-	private void pauseMission() {
+    private void pauseMission() {
 		if (sequence != null) {
 
 			sequence.pause();
             toggleOff();
-
-            if (wakeLock.isHeld())
-				wakeLock.release();
+            setKeepScreenOn(false);
 		}
 		setSystemUiVisibility(systemUiMode = View.SYSTEM_UI_FLAG_VISIBLE);
 	}
@@ -288,12 +276,18 @@ public class MissionActivity extends Activity {
 
 			sequence.stop();
             toggleOff();
-
-			if (wakeLock.isHeld())
-				wakeLock.release();
+            setKeepScreenOn(false);
 		}
 		setSystemUiVisibility(systemUiMode = View.SYSTEM_UI_FLAG_VISIBLE);
 	}
+
+    private void setKeepScreenOn(boolean keepScreenOn) {
+        if (keepScreenOn) {
+            setSystemUiVisibility(systemUiMode = View.SYSTEM_UI_FLAG_LOW_PROFILE);
+        } else {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
 
 	public void updateMissionLog(String missionLog) {
 		logTextView.setText(Html.fromHtml(missionLog));
