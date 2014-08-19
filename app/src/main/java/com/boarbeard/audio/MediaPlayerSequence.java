@@ -29,7 +29,7 @@ public class MediaPlayerSequence {
 
 	public synchronized void start() {
 		if (mediaPlayerList.size() <= playerIndex) {
-			init();
+			reset();
 		}
 
 		stopped = false;
@@ -42,11 +42,6 @@ public class MediaPlayerSequence {
 		}
 
 		playNextAudio(mediaPlayerList.get(playerIndex));
-	}
-
-	public synchronized void init() {
-		playerIndex = 0;
-		activeMediaPlayer = null;
 	}
 
 	public synchronized void stop() {
@@ -70,7 +65,7 @@ public class MediaPlayerSequence {
 						if (stopped)
 							return;
 
-						playerIndex = nextIndex();
+                        nextIndex();
 						if (mediaPlayerList.size() > playerIndex) {
 							playNextAudio(mediaPlayerList.get(playerIndex));
 						}
@@ -82,10 +77,6 @@ public class MediaPlayerSequence {
 		}
 	}
 
-	public int nextIndex() {
-		return playerIndex + 1;
-	}
-
 	public synchronized void pause() {
 		paused = true;
 		if (activeMediaPlayer != null && activeMediaPlayer.isPlaying()) {
@@ -95,7 +86,11 @@ public class MediaPlayerSequence {
 
 	public void reset() {
 		stop();
-		init();
+        playerIndex = 0;
+        activeMediaPlayer = null;
 	}
 
+    public void nextIndex() {
+        playerIndex++;
+    }
 }
