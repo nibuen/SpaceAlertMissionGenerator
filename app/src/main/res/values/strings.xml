@@ -9,8 +9,9 @@
     <string name="mission_options">Options</string>
     <string name="mission_type">Type</string>
     
-    <string name="pref_mission">Mission Parameters</string>
+    <string name="pref_mission">Parameters for Random Mission</string>
     <string name="pref_mission_voice">Language</string>
+    <string name="pref_display_settings">Display Settings</string>
     <string name="pref_unconfirmedReports_title">Unconfirmed Reports</string>
     <string name="pref_unconfirmedReports_summary">Whether to allow chance of unconfirmed reports to the mission.</string>
   	<string name="pref_mission_length_summary">The approximate mission length in seconds.</string>
@@ -19,6 +20,8 @@
 	<string name="pref_mission_length_dialog_title">Mission Length</string>   
   	<string name="pref_threat_difficulty_dialog_title">Threat Difficulty</string>   	
   	<string name="pref_threat_difficulty_summary">Cumulative threat for the mission. (Normal=1, Serious=2)</string>
+    <string name="pref_restore_default_settings_title">Restore</string>
+    <string name="pref_restore_default_settings_summary">Restore default settings</string>
   	<string name="pref_voice_title">Sound Pack</string>   	
   	<string name="pref_voice_summary">Sound files and Text to use. See read me in com.boarbeard on storage to add your own.</string>  	
  	<string name="pref_incoming_data_title">Incoming Data: %1$d - %2$d</string>   	
