@@ -42,44 +42,42 @@ public class PreferencesActivity extends PreferenceActivity implements
 		addPreferencesFromResource(R.xml.preferences);
 
 		onCreateVoicePreferences();
-        initRestoreDefaultSettings();
+        initRestoreDefaultButton();
 	}
 
     /*
-     * Handles the restore default settings option
+     * Initiates the button restore default settings button 
      */
-    private void initRestoreDefaultSettings() {
-        Preference restoreButton = (Preference)findPreference("restoreDefaultSettings");
-        if (restoreButton!=null) {
-            restoreButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference arg0) {
-                    CheckBoxPreference unconfirmedReports = (CheckBoxPreference)
-                            (Preference)findPreference("unconfirmedReportsPreference");
-                    if (unconfirmedReports != null) {
-                        unconfirmedReports.setChecked(getResources().
-                                getBoolean(R.bool.pref_unconfirmed_reports_default_value));
-                    }
+    private void initRestoreDefaultButton() {
+        Preference restoreButton = findPreference("restoreDefaultSettings");
 
-                    SeekBarPreference missionLength = (SeekBarPreference)
-                            findPreference("missionLengthPreference");
-                    if (missionLength != null) {
-                        missionLength.restoreDefaultValues();
-                    }
-                    SeekBarPreference threatDifficulty = (SeekBarPreference)
-                            findPreference("threatDifficultyPreference");
-                    if (threatDifficulty != null) {
-                        threatDifficulty.restoreDefaultValues();
-                    }
-                    SeekBarPreference nbrIncommingData = (SeekBarPreference)
-                            findPreference("numberIncomingData");
-                    if (nbrIncommingData != null) {
-                        nbrIncommingData.restoreDefaultValues();
-                    }
-                    return true;
-                }
-            });
-        }
+            // Configure the behavior when the user pressed the restore default setting button.
+        restoreButton.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference arg0) {
+                // Restore unconfirmed reports setting to default value
+                CheckBoxPreference unconfirmedReports = (CheckBoxPreference)
+                        findPreference("unconfirmedReportsPreference");
+                unconfirmedReports.setChecked(getResources().
+                    getBoolean(R.bool.pref_unconfirmed_reports_default_value));
+
+                // Restore mission length setting to default value.
+                SeekBarPreference missionLength = (SeekBarPreference)
+                        findPreference("missionLengthPreference");
+                missionLength.restoreDefaultValues();
+
+                // Restore threat difficulty setting to default value.
+                SeekBarPreference threatDifficulty = (SeekBarPreference)
+                        findPreference("threatDifficultyPreference");
+                threatDifficulty.restoreDefaultValues();
+                
+                // Restore Incoming data settings to default value
+                SeekBarPreference nbrIncomingData = (SeekBarPreference)
+                        findPreference("numberIncomingData");
+                nbrIncomingData.restoreDefaultValues();
+                return true;
+            }
+        });
     }
 
     private void onCreateVoicePreferences() {
