@@ -237,9 +237,17 @@ public class MissionImpl implements IMission {
             prefs.threatLevel -= CONSTANT_THREAT_UNCONFIRMED; // if 4 players, then you have to subtract the unconfirmed part from the base level (8 - 1 = 7 in normal missions)
         }
 
-        prefs.minIncomingData = preferences.getInt("numberIncomingDataSecondValue", prefs.minIncomingData);
-        prefs.maxIncomingData = preferences.getInt("numberIncomingData", prefs.maxIncomingData);
+        prefs.minIncomingData = preferences.getInt("numberIncomingData", prefs.minIncomingData);
+        prefs.maxIncomingData = preferences.getInt("numberIncomingDataSecondValue", prefs.maxIncomingData);
 
+        // Make sure maxIncomingData is always greater than minIncomingData. Earlier version
+        // of the app might have switched these values. This check prevents a crash when users
+        // upgrade from an older version.
+        if (prefs.minIncomingData > prefs.maxIncomingData) {
+            int tempIncomingData = prefs.minIncomingData;
+            prefs.minIncomingData = prefs.maxIncomingData;
+            prefs.maxIncomingData = tempIncomingData;
+        }
 
         int missionLength = preferences.getInt("missionLengthPreference", 600);
         prefs.minPhaseTime[0] = (int) (missionLength * .4);

@@ -128,11 +128,11 @@ public class SeekBarPreference extends DialogPreference implements com.boarbeard
 			boolean knobEndChanged, int knobStart, int knobEnd) {
 		
 		if(knobEnd > knobStart) {
+			mCurrentValue = knobStart;
+			mCurrentSecondValue = knobEnd;
+		} else {
 			mCurrentValue = knobEnd;
 			mCurrentSecondValue = knobStart;
-		} else {
-			mCurrentValue = knobStart;
-			mCurrentSecondValue = knobEnd;	
 		}
 		
 		if (!mSeekBar.isSecondThumbEnabled() && knobEndChanged) {
