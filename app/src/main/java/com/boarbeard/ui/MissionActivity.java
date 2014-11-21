@@ -113,6 +113,8 @@ public class MissionActivity extends Activity {
         }
 
         final ActionBar actionBar = getActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayShowHomeEnabled(true);
     }
 
     /*
@@ -173,12 +175,10 @@ public class MissionActivity extends Activity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.menuNewMission:
-                createMission();
+                configureMission(true);
                 return true;
             case R.id.menuResetMission:
-                if (sequence != null) {
-                    sequence.reset();
-                }
+                configureMission(false);
                 return true;
             case R.id.menuMissionOptions:
                 startActivity(new Intent(this, PreferencesActivity.class));
@@ -198,16 +198,23 @@ public class MissionActivity extends Activity {
         }
     }
 
-    private void createMission() {
+    private void configureMission(boolean newGame) {
         stopMission();
+
         SharedPreferences preferences = PreferenceManager
                 .getDefaultSharedPreferences(this);
-
         // Displays the log texts, so needs the log color preferences
-        sequence = new MediaPlayerMainMission(this, missionLogs, stopWatch, preferences);
+        if (sequence == null || newGame) {
+            sequence = new MediaPlayerMainMission(this, missionLogs, stopWatch, preferences);
+            EventListParserFactory.getInstance().getParser(this)
+                    .parse(missionType.getEventList(preferences), sequence);
+        } else {
+            sequence.reset();
+            stopWatch.reset();
+        }
 
-        EventListParserFactory.getInstance().getParser(this)
-                .parse(missionType.getEventList(preferences), sequence);
+        missionLogs.clear();
+        mAdapter.notifyDataSetChanged();
 
         if (missionType.getMissionIntroductionResId() != 0) {
             ((MediaPlayerMainMission) sequence).
@@ -221,6 +228,7 @@ public class MissionActivity extends Activity {
 
     }
 
+
     private void showMissionTypeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getString(R.string.pref_choose_mission));
@@ -230,7 +238,7 @@ public class MissionActivity extends Activity {
                         missionType = MissionType.values()[item];
                         menuTypeMission.setTitle(missionType
                                 .toString(MissionActivity.this));
-                        createMission();
+                        configureMission(true);
                     }
                 });
         AlertDialog alertDialog = builder.create();
@@ -240,7 +248,7 @@ public class MissionActivity extends Activity {
     private void toggleMission(boolean start) {
         if (start) {
             if (sequence == null) {
-                createMission();
+                configureMission(true);
                 startMission();
             } else {
                 startMission();
@@ -310,9 +318,7 @@ public class MissionActivity extends Activity {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-            if (sequence != null) {
-                sequence.reset();
-            }
+            configureMission(false);
         }
         return super.onKeyDown(keyCode, event);
     }

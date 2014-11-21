@@ -51,14 +51,12 @@ public class MissionCardsAdapter extends RecyclerView.Adapter<MissionCardsAdapte
         MissionLog missionLog = missionLogs.get(position);
 
         TextView missionTextView = (TextView) holder.cardView.findViewById(R.id.missionTextView);
-        missionTextView.setTextColor(missionLog.getColor());
         missionTextView.setText(missionLog.getActionText());
 
         TextView clockTextView = (TextView) holder.cardView.findViewById(R.id.clockTextView);
         if (missionLog.getClockText() != null) {
             clockTextView.setText(missionLog.getClockText());
-        }
-        else {
+        } else {
             clockTextView.setText("");
         }
 

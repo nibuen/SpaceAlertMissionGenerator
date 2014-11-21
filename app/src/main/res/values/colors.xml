@@ -2,4 +2,8 @@
 <resources>
    	<color name="white_color">#fff</color>
   	<color name="gray_color">#555</color>
+    <color name="black_color">#000</color>
+    <color name="material_red_500">#F44336</color>
+    <color name="material_red_900">#B71C1C</color>
+    <color name="material_color_100">#BDBDBD</color>
 </resources>

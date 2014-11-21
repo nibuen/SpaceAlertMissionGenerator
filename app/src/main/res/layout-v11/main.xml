@@ -24,8 +24,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight=".05"
-        android:layout_margin="4dp"
-        android:background="@color/gray_color">
+        android:elevation="10dp"
+        android:backgroundTint="@color/material_red_500">
 
         <TextView
             android:id="@+id/missionClockTextView"
@@ -35,7 +35,8 @@
             android:gravity="center"
             android:scrollbars="vertical"
             android:text="0:00"
-            android:textSize="25dp"/>
+            android:textStyle="bold"
+            android:textSize="35dp" />
     </LinearLayout>
 
     <LinearLayout

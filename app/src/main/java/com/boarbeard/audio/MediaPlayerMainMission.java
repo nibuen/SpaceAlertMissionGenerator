@@ -1,7 +1,6 @@
 package com.boarbeard.audio;
 
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.text.Html;
@@ -174,7 +173,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
                         + mediaInfo.toString() + "</font>");
             }
 
-            missionLog.add(new MissionLog(Color.WHITE, Html.fromHtml(actionText.toString()), Html.fromHtml(timeText.toString())));
+            missionLog.add(new MissionLog(Html.fromHtml(actionText.toString()), Html.fromHtml(timeText.toString())));
             missionActivity.updateMissionLog();
         }
     }

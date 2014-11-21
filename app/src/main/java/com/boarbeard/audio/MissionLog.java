@@ -1,20 +1,12 @@
 package com.boarbeard.audio;
 
-import android.graphics.Color;
-
 public class MissionLog {
-    private final int color;
     private final CharSequence actionText;
     private final CharSequence clockText;
 
-    public MissionLog(int color, CharSequence actionText, CharSequence clockText) {
-        this.color = color;
+    public MissionLog(CharSequence actionText, CharSequence clockText) {
         this.actionText = actionText;
         this.clockText = clockText;
-    }
-
-    public MissionLog(CharSequence actionText, CharSequence clockText) {
-        this(Color.WHITE, actionText, clockText);
     }
 
     public MissionLog(CharSequence actionText) {
@@ -29,7 +21,4 @@ public class MissionLog {
         return clockText;
     }
 
-    public int getColor() {
-        return color;
-    }
 }

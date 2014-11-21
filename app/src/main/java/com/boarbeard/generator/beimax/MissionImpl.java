@@ -18,15 +18,15 @@
  **/
 package com.boarbeard.generator.beimax;
 
-import java.util.ArrayList;
-import java.util.Random;
-
 import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.boarbeard.generator.beimax.event.DataTransfer;
 import com.boarbeard.generator.beimax.event.IncomingData;
 import com.boarbeard.generator.beimax.event.Threat;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Default Mission Generator
@@ -548,7 +548,7 @@ public class MissionImpl implements IMission {
 		// check minimums
 		if (incomingSum < minIncomingDataTotal || transferSum < minDataTransferTotal) return false;
 		
-		// debuggin information
+		// debugging information
 		for (int i = 0; i < 3; i++) {
 			Log.v("MissionImpl.generateThreats()", "Phase " + (i+1) + ": Incoming Data = " + incomingData[i] + "; Data Transfers = " + dataTransfers[i]);
 		}

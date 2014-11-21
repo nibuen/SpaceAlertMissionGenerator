@@ -89,7 +89,6 @@ public class MediaPlayerSequence {
 	public void reset() {
 		stop();
         playerIndex = 0;
-        activeMediaPlayer = null;
 	}
 
     public void nextIndex() {

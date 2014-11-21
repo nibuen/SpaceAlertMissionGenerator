@@ -13,7 +13,7 @@
         android:background="@color/gray_color">
 
         <TextView
-            android:textSize="16sp"
+            android:textSize="16dp"
             android:text="Mission Type"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"

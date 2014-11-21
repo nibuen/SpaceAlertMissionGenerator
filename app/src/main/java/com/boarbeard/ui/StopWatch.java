@@ -7,58 +7,61 @@ import java.util.concurrent.TimeUnit;
 
 public class StopWatch {
 
+    // Update clock twice a second
+    public static final int CLOCK_UPDATE_IN_MILLIS = 500;
+
     private volatile long startTime;
     private volatile long pauseTime;
 
     /**
-	 * @param nanos
-	 * @return
-	 */
-	public static CharSequence formatTime(long nanos) {
-		long seconds = TimeUnit.SECONDS.convert(nanos, TimeUnit.NANOSECONDS);
-		long minutes = seconds / 60;
-		seconds = seconds % 60;
+     * @param nanos
+     * @return
+     */
+    public static CharSequence formatTime(long nanos) {
+        long seconds = TimeUnit.SECONDS.convert(nanos, TimeUnit.NANOSECONDS);
+        long minutes = seconds / 60;
+        seconds = seconds % 60;
 
-		StringBuilder sb = new StringBuilder().append(minutes).append(':');
-		if (seconds < 10) {
-			sb.append(0);
-		}
-		return sb.append(seconds);
-	}
+        StringBuilder sb = new StringBuilder().append(minutes).append(':');
+        if (seconds < 10) {
+            sb.append(0);
+        }
+        return sb.append(seconds);
+    }
 
-	private final TextView timeTextView;
+    private final TextView timeTextView;
 
     private Handler timerHandler = new Handler();
 
-	private final Runnable mUpdateTimeTask = new Runnable() {
-		public void run() {
+    private final Runnable mUpdateTimeTask = new Runnable() {
+        public void run() {
             updateClock();
-            timerHandler.postDelayed(this, 500); // Update clock twice a second
-		}
-	};
+            timerHandler.postDelayed(this, CLOCK_UPDATE_IN_MILLIS);
+        }
+    };
 
-	/**
-	 * @param display
-     * */
-	public StopWatch(TextView display) {
-		this.timeTextView = display;
+    /**
+     * @param display
+     */
+    public StopWatch(TextView display) {
+        this.timeTextView = display;
         reset();
-	}
+    }
 
-	public void start() {
+    public void start() {
         startTime = System.nanoTime() - missionTimeInNanos();
         pauseTime = Long.MIN_VALUE;
         timerHandler.post(mUpdateTimeTask);
-	}
+    }
 
-	public void pause() {
+    public void pause() {
         pauseTime = System.nanoTime();
         timerHandler.removeCallbacks(mUpdateTimeTask);
-	}
+    }
 
-	public void stop() {
-		pause();
-	}
+    public void stop() {
+        pause();
+    }
 
     public void reset() {
         startTime = Long.MIN_VALUE;
@@ -90,8 +93,8 @@ public class StopWatch {
     }
 
     @Override
-	public String toString() {
+    public String toString() {
         return formatTime(missionTimeInNanos()).toString();
-	}
+    }
 
 }
