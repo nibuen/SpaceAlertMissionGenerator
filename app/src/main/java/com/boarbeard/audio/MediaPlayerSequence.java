@@ -1,10 +1,11 @@
 package com.boarbeard.audio;
 
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import android.content.Context;
-import android.media.MediaPlayer;
 
 public class MediaPlayerSequence {
 
@@ -55,6 +56,7 @@ public class MediaPlayerSequence {
 
 	private synchronized void playNextAudio(final MediaInfo mediaInfo) {
 		activeMediaPlayer = MediaPlayer.create(context, mediaInfo.getResUri());
+        activeMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 		activeMediaPlayer
 				.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 					public void onCompletion(MediaPlayer mp) {

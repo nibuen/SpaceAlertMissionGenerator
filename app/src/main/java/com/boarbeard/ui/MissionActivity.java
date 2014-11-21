@@ -2,7 +2,6 @@ package com.boarbeard.ui;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -16,8 +15,8 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.text.Html;
-import android.text.method.ScrollingMovementMethod;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,16 +24,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.ScrollView;
-import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.boarbeard.R;
 import com.boarbeard.audio.MediaPlayerMainMission;
 import com.boarbeard.audio.MediaPlayerSequence;
+import com.boarbeard.audio.MissionLog;
 import com.boarbeard.audio.parser.EventListParserFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MissionActivity extends Activity {
 
@@ -42,173 +42,172 @@ public class MissionActivity extends Activity {
 
     private int systemUiMode = View.SYSTEM_UI_FLAG_VISIBLE;
 
-	private MediaPlayerSequence sequence;
+    private MediaPlayerSequence sequence;
 
-	private TextView logTextView;
-	private TextView missionTypeTextView;
+    private TextView missionTypeTextView;
 
-	private ScrollView scrollView;
-	private ToggleButton togglebutton;
+    private ToggleButton togglebutton;
 
-	private StopWatch stopWatch;
+    private StopWatch stopWatch;
 
-	private MissionType missionType = MissionType.Random;
+    private MissionType missionType = MissionType.Random;
 
-	// Enable to dump the entire mission to the mission log immediately after the mission is
-	// selected. Usable for debugging.
-	private static final boolean DUMP_MISSION_TREE = false;
+    private List<MissionLog> missionLogs = new ArrayList<MissionLog>();
 
-	/** Called when the activity is first created. */
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+    // Enable to dump the entire mission to the mission log immediately after the mission is
+    // selected. Usable for debugging.
+    private static final boolean DUMP_MISSION_TREE = false;
 
-		missionTypeTextView = (TextView) findViewById(R.id.missionTypeTextView);
-		if (missionTypeTextView != null) {
-			// is null if we use action bar
-			missionTypeTextView.setText(missionType
-					.toString(MissionActivity.this));
-		}
+    private RecyclerView mRecyclerView;
+    private LinearLayoutManager mLayoutManager;
+    private MissionCardsAdapter mAdapter;
+    private MenuItem menuTypeMission;
 
-		stopWatch = new StopWatch(
-				(TextView) findViewById(R.id.missionClockTextView));
+    /**
+     * Called when the activity is first created.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
 
-		scrollView = (ScrollView) findViewById(R.id.missionScrollView);
-		logTextView = (TextView) findViewById(R.id.missionTextView);
-		logTextView.setMovementMethod(ScrollingMovementMethod.getInstance());
+        stopWatch = new StopWatch(
+                (TextView) findViewById(R.id.missionClockTextView));
 
-		togglebutton = (ToggleButton) findViewById(R.id.togglePlayMission);
-		togglebutton.setOnClickListener(new OnClickListener() {
+        missionTypeTextView = (TextView) findViewById(R.id.missionTypeTextView);
+        if (missionTypeTextView != null) {
+            // is null if we use action bar
+            missionTypeTextView.setText(missionType
+                    .toString(MissionActivity.this));
+        }
 
-			public void onClick(View v) {
+
+        mRecyclerView = (RecyclerView) findViewById(R.id.mission_cards_recycler_view);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+        // use a linear layout manager
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        // specify an adapter (see also next example)
+        mAdapter = new MissionCardsAdapter(missionLogs);
+        mRecyclerView.setAdapter(mAdapter);
+
+        togglebutton = (ToggleButton) findViewById(R.id.togglePlayMission);
+        togglebutton.setOnClickListener(new OnClickListener() {
+
+            public void onClick(View v) {
                 toggleMission(togglebutton.isChecked());
-			}
-		});
-		setupActionBar();
-	}
+            }
+        });
+        setupActionBar();
+    }
 
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void setupActionBar() {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			return;
-		}
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void setupActionBar() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            return;
+        }
 
-		final SpinnerAdapter spinner = new ArrayAdapter<CharSequence>(this,
-				android.R.layout.simple_spinner_dropdown_item,
-				MissionType.toStringValues(this));
+        final ActionBar actionBar = getActionBar();
+    }
 
-		final ActionBar actionBar = getActionBar();
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-		actionBar.setListNavigationCallbacks(spinner,
-				new OnNavigationListener() {
+    /*
+     * (non-Javadoc)
+     *
+     * @see android.app.Activity#onResume()
+     */
+    @Override
+    protected void onResume() {
+        super.onResume();
 
-					public boolean onNavigationItemSelected(int itemPosition,
-							long itemId) {
-						missionType = MissionType.values()[itemPosition];
-						if (missionTypeTextView != null) {
-							missionTypeTextView.setText(missionType
-									.toString(MissionActivity.this));
-						}
-						createMission();
-						return true;
-					}
-				});
+        // Prepare parser
+        new AsyncTask<Context, Void, Void>() {
 
-	}
+            @Override
+            protected Void doInBackground(Context... params) {
+                EventListParserFactory.getInstance().getParser(params[0]);
+                return null;
+            }
+        }.execute(this);
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see android.app.Activity#onResume()
-	 */
-	@Override
-	protected void onResume() {
-		super.onResume();
-
-		// Prepare parser
-		new AsyncTask<Context, Void, Void>() {
-
-			@Override
-			protected Void doInBackground(Context... params) {
-				EventListParserFactory.getInstance().getParser(params[0]);
-				return null;
-			}
-		}.execute(this);
-
-		setSystemUiVisibility(systemUiMode);
-	}
+        setSystemUiVisibility(systemUiMode);
+    }
 
     @Override
     protected void onNewIntent(Intent intent) {
-        if(MEDIA_ACTION.equals(intent.getAction())) {
+        if (MEDIA_ACTION.equals(intent.getAction())) {
             toggleMission(intent.getBooleanExtra(Intent.EXTRA_SUBJECT, false));
         }
     }
 
     /**
-	 * Request that the visibility of the status bar of the main view be changed
-	 *
-	 * @param visibility
-	 *            Bitwise-or of flags {@link View#SYSTEM_UI_FLAG_LOW_PROFILE} or
-	 *            {@link View#SYSTEM_UI_FLAG_HIDE_NAVIGATION}.
-	 */
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void setSystemUiVisibility(int visibility) {
-		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-			return;
-		}
-		getWindow().getDecorView().setSystemUiVisibility(visibility);
-	}
+     * Request that the visibility of the status bar of the main view be changed
+     *
+     * @param visibility Bitwise-or of flags {@link View#SYSTEM_UI_FLAG_LOW_PROFILE} or
+     *                   {@link View#SYSTEM_UI_FLAG_HIDE_NAVIGATION}.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    private void setSystemUiVisibility(int visibility) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
+            return;
+        }
+        getWindow().getDecorView().setSystemUiVisibility(visibility);
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.menu, menu);
-		menu.findItem(R.id.menuTypeMission).setVisible(
-				Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB);
-		return true;
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu, menu);
+        menuTypeMission = menu.findItem(R.id.menuTypeMission);
+        menuTypeMission.setTitle(missionType
+                .toString(MissionActivity.this));
+        return true;
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		// Handle item selection
-		switch (item.getItemId()) {
-		case R.id.menuNewMission:
-			createMission();
-			return true;
-		case R.id.menuResetMission:
-			if (sequence != null) {
-				sequence.reset();
-			}
-			return true;
-		case R.id.menuMissionOptions:
-			startActivity(new Intent(this, PreferencesActivity.class));
-			return true;
-		case R.id.menuMissionAbout:
-			startActivity(new Intent(this, AboutActivity.class));
-			return true;
-		case R.id.menuMissionHelp:
-			startActivity(new Intent(this, HelpActivity.class));
-			return true;
-		case R.id.menuTypeMission:
-			showMissionTypeDialog();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.menuNewMission:
+                createMission();
+                return true;
+            case R.id.menuResetMission:
+                if (sequence != null) {
+                    sequence.reset();
+                }
+                return true;
+            case R.id.menuMissionOptions:
+                startActivity(new Intent(this, PreferencesActivity.class));
+                return true;
+            case R.id.menuMissionAbout:
+                startActivity(new Intent(this, AboutActivity.class));
+                return true;
+            case R.id.menuMissionHelp:
+                startActivity(new Intent(this, HelpActivity.class));
+                return true;
+            case R.id.menuTypeMission:
+            case R.id.menuTypeMissionIcon:
+                showMissionTypeDialog();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
-	private void createMission() {
-		stopMission();
-		SharedPreferences preferences = PreferenceManager
-				.getDefaultSharedPreferences(this);
+    private void createMission() {
+        stopMission();
+        SharedPreferences preferences = PreferenceManager
+                .getDefaultSharedPreferences(this);
 
-		// Displays the log texts, so needs the log color preferences
-		sequence = new MediaPlayerMainMission(this, stopWatch, preferences);
+        // Displays the log texts, so needs the log color preferences
+        sequence = new MediaPlayerMainMission(this, missionLogs, stopWatch, preferences);
 
-		EventListParserFactory.getInstance().getParser(this)
-				.parse(missionType.getEventList(preferences), sequence);
+        EventListParserFactory.getInstance().getParser(this)
+                .parse(missionType.getEventList(preferences), sequence);
 
         if (missionType.getMissionIntroductionResId() != 0) {
             ((MediaPlayerMainMission) sequence).
@@ -220,23 +219,23 @@ public class MissionActivity extends Activity {
             ((MediaPlayerMainMission) sequence).dumpMissionTreeToLog();
         }
 
-	}
+    }
 
-	private void showMissionTypeDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle(getString(R.string.pref_choose_mission));
-		builder.setItems(MissionType.toStringValues(this),
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int item) {
-						missionType = MissionType.values()[item];
-						missionTypeTextView.setText(missionType
-								.toString(MissionActivity.this));
-						createMission();
-					}
-				});
-		AlertDialog alertDialog = builder.create();
-		alertDialog.show();
-	}
+    private void showMissionTypeDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getString(R.string.pref_choose_mission));
+        builder.setItems(MissionType.toStringValues(this),
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        missionType = MissionType.values()[item];
+                        menuTypeMission.setTitle(missionType
+                                .toString(MissionActivity.this));
+                        createMission();
+                    }
+                });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
 
     private void toggleMission(boolean start) {
         if (start) {
@@ -251,35 +250,35 @@ public class MissionActivity extends Activity {
         }
     }
 
-	private void startMission() {
-		if (sequence != null) {
+    private void startMission() {
+        if (sequence != null) {
             setKeepScreenOn(true);
-			sequence.start();
+            sequence.start();
             toggleOn();
 
             setSystemUiVisibility(systemUiMode = View.SYSTEM_UI_FLAG_LOW_PROFILE);
         }
-	}
+    }
 
     private void pauseMission() {
-		if (sequence != null) {
+        if (sequence != null) {
 
-			sequence.pause();
+            sequence.pause();
             toggleOff();
             setKeepScreenOn(false);
-		}
-		setSystemUiVisibility(systemUiMode = View.SYSTEM_UI_FLAG_VISIBLE);
-	}
+        }
+        setSystemUiVisibility(systemUiMode = View.SYSTEM_UI_FLAG_VISIBLE);
+    }
 
-	private void stopMission() {
-		if (sequence != null) {
+    private void stopMission() {
+        if (sequence != null) {
 
-			sequence.stop();
+            sequence.stop();
             toggleOff();
             setKeepScreenOn(false);
-		}
-		setSystemUiVisibility(systemUiMode = View.SYSTEM_UI_FLAG_VISIBLE);
-	}
+        }
+        setSystemUiVisibility(systemUiMode = View.SYSTEM_UI_FLAG_VISIBLE);
+    }
 
     private void setKeepScreenOn(boolean keepScreenOn) {
         if (keepScreenOn) {
@@ -289,14 +288,14 @@ public class MissionActivity extends Activity {
         }
     }
 
-	public void updateMissionLog(String missionLog) {
-		logTextView.setText(Html.fromHtml(missionLog));
-		scrollView.post(new Runnable() {
-			public void run() {
-				scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-			}
-		});
-	}
+    public void updateMissionLog() {
+        mAdapter.notifyDataSetChanged();
+        mRecyclerView.post(new Runnable() {
+            public void run() {
+                mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount());
+            }
+        });
+    }
 
     public void toggleOn() {
         togglebutton.setChecked(true);
@@ -304,19 +303,19 @@ public class MissionActivity extends Activity {
     }
 
     public void toggleOff() {
-		togglebutton.setChecked(false);
+        togglebutton.setChecked(false);
         notificationUpdate(false);
-	}
+    }
 
-	@Override
-	public boolean onKeyDown(int keyCode, KeyEvent event) {
-		if ((keyCode == KeyEvent.KEYCODE_BACK)) {
-			if (sequence != null) {
-				sequence.reset();
-			}
-		}
-		return super.onKeyDown(keyCode, event);
-	}
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if ((keyCode == KeyEvent.KEYCODE_BACK)) {
+            if (sequence != null) {
+                sequence.reset();
+            }
+        }
+        return super.onKeyDown(keyCode, event);
+    }
 
     @Override
     public void onDestroy() {
@@ -353,11 +352,10 @@ public class MissionActivity extends Activity {
         PendingIntent startStopIntent =
                 PendingIntent.getActivity(this, 0, mediaIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        if(isRunning) {
+        if (isRunning) {
             notificationBuilder.addAction(android.R.drawable.ic_media_pause,
                     getString(R.string.button_playing), startStopIntent);
-        }
-        else {
+        } else {
             notificationBuilder.addAction(android.R.drawable.ic_media_play,
                     getString(R.string.button_paused), startStopIntent);
 
