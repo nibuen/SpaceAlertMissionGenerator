@@ -13,17 +13,23 @@
         android:showAsAction="always"
         app:showAsAction="always" />
     <item
-        android:title="@string/mission_reset"
-        android:id="@+id/menuResetMission"
-        android:icon="@drawable/ic_menu_rotate" />
-    <item
         android:id="@+id/menuNewMission"
         android:title="@string/mission_new"
-        android:icon="@drawable/ic_menu_add" />
+        android:icon="@drawable/ic_menu_add"
+        android:showAsAction="ifRoom"
+        app:showAsAction="ifRoom" />
+    <item
+        android:title="@string/mission_reset"
+        android:id="@+id/menuResetMission"
+        android:icon="@drawable/ic_menu_rotate"
+        android:showAsAction="ifRoom"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menuMissionOptions"
         android:title="@string/mission_options"
-        android:icon="@drawable/ic_menu_edit" />
+        android:icon="@drawable/ic_menu_edit"
+        android:showAsAction="ifRoom"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menuMissionAbout"
         android:title="@string/mission_about"
