@@ -305,7 +305,7 @@ public class MissionImpl implements IMission {
 			return false; //fail
 		}
 
-		return false;
+		return true;
 	}
 	
 	/**
@@ -770,7 +770,7 @@ public class MissionImpl implements IMission {
 				} while (!done);
 			}
 			// incoming data second
-			for (int j = 0; j < incomingData[j]; j++) {
+			for (int j = 0; j < incomingData[i]; j++) {
 				boolean done = false; // try until it fits
 				do {
 					// white noise can pretty much occur everywhere
