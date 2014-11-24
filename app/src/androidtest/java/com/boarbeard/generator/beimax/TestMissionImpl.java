@@ -10,16 +10,9 @@ import java.util.Map;
 
 public class TestMissionImpl extends AndroidTestCase {
 
-    public void testGenerateDataOperations() {
-        MissionImpl.MissionPreferences missionPreferences = new MissionImpl.MissionPreferences();
-        missionPreferences.setMaxIncomingData(6);
-        missionPreferences.setMinIncomingData(1);
-
-        MissionImpl missionImpl = new MissionImpl(missionPreferences);
-
-        assertTrue(missionImpl.generateDataOperations());
-    }
-
+    /**
+     * Assert incoming data stays between the preferences.
+     */
     public void testGenerateIncomingDataBetweenValues() {
         MissionImpl.MissionPreferences missionPreferences = new MissionImpl.MissionPreferences();
         missionPreferences.setMaxIncomingData(4);
@@ -39,5 +32,4 @@ public class TestMissionImpl extends AndroidTestCase {
             assertTrue(incomingDataCount >= 2 && incomingDataCount <= 4);
         }
     }
-
 }
