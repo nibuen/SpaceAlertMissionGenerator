@@ -95,7 +95,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
         playerIndex = 0;
         activeMediaPlayer = null;
         missionLog.clear();
-        missionActivity.updateMissionLog();
+        missionActivity.clearMissionLog();
         stopWatch.reset();
     }
 
@@ -174,7 +174,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
             }
 
             missionLog.add(new MissionLog(Html.fromHtml(actionText.toString()), Html.fromHtml(timeText.toString())));
-            missionActivity.updateMissionLog();
+            missionActivity.updateMissionLog(missionLog.size() - 1);
         }
     }
 
@@ -194,6 +194,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
         missionActivity.toggleOff();
         mediaPlayerBackgroundSounds.stop();
         stopWatch.stop();
+        timerHandler.removeCallbacks(mPlayNextAudioTask);
     }
 
     /**
@@ -237,7 +238,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
     */
     public void printMissionIntroduction(String missionIntroduction) {
         missionLog.add(new MissionLog(Html.fromHtml("<b><i> " + missionIntroduction + "</i></b>")));
-        missionActivity.updateMissionLog();
+        missionActivity.updateMissionLog(missionLog.size() - 1);
     }
 
 }

@@ -39,7 +39,6 @@ public class MissionCardsAdapter extends RecyclerView.Adapter<MissionCardsAdapte
         // create a new view
         CardView v = (CardView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.mission_card_view, parent, false);
-        // set the view's size, margins, paddings and layout parameters
 
         ViewHolder vh = new ViewHolder(v);
         return vh;
@@ -67,4 +66,5 @@ public class MissionCardsAdapter extends RecyclerView.Adapter<MissionCardsAdapte
     public int getItemCount() {
         return missionLogs.size();
     }
+
 }

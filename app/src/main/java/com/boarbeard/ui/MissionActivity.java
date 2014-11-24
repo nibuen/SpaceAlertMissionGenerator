@@ -113,8 +113,10 @@ public class MissionActivity extends Activity {
         }
 
         final ActionBar actionBar = getActionBar();
-        actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setDisplayShowHomeEnabled(true);
+        if(actionBar != null) {
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
     }
 
     /*
@@ -296,13 +298,17 @@ public class MissionActivity extends Activity {
         }
     }
 
-    public void updateMissionLog() {
-        mAdapter.notifyDataSetChanged();
+    public void updateMissionLog(int itemAddedPosition) {
+        mAdapter.notifyItemInserted(itemAddedPosition);
         mRecyclerView.post(new Runnable() {
             public void run() {
                 mRecyclerView.smoothScrollToPosition(mAdapter.getItemCount());
             }
         });
+    }
+
+    public void clearMissionLog() {
+        mAdapter.notifyDataSetChanged();
     }
 
     public void toggleOn() {
@@ -374,4 +380,5 @@ public class MissionActivity extends Activity {
         // Build the notification and issues it with notification manager.
         notificationManager.notify(notificationId, notificationBuilder.build());
     }
+
 }

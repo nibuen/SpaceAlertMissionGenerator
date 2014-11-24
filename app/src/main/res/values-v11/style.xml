@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="SpaceAlertTheme" parent="@android:style/Theme.Holo">
-        <item name="android:actionBarStyle">@style/SpaceAlertActionBarStyle</item>
+    <style name="SpaceAlertTheme" parent="ThemeOverlay.AppCompat.Dark">
     </style>
 
-    <style name="SpaceAlertActionBarStyle" parent="@android:style/Widget.Holo.ActionBar">
-        <item name="android:displayOptions">useLogo|showHome</item>
-    </style>
 </resources>
