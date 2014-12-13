@@ -364,21 +364,18 @@ public class MissionActivity extends Activity {
         PendingIntent startStopIntent =
                 PendingIntent.getActivity(this, 0, mediaIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        if (isRunning) {
-            notificationBuilder.addAction(android.R.drawable.ic_media_pause,
-                    getString(R.string.button_playing), startStopIntent);
-        } else {
-            notificationBuilder.addAction(android.R.drawable.ic_media_play,
-                    getString(R.string.button_paused), startStopIntent);
-
-        }
-
         // Get an instance of the NotificationManager service
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(this);
 
-        // Build the notification and issues it with notification manager.
-        notificationManager.notify(notificationId, notificationBuilder.build());
+        if (isRunning) {
+            notificationBuilder.addAction(android.R.drawable.ic_media_pause,
+                    getString(R.string.button_playing), startStopIntent);
+            // Build the notification and issues it with notification manager.
+            notificationManager.notify(notificationId, notificationBuilder.build());
+        } else {
+            // Cancel ongoing notification
+            notificationManager.cancel(notificationId);
+        }
     }
-
 }
