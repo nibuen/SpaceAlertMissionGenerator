@@ -60,6 +60,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
         // Clear the mission introduction when the mission is started (not resumed after a pause)
         if (stopWatch.missionTimeInNanos() == 0) {
             missionLog.clear();
+            missionActivity.clearMissionLog();
         }
         if (mediaPlayerList.size() <= playerIndex) {
             init();
