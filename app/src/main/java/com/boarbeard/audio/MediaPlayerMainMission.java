@@ -20,7 +20,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
     private Handler timerHandler = new Handler();
 
     private long startTime;
-    private long pauseTime;
+    private long timeWhenPaused;
 
     protected StopWatch stopWatch;
 
@@ -74,7 +74,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
 
             // Even when a running sound was paused, you have to update the
             // startTime for the next file
-            startTime += System.nanoTime() - pauseTime;
+            startTime += System.nanoTime() - timeWhenPaused;
 
             if (activeMediaPlayer == null) {
                 mediaPlayerBackgroundSounds.start();
@@ -126,9 +126,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
                             activeMediaPlayer.release();
                             activeMediaPlayer = null;
 
-                            if (stopped) {
-                                return;
-                            } else {
+                            if (!stopped) {
                                 planNextAudioTask();
                             }
                         }
@@ -185,7 +183,7 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
         stopWatch.pause();
         mediaPlayerBackgroundSounds.pause();
         missionActivity.toggleOff();
-        pauseTime = System.nanoTime();
+        timeWhenPaused = System.nanoTime();
         timerHandler.removeCallbacks(mPlayNextAudioTask);
     }
 
