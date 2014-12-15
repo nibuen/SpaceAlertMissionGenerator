@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -113,7 +114,7 @@ public class MissionActivity extends Activity {
         }
 
         final ActionBar actionBar = getActionBar();
-        if(actionBar != null) {
+        if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
             actionBar.setDisplayShowHomeEnabled(true);
         }
@@ -351,7 +352,9 @@ public class MissionActivity extends Activity {
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.space_alert_logo)
+                        .setSmallIcon(R.drawable.ic_notification)
+                        .setLargeIcon(BitmapFactory.decodeResource(getResources(),
+                                R.drawable.space_alert_logo))
                         .setContentText(missionType.toString(this))
                         .setContentTitle(getString(R.string.app_name))
                         .setContentIntent(viewPendingIntent)
