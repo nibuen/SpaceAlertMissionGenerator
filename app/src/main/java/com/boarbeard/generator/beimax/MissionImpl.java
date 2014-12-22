@@ -719,7 +719,9 @@ public class MissionImpl implements IMission {
 					int divisor = 2;
 					if (++tries > 10) divisor = 3;
 					else if (tries > 20) divisor = 4;
-					nextTime = generator.nextInt((lastTime - currentTime) / divisor) + 5;
+                    int range = (lastTime - currentTime) / divisor;
+                    if(range <= 0) continue;
+					nextTime = generator.nextInt(range) + 5;
 					if (tries > 30) return false;
 					done = eventList.addEvent(currentTime + nextTime, threats[i]);
 				} while (!done);
