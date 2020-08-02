@@ -7,7 +7,7 @@
     <string name="mission_reset">Reset</string>
     <string name="mission_new">New</string>
     <string name="mission_options">Options</string>
-    <string name="mission_type">Type</string>
+    <string name="mission_type">Mission Type</string>
     
     <string name="pref_mission">Mission Parameters</string>
     <string name="pref_mission_voice">Language</string>

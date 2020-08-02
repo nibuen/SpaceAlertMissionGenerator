@@ -2,40 +2,35 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="@string/mission_type"
         android:id="@+id/menuTypeMission"
-        android:showAsAction="always|withText"
-        app:showAsAction="always|withText"></item>
-    <item
         android:title="@string/mission_type"
-        android:icon="@drawable/ic_menu_more"
-        android:id="@+id/menuTypeMissionIcon"
-        android:showAsAction="always"
         app:showAsAction="always" />
     <item
-        android:id="@+id/menuNewMission"
-        android:title="@string/mission_new"
-        android:icon="@drawable/ic_menu_add"
-        android:showAsAction="ifRoom"
-        app:showAsAction="ifRoom" />
-    <item
-        android:title="@string/mission_reset"
-        android:id="@+id/menuResetMission"
-        android:icon="@drawable/ic_menu_rotate"
-        android:showAsAction="ifRoom"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/menuTypeMissionIcon"
+        android:icon="@drawable/ic_menu_more"
+        android:title="@string/mission_type"
+        app:showAsAction="always|withText" />
     <item
         android:id="@+id/menuMissionOptions"
-        android:title="@string/mission_options"
         android:icon="@drawable/ic_menu_edit"
-        android:showAsAction="ifRoom"
+        android:title="@string/mission_options"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menuNewMission"
+        android:icon="@drawable/ic_menu_add"
+        android:title="@string/mission_new"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menuResetMission"
+        android:icon="@drawable/ic_menu_rotate"
+        android:title="@string/mission_reset"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menuMissionAbout"
-        android:title="@string/mission_about"
-        android:icon="@drawable/ic_menu_info_details" />
+        android:icon="@drawable/ic_menu_info_details"
+        android:title="@string/mission_about" />
     <item
         android:id="@+id/menuMissionHelp"
-        android:title="@string/mission_help"
-        android:icon="@drawable/ic_menu_help" />
+        android:icon="@drawable/ic_menu_help"
+        android:title="@string/mission_help" />
 </menu>
