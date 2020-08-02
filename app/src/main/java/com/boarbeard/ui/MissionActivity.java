@@ -14,10 +14,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +23,11 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.boarbeard.R;
 import com.boarbeard.audio.MediaPlayerMainMission;
@@ -75,7 +76,7 @@ public class MissionActivity extends Activity {
         stopWatch = new StopWatch(
                 (TextView) findViewById(R.id.missionClockTextView));
 
-        missionTypeTextView = (TextView) findViewById(R.id.missionTypeTextView);
+        missionTypeTextView = (TextView) findViewById(R.id.mission_type_text_view);
         if (missionTypeTextView != null) {
             // is null if we use action bar
             missionTypeTextView.setText(missionType
@@ -107,12 +108,7 @@ public class MissionActivity extends Activity {
         setupActionBar();
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void setupActionBar() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            return;
-        }
-
         final ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setDisplayShowTitleEnabled(false);
@@ -120,11 +116,6 @@ public class MissionActivity extends Activity {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see android.app.Activity#onResume()
-     */
     @Override
     protected void onResume() {
         super.onResume();
