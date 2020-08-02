@@ -5,6 +5,7 @@ android {
     buildToolsVersion "29.0.2"
 
     defaultConfig {
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         applicationId "com.boarbeard"
         minSdkVersion 21
         targetSdkVersion 29
