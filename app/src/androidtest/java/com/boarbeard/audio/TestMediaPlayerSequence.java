@@ -3,13 +3,21 @@ package com.boarbeard.audio;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.test.AndroidTestCase;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.boarbeard.R;
 
-public class TestMediaPlayerSequence extends AndroidTestCase {
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
+import static androidx.test.InstrumentationRegistry.getContext;
+import static org.junit.Assert.assertEquals;
 
+@RunWith(AndroidJUnit4.class)
+public class TestMediaPlayerSequence {
+
+    @Test
     public void testStopBeforeStart() {
         ExposedMediaPlayerSequence sequence = new ExposedMediaPlayerSequence(getContext());
         sequence.addAudioClip(new MediaInfo(R.raw.alert, 5));
@@ -17,6 +25,7 @@ public class TestMediaPlayerSequence extends AndroidTestCase {
         sequence.start();
     }
 
+    @Test
     public void testReset() {
         ExposedMediaPlayerSequence sequence = new ExposedMediaPlayerSequence(getContext());
         sequence.addAudioClip(new MediaInfo(R.raw.alert, 5));

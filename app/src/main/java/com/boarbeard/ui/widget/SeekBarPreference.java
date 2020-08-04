@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.boarbeard.R;
 
 public class SeekBarPreference extends DialogPreference implements com.boarbeard.ui.widget.DualSliderView.KnobValuesChangedListener {
-	private static final String PREFERENCE_NS = "http://schemas.android.com/apk/res/com.boarbeard";
+	private static final String PREFERENCE_NS = "http://schemas.android.com/apk/res-auto";
 	private static final String ANDROID_NS = "http://schemas.android.com/apk/res/android";
 
 	private static final String ATTR_DEFAULT_VALUE = "defaultValue";

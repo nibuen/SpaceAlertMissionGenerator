@@ -1,4 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="SpaceAlertTheme" parent="@android:style/Theme.NoTitleBar.Fullscreen"></style>
+    <style name="SpaceAlertTheme" parent="Theme.AppCompat.DayNight">
+        <!-- Main theme colors -->
+        <item name="android:colorPrimaryDark">@color/material_red_500</item>
+        <item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
+    </style>
+
+    <style name="Widget.Styled.ActionBar" parent="Widget.AppCompat.Light.ActionBar">
+        <item name="logo">@drawable/space_alert_logo</item>
+        <item name="android:displayOptions">showHome|useLogo</item>
+        <item name="displayOptions">showHome|useLogo</item>
+    </style>
+
 </resources>

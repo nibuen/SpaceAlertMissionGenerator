@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.boarbeard"
-    android:versionCode="14"
-    android:versionName="3.1.0">
+    android:versionCode="15"
+    android:versionName="3.1.1">
 
-    <uses-sdk
-        android:minSdkVersion="7"
-        android:targetSdkVersion="21" />
-
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name="SpaceAlertApplication"
@@ -28,9 +24,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.PreferencesActivity"></activity>
-        <activity android:name=".ui.AboutActivity"></activity>
-        <activity android:name=".ui.HelpActivity"></activity>
+        <activity android:name=".ui.PreferencesActivity" />
+        <activity android:name=".ui.AboutActivity" />
+        <activity android:name=".ui.HelpActivity" />
     </application>
 
 </manifest>

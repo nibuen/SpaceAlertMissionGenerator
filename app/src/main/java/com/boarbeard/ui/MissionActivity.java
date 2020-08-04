@@ -1,8 +1,6 @@
 package com.boarbeard.ui;
 
-import android.annotation.TargetApi;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -11,13 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +21,12 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.boarbeard.R;
 import com.boarbeard.audio.MediaPlayerMainMission;
 import com.boarbeard.audio.MediaPlayerSequence;
@@ -37,7 +36,7 @@ import com.boarbeard.audio.parser.EventListParserFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MissionActivity extends Activity {
+public class MissionActivity extends AppCompatActivity {
 
     private static final String MEDIA_ACTION = "com.boarbeard.spacealert.media.action";
 
@@ -45,13 +44,13 @@ public class MissionActivity extends Activity {
 
     private MediaPlayerSequence sequence;
 
-    private TextView missionTypeTextView;
-
     private ToggleButton togglebutton;
 
     private StopWatch stopWatch;
 
     private MissionType missionType = MissionType.Random;
+
+    private TextView missionTypeTextView;
 
     private List<MissionLog> missionLogs = new ArrayList<MissionLog>();
 
@@ -75,7 +74,7 @@ public class MissionActivity extends Activity {
         stopWatch = new StopWatch(
                 (TextView) findViewById(R.id.missionClockTextView));
 
-        missionTypeTextView = (TextView) findViewById(R.id.missionTypeTextView);
+        missionTypeTextView = (TextView) findViewById(R.id.mission_type_text_view);
         if (missionTypeTextView != null) {
             // is null if we use action bar
             missionTypeTextView.setText(missionType
@@ -104,27 +103,8 @@ public class MissionActivity extends Activity {
                 toggleMission(togglebutton.isChecked());
             }
         });
-        setupActionBar();
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    private void setupActionBar() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            return;
-        }
-
-        final ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowTitleEnabled(false);
-            actionBar.setDisplayShowHomeEnabled(true);
-        }
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see android.app.Activity#onResume()
-     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -144,6 +124,8 @@ public class MissionActivity extends Activity {
 
     @Override
     protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+
         if (MEDIA_ACTION.equals(intent.getAction())) {
             toggleMission(intent.getBooleanExtra(Intent.EXTRA_SUBJECT, false));
         }
@@ -155,11 +137,7 @@ public class MissionActivity extends Activity {
      * @param visibility Bitwise-or of flags {@link View#SYSTEM_UI_FLAG_LOW_PROFILE} or
      *                   {@link View#SYSTEM_UI_FLAG_HIDE_NAVIGATION}.
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void setSystemUiVisibility(int visibility) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
-            return;
-        }
         getWindow().getDecorView().setSystemUiVisibility(visibility);
     }
 
@@ -168,8 +146,6 @@ public class MissionActivity extends Activity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
         menuTypeMission = menu.findItem(R.id.menuTypeMission);
-        menuTypeMission.setTitle(missionType
-                .toString(MissionActivity.this));
         return true;
     }
 
@@ -239,8 +215,9 @@ public class MissionActivity extends Activity {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int item) {
                         missionType = MissionType.values()[item];
-                        menuTypeMission.setTitle(missionType
-                                .toString(MissionActivity.this));
+                        String missionName = missionType
+                                .toString(MissionActivity.this);
+                        missionTypeTextView.setText(missionName);
                         configureMission(true);
                     }
                 });
@@ -252,10 +229,8 @@ public class MissionActivity extends Activity {
         if (start) {
             if (sequence == null) {
                 configureMission(true);
-                startMission();
-            } else {
-                startMission();
             }
+            startMission();
         } else {
             pauseMission();
         }
@@ -363,7 +338,7 @@ public class MissionActivity extends Activity {
         // Intent to stop/start the mission
         Intent mediaIntent = new Intent(this, MissionActivity.class);
         mediaIntent.setAction(MEDIA_ACTION);
-        mediaIntent.putExtra(Intent.EXTRA_SUBJECT, new Boolean(!isRunning));
+        mediaIntent.putExtra(Intent.EXTRA_SUBJECT, Boolean.valueOf(!isRunning));
         PendingIntent startStopIntent =
                 PendingIntent.getActivity(this, 0, mediaIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 

@@ -6,13 +6,30 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="fill_parent"
+        android:id="@+id/linearLayout1"
+        android:layout_weight=".05"
+        android:background="@color/gray_color">
+
+        <TextView
+            android:textSize="16sp"
+            android:text="Mission Type"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:id="@+id/mission_type_text_view"
+            android:scrollbars="vertical"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/linearLayout2"
         android:layout_width="fill_parent"
         android:layout_height="0px"
         android:layout_weight=".80"
         android:gravity="center">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mission_cards_recycler_view"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
@@ -31,12 +48,11 @@
             android:id="@+id/missionClockTextView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:cursorVisible="false"
             android:gravity="center"
             android:scrollbars="vertical"
             android:text="0:00"
             android:textStyle="bold"
-            android:textSize="35dp" />
+            android:textSize="35sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -52,7 +68,7 @@
             android:text="ToggleButton"
             android:textOff="@string/button_paused"
             android:textOn="@string/button_playing"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
     </LinearLayout>
 
 </LinearLayout>

@@ -1,18 +1,25 @@
 package com.boarbeard.generator.beimax;
 
 
-import android.test.AndroidTestCase;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.boarbeard.generator.beimax.event.Event;
 import com.boarbeard.generator.beimax.event.IncomingData;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import java.util.Map;
 
-public class TestMissionImpl extends AndroidTestCase {
+import static org.junit.Assert.assertTrue;
+
+@RunWith(AndroidJUnit4.class)
+public class TestMissionImpl {
 
     /**
      * Assert incoming data stays between the preferences.
      */
+    @Test
     public void testGenerateIncomingDataBetweenValues() {
         MissionImpl.MissionPreferences missionPreferences = new MissionImpl.MissionPreferences();
         missionPreferences.setMaxIncomingData(4);

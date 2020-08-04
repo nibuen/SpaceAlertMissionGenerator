@@ -13,14 +13,13 @@
         android:background="@color/gray_color">
 
         <TextView
-            android:textSize="16dp"
+            android:textSize="16sp"
             android:text="Mission Type"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:cursorVisible="false"
-            android:id="@+id/missionTypeTextView"
+            android:id="@+id/mission_type_text_view"
             android:scrollbars="vertical"
-            android:gravity="center"></TextView>
+            android:gravity="center" />
     </LinearLayout>
 
     <LinearLayout
@@ -30,7 +29,7 @@
         android:layout_weight=".80"
         android:gravity="center">
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mission_cards_recycler_view"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
@@ -48,11 +47,10 @@
             android:id="@+id/missionClockTextView"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:cursorVisible="false"
             android:gravity="center"
             android:scrollbars="vertical"
             android:text="0:00"
-            android:textSize="25dp"></TextView>
+            android:textSize="25sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -69,6 +67,6 @@
             android:text="ToggleButton"
             android:textOff="@string/button_paused"
             android:textOn="@string/button_playing"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
     </LinearLayout>
 </LinearLayout>
