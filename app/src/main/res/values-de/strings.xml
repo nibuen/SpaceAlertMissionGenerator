@@ -7,10 +7,9 @@
     <string name="mission_reset">Reset</string>
     <string name="mission_new">Neu</string>
     <string name="mission_options">Optionen</string>
-	<!-- Google Translated -->
     <string name="mission_type">Missionsart</string>
     
-    <string name="pref_mission">Missions Parameter</string>
+    <string name="pref_mission">Missionsparameter</string>
     <string name="pref_mission_voice">Sprache</string>
     <string name="pref_unconfirmedReports_title">Unbestätigte Berichte</string>
     <string name="pref_unconfirmedReports_summary">Unbestätigte Berichte erlauben.</string>
@@ -66,7 +65,7 @@
   	<string name="double_action_mission_11">Doppelaktionen Standard Mission 11</string>
   	<string name="double_action_mission_12">Doppelaktionen Standard Mission 12</string>
 
-  	<string name="media_failed">Sound file konnte nicht abgespielt werden.</string>
+  	<string name="media_failed">Sounddatei konnte nicht abgespielt werden.</string>
   	<string name="button_playing">Mission läuft</string>
     <string name="double_action_mission_introduction">Bitte beachten: Die Doppelaktionskarten aus der Erweiterung \"Space Alert - Unendliche Weiten\" sind erforderlich, um diese Mission zu spielen.</string>
   	<string name="button_paused">Angehalten</string>
