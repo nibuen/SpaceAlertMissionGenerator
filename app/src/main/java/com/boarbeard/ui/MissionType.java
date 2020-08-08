@@ -23,7 +23,11 @@ public enum MissionType {
 
 			MissionImpl mission = new MissionImpl(MissionImpl.parsePreferences(preferences));
 			mission.generateMission();
-			return mission.getMissionEvents();
+			EventList rv = mission.getMissionEvents();
+			if (preferences.getBoolean("compressTimePreference", false)) {
+				rv.compressTime();
+			}
+			return rv;
 		}
 	},
 	FirstTestRun(R.string.mission_first_test_run, ConstructedMissions
@@ -112,7 +116,17 @@ public enum MissionType {
 	}
 
 	public EventList getEventList(SharedPreferences preferences) {
-		return eventList;
+        EventList copyOfList = null;
+        MissionImpl.MissionPreferences mp = MissionImpl.parsePreferences(preferences);
+        if (!mp.showUnconfirmedReports()) {
+            copyOfList = new EventList(eventList);
+            copyOfList.stompUnconfirmedReports(mp.getPlayers() == 5);
+        }
+        if (preferences.getBoolean("compressTimePreference", false)) {
+            if (copyOfList == null) copyOfList = new EventList(eventList);
+            copyOfList.compressTime();
+        }
+        return (copyOfList != null) ? copyOfList : eventList;
 	}
 
 	public int getResId() {

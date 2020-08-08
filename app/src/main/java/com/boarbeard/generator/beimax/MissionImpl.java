@@ -144,6 +144,10 @@ public class MissionImpl implements IMission {
 
 
     public static class MissionPreferences {
+        private long seed = 0;  //  may be specified in unit tests
+        private boolean compressTime = false;  //  silly debug flag
+        private int players = 5;
+        private boolean showUnconfirmed = false;
         /**
          * configuration: threat level (8 for std game)
          */
@@ -162,6 +166,18 @@ public class MissionImpl implements IMission {
         private int[] minPhaseTime = {205, 180, 140};
         private int[] maxPhaseTime = {240, 225, 155};
 
+        public int getPlayers() {
+            return players;
+        }
+
+        /**
+         * If true, then unconfirmed reports will show up as unconfirmed
+         * reports; if false, then they'll either show up as normal
+         * ("confirmed") threats, or not at all, depending on the player count.
+         */
+        public boolean showUnconfirmedReports() {
+            return showUnconfirmed;
+        }
 
         public int getThreatLevel() {
             return threatLevel;
@@ -220,6 +236,7 @@ public class MissionImpl implements IMission {
      */
     public MissionImpl(MissionPreferences preferences) {
         long seed = System.nanoTime() + 8682522807148012L;
+        if (preferences.seed != 0) seed = preferences.seed;
         // random number generator
         generator = new Random(seed);
         missionPreferences = preferences;
@@ -228,13 +245,28 @@ public class MissionImpl implements IMission {
     public static MissionPreferences parsePreferences(SharedPreferences preferences) {
         MissionPreferences prefs = new MissionPreferences();
 
+        prefs.players = preferences.getInt("playerCount", 5);
         prefs.threatLevel = preferences.getInt("threatDifficultyPreference", 8); // The threat level for 5 players!
 
-        if (preferences.getBoolean("unconfirmedReportsPreference", false)) {
+        if(!preferences.getBoolean("stompUnconfirmedReportsPreference", true)) {
+            //  They want Unconfirmed Reports.
+            prefs.showUnconfirmed = true;
             prefs.threatUnconfirmed = CONSTANT_THREAT_UNCONFIRMED; // if 5 players - then this is the unconfirmed part of the base threat level
         } else {
+            //  They want Unconfirmed Reports to appear as normal threats in
+            //  5-player games, and to not appear at all in 4-or-fewer-player
+            //  games.
+            prefs.showUnconfirmed = false;
+            //  One way we *could* do this is is to generate the missions
+            //  normally (including unconfirmed reports), and then go back and
+            //  call EventList.stompUnconfirmedReports() in
+            //  MissionType.getEventList() the way we do for the standard
+            //  ConstructedMissions, but instead, let's just adjust the
+            //  difficulty of the mission.
             prefs.threatUnconfirmed = 0;
-            prefs.threatLevel -= CONSTANT_THREAT_UNCONFIRMED; // if 4 players, then you have to subtract the unconfirmed part from the base level (8 - 1 = 7 in normal missions)
+           if (prefs.players != 5) {
+               prefs.threatLevel -= CONSTANT_THREAT_UNCONFIRMED; // if 4 players, then you have to subtract the unconfirmed part from the base level (8 - 1 = 7 in normal missions)
+           }
         }
 
         prefs.minIncomingData = preferences.getInt("numberIncomingDataSecondValue", prefs.minIncomingData);
@@ -249,6 +281,13 @@ public class MissionImpl implements IMission {
         prefs.maxPhaseTime[0] = (int) (missionLength * .4 + 15);
         prefs.maxPhaseTime[1] = (int) (missionLength * .35 + 15);
         prefs.maxPhaseTime[2] = (int) (missionLength * .25 + 15);
+
+        //  For unit tests, we'd like to be able to repeatably generate "random"
+        //  missions, so... look for an optional random number seed.  (I know
+        //  we're looking for an int instead of a long here, but it doesn't
+        //  matter; int is fine for unit tests.)
+        prefs.seed = preferences.getInt("randomSeed", 0);
+        prefs.compressTime = preferences.getBoolean("compressTimePreference", false);
 
         return prefs;
     }
