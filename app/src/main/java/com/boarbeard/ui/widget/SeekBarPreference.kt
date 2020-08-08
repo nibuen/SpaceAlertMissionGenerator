@@ -36,7 +36,7 @@ class SeekBarPreference(context: Context?, attrs: AttributeSet) : DialogPreferen
 
         // Setup SeekBar
         rangeSeekBar = view.findViewById<View>(R.id.seek_bar) as RangeSeekBar
-        rangeSeekBar.setRange(mMinValue.toFloat(), mMaxValue.toFloat(), 1f)
+        rangeSeekBar.setRange(mMinValue.toFloat(), mMaxValue.toFloat())
 
         // Get current value from settings
         leftValue = getPersistedInt(mDefaultLeftValue)
