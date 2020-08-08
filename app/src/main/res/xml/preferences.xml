@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:widget="http://schemas.android.com/apk/res-auto">
+    <com.boarbeard.ui.widget.SeekBarPreference
+        android:key="playerCount"
+        android:dependency="stompUnconfirmedReportsPreference"
+        android:dialogTitle="@string/pref_player_count_dialog_title"
+        android:title="@string/pref_player_count_title"
+        android:summary="@string/pref_player_count_summary"
+        widget:minValue="1"
+        widget:maxValue="5"
+        android:defaultValue="5"
+        android:persistent="true" />
+    <CheckBoxPreference android:key="stompUnconfirmedReportsPreference"
+        android:title="@string/pref_stomp_unconfirmed_reports_title"
+        android:summary="@string/pref_stomp_unconfirmed_reports_summary"
+        android:defaultValue="true"
+        android:persistent="true" />
 	<PreferenceCategory android:title="@string/pref_mission">		
-		<CheckBoxPreference android:key="unconfirmedReportsPreference"
-			android:defaultValue="false"
-			android:title="@string/pref_unconfirmedReports_title"
-			android:summary="@string/pref_unconfirmedReports_summary" />
 		<com.boarbeard.ui.widget.SeekBarPreference
             android:defaultValue="540"
             android:dialogTitle="@string/pref_mission_length_dialog_title"
@@ -49,6 +60,11 @@
         <CheckBoxPreference android:key="dumpMissionTreePreference"
             android:title="@string/pref_dump_misson_tree_title"
             android:summary="@string/pref_dump_mission_tree_summary"
+            android:defaultValue="false"
+            android:persistent="true" />
+        <CheckBoxPreference android:key="compressTimePreference"
+            android:title="@string/pref_compress_time_title"
+            android:summary="@string/pref_compress_time_summary"
             android:defaultValue="false"
             android:persistent="true" />
     </PreferenceCategory>

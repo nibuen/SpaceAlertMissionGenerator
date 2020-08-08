@@ -18,7 +18,9 @@
  **/
 package com.boarbeard.generator.beimax;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -27,8 +29,11 @@ import java.util.TreeMap;
 
 import com.boarbeard.generator.beimax.event.Announcement;
 import com.boarbeard.generator.beimax.event.Event;
+import com.boarbeard.generator.beimax.event.Threat;
 import com.boarbeard.generator.beimax.event.WhiteNoise;
 import com.boarbeard.generator.beimax.event.WhiteNoiseRestored;
+
+import androidx.annotation.NonNull;
 
 /**
  * Keeps mission events in an ordered state and also checks for collisions and
@@ -56,6 +61,18 @@ public class EventList {
 	public EventList() {
 		events = new TreeMap<Integer, Event>();
 	}
+
+    /**
+     * Copy constructor.  This just does a shallow copy of the tree; the events
+     * in the new tree will still be references to the events in the original
+     * tree.
+     *
+     * @param other must not be null
+     */
+    public EventList(@NonNull EventList other) {
+        events = new TreeMap<>(other.events.comparator());
+        events.putAll(other.events);
+    }
 
 	/**
 	 * Add announcements
@@ -195,6 +212,66 @@ public class EventList {
 
     }
 
+    /**
+     * Remove Unconfirmed Reports, or replace them with normal (confirmed)
+     * threats.
+     *
+     * @param replace true if they should be replaced with normal threats; false
+     *                if they should be removed from the list.
+     */
+    public void stompUnconfirmedReports(boolean replace) {
+        ArrayList<Integer> toRemove = replace ? null : new ArrayList<Integer>();
+        for (Entry<Integer, Event> te : events.entrySet()) {
+            if (!(te.getValue() instanceof Threat)) continue;
+            Threat tt = (Threat)(te.getValue());
+            if (tt.isConfirmed()) continue;
+            if (replace) {
+                //  We don't want to fiddle with the existing Threat instance
+                //  itself (as it may be shared by another instance of this
+                //  MissionType), so copy it.
+                te.setValue(new Threat(tt));
+                ((Threat) te.getValue()).setConfirmed(true);
+            } else {
+                //  can't actually remove the element here without a
+                //  ConcurrentModificationException, so add it to the list (of
+                //  probably one element) to remove afterward.
+                toRemove.add(te.getKey());
+            }
+        }
+        for (int ii = replace ? -1 : toRemove.size() - 1; ii >= 0; --ii) {
+            events.remove(toRemove.get(ii));
+        }
+    }
+
+    /**
+     * This is a ridiculous debugging method which removes all gaps between
+     * events, so that you can listen to a complete soundtrack in as little
+     * time as possible.  Note that it doesn't attempt to shrink events below
+     * their stated getLengthInSeconds(); if an event says it takes 15 seconds,
+     * we'll give it the full 15 seconds, even if its sound file only takes 8
+     * seconds to play.
+     */
+    public void compressTime() {
+        if (events.isEmpty()) return;
+        TreeMap<Integer, Event> tl = new TreeMap<>(events.comparator());
+        Integer nextKey = null;
+        for (Entry<Integer, Event> ent : events.entrySet()) {
+            if (nextKey == null) {
+                tl.put(0, ent.getValue());
+                nextKey = ent.getValue().getLengthInSeconds();
+            } else {
+                Event ev = ent.getValue();
+                //  just for fun, let's also clamp white noise at 4 seconds.
+                if ((ev instanceof WhiteNoise) && (ev.getLengthInSeconds() > 4)) {
+                    ev = new WhiteNoise(4);
+                }
+                tl.put(nextKey, ev);
+                nextKey = nextKey + ev.getLengthInSeconds();
+            }
+        }
+        events = tl;
+    }
+
 	/**
 	 * returns the entry set itself
 	 * 
@@ -203,6 +280,16 @@ public class EventList {
 	public Set<Map.Entry<Integer, Event>> getEntrySet() {
 		return events.entrySet();
 	}
+
+    /**
+     * Returns a shallow copy of the list into a List.  This is just used in
+     * unit tests.
+     */
+    public List<Entry<Integer, Event>> getEntryList() {
+        List<Entry<Integer, Event>> rv = new ArrayList<>(events.size());
+        rv.addAll(events.entrySet());
+        return rv;
+    }
 
 	/**
 	 * Prints list of missions

@@ -11,6 +11,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.Html;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -99,6 +100,23 @@ public class MissionActivity extends AppCompatActivity {
                 toggleMission(togglebutton.isChecked());
             }
         });
+
+        //  This is a pretty bad kludge.  When the app first starts up, Random
+        //  is selected, but configureMission() hasn't been called, so we don't
+        //  see the mission introduction messages printed by configureMission().
+        //  I tried putting configureMission(true) here instead, but it caused a
+        //  weird delay at startup (maybe just because I was running it through
+        //  Android Studio?), and I wasn't sure it was the right thing to do
+        //  anyway.  So, instead, duplicate stuff from configureMission().
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getBoolean("stompUnconfirmedReportsPreference", true)) {
+            printMissionIntroduction(getResources().getString(
+                    R.string.player_count_message, prefs.getInt("playerCount", 5)));
+        }
+        if (prefs.getBoolean("compressTimePreference", false)) {
+            printMissionIntroduction(getResources().getString(
+                    R.string.time_compressed_message));
+        }
     }
 
     @Override
@@ -197,12 +215,36 @@ public class MissionActivity extends AppCompatActivity {
                             getString(missionType.getMissionIntroductionResId()));
         }
 
+        //  If we're stomping unconfirmed reports, display the player count to
+        //  help keep them from discarding unconfirmed reports for five
+        //  players, or getting unconfirmed reports as normal threats for four
+        //  players.
+        if (preferences.getBoolean("stompUnconfirmedReportsPreference", true)) {
+            printMissionIntroduction(getResources().getString(
+                    R.string.player_count_message, preferences.getInt("playerCount", 5)));
+        }
+        if (preferences.getBoolean("compressTimePreference", false)) {
+            printMissionIntroduction(getResources().getString(
+                    R.string.time_compressed_message));
+        }
         if (preferences.getBoolean("dumpMissionTreePreference", false)) {
             ((MediaPlayerMainMission) sequence).dumpMissionTreeToLog();
         }
 
     }
 
+    private void printMissionIntroduction(String message) {
+        if (sequence != null) {
+            ((MediaPlayerMainMission) sequence).printMissionIntroduction(message);
+        } else {
+            //  sequence == null during onCreate(), before configureMission()
+            //  is called.  This is kind of nasty; duplicate code from
+            //  MediaPlayerMainMission.printMissionIntroduction().
+            missionLogs.add(new MissionLog(Html.fromHtml(
+                    "<b><i><span style=\"color:#C7EBFC;\"> " + message +
+                    "</span></i></b>")));
+        }
+    }
 
     private void showMissionTypeDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
