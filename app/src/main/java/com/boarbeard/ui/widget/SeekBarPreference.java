@@ -19,7 +19,7 @@ public class SeekBarPreference extends DialogPreference implements com.boarbeard
 	private static final String ATTR_DEFAULT_SECOND_VALUE = "defaultSecondValue";
 	private static final String ATTR_MIN_VALUE = "minValue";
 	private static final String ATTR_MAX_VALUE = "maxValue";
-	private static final String ATTR_LINE_SPACING = "lineSpacing";
+	private static final String ATTR_LINE_SPACING = "seekBarLineSpacing";
 	
 	private static final int DEFAULT_MIN_VALUE = 0;
 	private static final int DEFAULT_MAX_VALUE = 100;
