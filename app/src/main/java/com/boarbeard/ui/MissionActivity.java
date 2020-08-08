@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -67,6 +68,10 @@ public class MissionActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        //  When people hit the volume buttons, we want to change the media
+        //  volume, not the ringtone volume.
+        setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         stopWatch = new StopWatch(
                 (TextView) findViewById(R.id.missionClockTextView));
