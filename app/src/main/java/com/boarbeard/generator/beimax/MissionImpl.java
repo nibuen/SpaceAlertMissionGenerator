@@ -28,8 +28,11 @@ import com.boarbeard.generator.beimax.event.Threat;
 import java.util.ArrayList;
 import java.util.Random;
 
+import static com.boarbeard.ui.widget.SeekBarPreference.RIGHT_VALUE_SUFFIX;
+
 /**
  * Default Mission Generator
+ *
  * @author mkalus
  */
 public class MissionImpl implements IMission {
@@ -232,6 +235,7 @@ public class MissionImpl implements IMission {
 
     /**
      * Constructor
+     *
      * @param preferences
      */
     public MissionImpl(MissionPreferences preferences) {
@@ -248,7 +252,7 @@ public class MissionImpl implements IMission {
         prefs.players = preferences.getInt("playerCount", 5);
         prefs.threatLevel = preferences.getInt("threatDifficultyPreference", 8); // The threat level for 5 players!
 
-        if(!preferences.getBoolean("stompUnconfirmedReportsPreference", true)) {
+        if (!preferences.getBoolean("stompUnconfirmedReportsPreference", true)) {
             //  They want Unconfirmed Reports.
             prefs.showUnconfirmed = true;
             prefs.threatUnconfirmed = CONSTANT_THREAT_UNCONFIRMED; // if 5 players - then this is the unconfirmed part of the base threat level
@@ -264,13 +268,13 @@ public class MissionImpl implements IMission {
             //  ConstructedMissions, but instead, let's just adjust the
             //  difficulty of the mission.
             prefs.threatUnconfirmed = 0;
-           if (prefs.players != 5) {
-               prefs.threatLevel -= CONSTANT_THREAT_UNCONFIRMED; // if 4 players, then you have to subtract the unconfirmed part from the base level (8 - 1 = 7 in normal missions)
-           }
+            if (prefs.players != 5) {
+                prefs.threatLevel -= CONSTANT_THREAT_UNCONFIRMED; // if 4 players, then you have to subtract the unconfirmed part from the base level (8 - 1 = 7 in normal missions)
+            }
         }
 
-        prefs.minIncomingData = preferences.getInt("numberIncomingDataSecondValue", prefs.minIncomingData);
-        prefs.maxIncomingData = preferences.getInt("numberIncomingData", prefs.maxIncomingData);
+        prefs.minIncomingData = preferences.getInt("numberIncomingData", prefs.minIncomingData);
+        prefs.maxIncomingData = preferences.getInt("numberIncomingData" + RIGHT_VALUE_SUFFIX, prefs.maxIncomingData);
 
 
         int missionLength = preferences.getInt("missionLengthPreference", 600);
@@ -294,6 +298,7 @@ public class MissionImpl implements IMission {
 
     /**
      * Return event list of mission
+     *
      * @return ordered event list of mission
      */
     public EventList getMissionEvents() {
@@ -302,6 +307,7 @@ public class MissionImpl implements IMission {
 
     /**
      * Return length of a phase in seconds
+     *
      * @param phase 1-3
      * @return phase length of mission or -1
      */
@@ -357,6 +363,7 @@ public class MissionImpl implements IMission {
 
     /**
      * "sane" generator method for threats
+     *
      * @return true if generation was successful
      */
     protected boolean generateThreats() {
@@ -557,6 +564,7 @@ public class MissionImpl implements IMission {
 
     /**
      * Generate data operations (either data transfer or incoming data)
+     *
      * @return true, if data creation could be generated
      */
     protected boolean generateDataOperations() {
@@ -673,6 +681,7 @@ public class MissionImpl implements IMission {
 
     /**
      * generate phase stuff from data above
+     *
      * @return true if phase generation succeeded
      */
     protected boolean generatePhases() {

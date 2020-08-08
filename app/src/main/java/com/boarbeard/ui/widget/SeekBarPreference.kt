@@ -10,14 +10,13 @@ import android.widget.TextView
 import com.boarbeard.R
 import com.jaygoo.widget.OnRangeChangedListener
 import com.jaygoo.widget.RangeSeekBar
-import timber.log.Timber
 import kotlin.math.roundToInt
 
 class SeekBarPreference(context: Context?, attrs: AttributeSet) : DialogPreference(context, attrs), OnRangeChangedListener {
     private val mMinValue: Int
     private val mMaxValue: Int
-    private val mDefaultValue: Int
-    private val mDefaultSecondValue: Int
+    private val mDefaultLeftValue: Int
+    private val mDefaultRightValue: Int
 
     private var leftValue: Int = -1
     private var rightValue: Int = -1
@@ -40,10 +39,10 @@ class SeekBarPreference(context: Context?, attrs: AttributeSet) : DialogPreferen
         rangeSeekBar.setRange(mMinValue.toFloat(), mMaxValue.toFloat(), 1f)
 
         // Get current value from settings
-        leftValue = getPersistedInt(mDefaultValue)
+        leftValue = getPersistedInt(mDefaultLeftValue)
 
-        if (mDefaultSecondValue != DEFAULT_SECOND_VALUE) {
-            rightValue = settings.getInt(key + "SecondValue", mDefaultSecondValue)
+        if (mDefaultRightValue != DEFAULT_RIGHT_VALUE) {
+            rightValue = settings.getInt(key + RIGHT_VALUE_SUFFIX, mDefaultRightValue)
             rangeSeekBar.seekBarMode = RangeSeekBar.SEEKBAR_MODE_RANGE
             rangeSeekBar.setProgress(leftValue.toFloat(), rightValue.toFloat())
             mValueText.text = intervalText(leftValue, rightValue)
@@ -65,18 +64,18 @@ class SeekBarPreference(context: Context?, attrs: AttributeSet) : DialogPreferen
         if (shouldPersist()) {
             persistInt(leftValue)
             val settings = PreferenceManager.getDefaultSharedPreferences(this.context)
-            settings.edit().putInt(key + "SecondValue", rightValue).apply()
+            settings.edit().putInt(key + RIGHT_VALUE_SUFFIX, rightValue).apply()
         }
         notifyChanged()
     }
 
     override fun getTitle(): CharSequence {
         var title = super.getTitle().toString()
-        val value = getPersistedInt(mDefaultValue)
+        val value = getPersistedInt(mDefaultLeftValue)
         val settings = PreferenceManager.getDefaultSharedPreferences(this.context)
 
-        title = if (mDefaultSecondValue != DEFAULT_SECOND_VALUE) {
-            val secondValue = settings.getInt(key + "SecondValue", mDefaultSecondValue)
+        title = if (mDefaultRightValue != DEFAULT_RIGHT_VALUE) {
+            val secondValue = settings.getInt(key + RIGHT_VALUE_SUFFIX, mDefaultRightValue)
             if (secondValue < value) {
                 String.format(title, secondValue, value)
             } else {
@@ -111,15 +110,19 @@ class SeekBarPreference(context: Context?, attrs: AttributeSet) : DialogPreferen
     companion object {
         private const val PREFERENCE_NS = "http://schemas.android.com/apk/res-auto"
         private const val ANDROID_NS = "http://schemas.android.com/apk/res/android"
+
+        const val RIGHT_VALUE_SUFFIX = "RightValue";
+
         private const val ATTR_DEFAULT_VALUE = "defaultValue"
-        private const val ATTR_DEFAULT_SECOND_VALUE = "defaultSecondValue"
+        private const val ATTR_DEFAULT_RIGHT_VALUE = "defaultSecondValue"
         private const val ATTR_MIN_VALUE = "minValue"
         private const val ATTR_MAX_VALUE = "maxValue"
         private const val ATTR_LINE_SPACING = "seekBarLineSpacing"
+
         private const val DEFAULT_MIN_VALUE = 0
         private const val DEFAULT_MAX_VALUE = 100
         private const val DEFAULT_CURRENT_VALUE = 50
-        private const val DEFAULT_SECOND_VALUE = -1
+        private const val DEFAULT_RIGHT_VALUE = -1
         private const val DEFAULT_LINE_SPACING = 1
     }
 
@@ -127,7 +130,7 @@ class SeekBarPreference(context: Context?, attrs: AttributeSet) : DialogPreferen
         mMinValue = attrs.getAttributeIntValue(PREFERENCE_NS, ATTR_MIN_VALUE, DEFAULT_MIN_VALUE)
         mMaxValue = attrs.getAttributeIntValue(PREFERENCE_NS, ATTR_MAX_VALUE, DEFAULT_MAX_VALUE)
         mLineSpacing = attrs.getAttributeIntValue(PREFERENCE_NS, ATTR_LINE_SPACING, DEFAULT_LINE_SPACING)
-        mDefaultSecondValue = attrs.getAttributeIntValue(PREFERENCE_NS, ATTR_DEFAULT_SECOND_VALUE, DEFAULT_SECOND_VALUE)
-        mDefaultValue = attrs.getAttributeIntValue(ANDROID_NS, ATTR_DEFAULT_VALUE, DEFAULT_CURRENT_VALUE)
+        mDefaultRightValue = attrs.getAttributeIntValue(PREFERENCE_NS, ATTR_DEFAULT_RIGHT_VALUE, DEFAULT_RIGHT_VALUE)
+        mDefaultLeftValue = attrs.getAttributeIntValue(ANDROID_NS, ATTR_DEFAULT_VALUE, DEFAULT_CURRENT_VALUE)
     }
 }
