@@ -45,4 +45,11 @@
 		<ListPreference android:key="voice_choices" android:title="@string/pref_voice_title" android:summary="@string/pref_voice_summary"
             android:defaultValue="0" />
 	</PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_development_title">
+        <CheckBoxPreference android:key="dumpMissionTreePreference"
+            android:title="@string/pref_dump_misson_tree_title"
+            android:summary="@string/pref_dump_mission_tree_summary"
+            android:defaultValue="false"
+            android:persistent="true" />
+    </PreferenceCategory>
 </PreferenceScreen>

@@ -54,10 +54,6 @@ public class MissionActivity extends AppCompatActivity {
 
     private List<MissionLog> missionLogs = new ArrayList<MissionLog>();
 
-    // Enable to dump the entire mission to the mission log immediately after the mission is
-    // selected. Usable for debugging.
-    private static final boolean DUMP_MISSION_TREE = false;
-
     private RecyclerView mRecyclerView;
     private LinearLayoutManager mLayoutManager;
     private MissionCardsAdapter mAdapter;
@@ -201,7 +197,7 @@ public class MissionActivity extends AppCompatActivity {
                             getString(missionType.getMissionIntroductionResId()));
         }
 
-        if (DUMP_MISSION_TREE) {
+        if (preferences.getBoolean("dumpMissionTreePreference", false)) {
             ((MediaPlayerMainMission) sequence).dumpMissionTreeToLog();
         }
 

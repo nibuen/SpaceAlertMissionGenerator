@@ -24,6 +24,9 @@
  	<string name="pref_incoming_data_title">Incoming Data: %1$d - %2$d</string>   	
  	<string name="pref_incoming_data_dialog_title">Incoming Data</string>   	
 	<string name="pref_incoming_data_summary">Range of incoming data to allow.</string>
+    <string name="pref_development_title">Development</string>
+    <string name="pref_dump_misson_tree_title">Dump Mission Tree</string>
+    <string name="pref_dump_mission_tree_summary">Display the list of events when a mission is selected.</string>
   	
   	<string name="mission_about">About</string>
   	<string name="mission_help">Help</string>
