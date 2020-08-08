@@ -9,10 +9,13 @@
     <string name="mission_options">Options</string>
     <string name="mission_type">Mission Type</string>
     
+    <string name="pref_stomp_unconfirmed_reports_title">Stomp Unconfirmed Reports</string>
+    <string name="pref_stomp_unconfirmed_reports_summary">Remove Unconfirmed Reports, or change them to normal threats, depending on the number of players.</string>
+    <string name="pref_player_count_dialog_title">Players</string>
+    <string name="pref_player_count_title">Players: %1$d</string>
+    <string name="pref_player_count_summary">Number of human players.</string>
     <string name="pref_mission">Mission Parameters</string>
     <string name="pref_mission_voice">Language</string>
-    <string name="pref_unconfirmedReports_title">Unconfirmed Reports</string>
-    <string name="pref_unconfirmedReports_summary">Whether to allow chance of unconfirmed reports to the mission.</string>
   	<string name="pref_mission_length_summary">The approximate mission length in seconds.</string>
   	<string name="pref_mission_length_title">Avg. Mission Length: %1$d</string>   
   	<string name="pref_threat_difficulty_title">Threat Difficulty: %1$d</string> 
@@ -24,6 +27,11 @@
  	<string name="pref_incoming_data_title">Incoming Data: %1$d - %2$d</string>   	
  	<string name="pref_incoming_data_dialog_title">Incoming Data</string>   	
 	<string name="pref_incoming_data_summary">Range of incoming data to allow.</string>
+    <string name="pref_development_title">Development</string>
+    <string name="pref_dump_misson_tree_title">Dump Mission Tree</string>
+    <string name="pref_dump_mission_tree_summary">Display the list of events when a mission is selected.</string>
+    <string name="pref_compress_time_title">Compress Time</string>
+    <string name="pref_compress_time_summary">Remove gaps between events.</string>
   	
   	<string name="mission_about">About</string>
   	<string name="mission_help">Help</string>
@@ -65,6 +73,8 @@
   	<string name="double_action_mission_11">Double Action Standard Mission 11</string>
   	<string name="double_action_mission_12">Double Action Standard Mission 12</string>
 
+    <string name="player_count_message">Unconfirmed Reports adjusted for %1$d players</string>
+    <string name="time_compressed_message">Time compressed for debugging</string>
     <string name="double_action_mission_introduction">Please note: The double action cards from the expansion \"Space Alert - The New Frontier\" is required to play this mission.</string>
     <string name="media_failed">Sound file failed to play.</string>
   	<string name="button_playing">Playing</string>

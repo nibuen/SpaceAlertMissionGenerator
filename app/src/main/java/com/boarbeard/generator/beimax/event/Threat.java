@@ -18,6 +18,8 @@
  **/
 package com.boarbeard.generator.beimax.event;
 
+import androidx.annotation.NonNull;
+
 /**
  * Threat class
  * 
@@ -33,6 +35,13 @@ public class Threat implements Event {
 	public static final int THREAT_SECTOR_BLUE = 1;
 	public static final int THREAT_SECTOR_WHITE = 2;
 	public static final int THREAT_SECTOR_RED = 3;
+
+	/** Enum wrapper around THREAT_SECTOR_* constants. */
+	public enum Zone {
+		Blue(THREAT_SECTOR_BLUE), White(THREAT_SECTOR_WHITE), Red(THREAT_SECTOR_RED);
+		Zone(int sector) { this.sector = sector; }
+		private final int sector;
+	}
 
 	/**
 	 * assumed time in seconds: 10
@@ -65,6 +74,43 @@ public class Threat implements Event {
 	 * confirmed threat?
 	 */
 	private boolean confirmed = false;
+
+	public Threat() {
+	}
+
+	/**
+	 * Copy constructor.
+	 */
+	public Threat(Threat other) {
+		threatLevel = other.threatLevel;
+		threatPosition = other.threatPosition;
+		sector = other.sector;
+		time = other.time;
+		confirmed = other.confirmed;
+	}
+
+	/**
+	 * Creates an internal threat.
+	 */
+	public Threat(int time, boolean confirmed, boolean serious) {
+		this.time = time;
+		this.confirmed = confirmed;
+		this.threatPosition = THREAT_POSITION_INTERNAL;
+		this.threatLevel = serious ? THREAT_LEVEL_SERIOUS : THREAT_LEVEL_NORMAL;
+	}
+
+	/**
+	 * Creates an external threat.
+	 *
+	 * @param zone must not be null.
+	 */
+	public Threat(int time, boolean confirmed, boolean serious, @NonNull Zone zone) {
+		this.time = time;
+		this.confirmed = confirmed;
+		this.threatPosition = THREAT_POSITION_EXTERNAL;
+		this.threatLevel = serious ? THREAT_LEVEL_SERIOUS : THREAT_LEVEL_NORMAL;
+		sector = zone.sector;
+	}
 
 	/**
 	 * @return the threatLevel
