@@ -10,10 +10,11 @@
         android:layout_width="fill_parent"
         android:id="@+id/linearLayout1"
         android:layout_weight=".05"
-        android:background="@color/gray_color">
+        android:background="@color/mission_name_background_color">
 
         <TextView
             android:textSize="16sp"
+            android:textColor="@color/white_color"
             android:text="Mission Type"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
@@ -61,7 +62,7 @@
         android:layout_height="wrap_content"
         android:layout_weight=".1">
 
-        <ToggleButton
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/togglePlayMission"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"

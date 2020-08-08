@@ -23,7 +23,7 @@
             android:key="missionLengthPreference"
             widget:maxValue="840"
             widget:minValue="540"
-            widget:lineSpacing="30"
+            widget:seekBarLineSpacing="30"
             android:persistent="true"
             android:summary="@string/pref_mission_length_summary"
             android:title="@string/pref_mission_length_title" />

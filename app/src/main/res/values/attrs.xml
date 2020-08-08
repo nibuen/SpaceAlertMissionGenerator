@@ -3,7 +3,7 @@
     <declare-styleable name="com.boarbeard.widget.SeekBarPreferenc">
         <attr name="minValue" format="integer" />
         <attr name="maxValue" format="integer" />
-        <attr name="lineSpacing" format="integer" />
+        <attr name="seekBarLineSpacing" format="integer" />
         <attr name="defaultSecondValue" format="integer" />
     </declare-styleable>    
 </resources>
