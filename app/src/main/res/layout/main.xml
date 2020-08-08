@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:baselineAligned="false"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
+    android:baselineAligned="false"
     android:orientation="vertical">
 
     <LinearLayout
@@ -41,7 +41,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight=".05"
-        android:background="@color/gray_color">
+        android:elevation="10dp"
+        android:backgroundTint="@color/material_red_500">
 
         <TextView
             android:id="@+id/missionClockTextView"
@@ -50,14 +51,14 @@
             android:gravity="center"
             android:scrollbars="vertical"
             android:text="0:00"
-            android:textSize="25sp" />
+            android:textStyle="bold"
+            android:textSize="35sp" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout4"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dip"
         android:layout_weight=".1">
 
         <ToggleButton
@@ -69,4 +70,5 @@
             android:textOn="@string/button_playing"
             android:textSize="20sp" />
     </LinearLayout>
+
 </LinearLayout>

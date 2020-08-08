@@ -9,7 +9,7 @@
     android:elevation="10dp"
     android:layout_margin="4dp"
     card_view:cardCornerRadius="5dp"
-    card_view:cardBackgroundColor="@color/black_color">
+    card_view:cardBackgroundColor="@color/mission_card_background_color">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -21,7 +21,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:cursorVisible="false"
             android:padding="5dp"
             android:textSize="20sp" />
 
