@@ -2,29 +2,23 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/menuTypeMission"
-        android:title="@string/mission_type"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/menuTypeMissionIcon"
         android:icon="@drawable/ic_menu_more"
         android:title="@string/mission_type"
-        app:showAsAction="always|withText" />
+        app:showAsAction="never" />
     <item
         android:id="@+id/menuMissionOptions"
         android:icon="@drawable/ic_menu_edit"
-        android:title="@string/mission_options"
-        app:showAsAction="ifRoom" />
+        android:title="@string/mission_options" />
     <item
         android:id="@+id/menuNewMission"
         android:icon="@drawable/ic_menu_add"
-        android:title="@string/mission_new"
-        app:showAsAction="ifRoom" />
+        android:title="@string/mission_new" />
     <item
         android:id="@+id/menuResetMission"
         android:icon="@drawable/ic_menu_rotate"
         android:title="@string/mission_reset"
-        app:showAsAction="ifRoom" />
+         />
     <item
         android:id="@+id/menuMissionAbout"
         android:icon="@drawable/ic_menu_info_details"
