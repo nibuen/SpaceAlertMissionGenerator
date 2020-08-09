@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:baselineAligned="false"
@@ -9,13 +10,13 @@
         android:layout_height="wrap_content"
         android:layout_width="fill_parent"
         android:id="@+id/linearLayout1"
-        android:layout_weight=".05"
+        android:layout_weight=".03"
         android:background="@color/mission_name_background_color">
 
         <TextView
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textColor="@color/white_color"
-            android:text="Mission Type"
+            tools:text="Mission Type"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/mission_type_text_view"
@@ -41,7 +42,7 @@
         android:id="@+id/linearLayout3"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight=".05"
+        android:layout_weight=".02"
         android:elevation="10dp"
         android:backgroundTint="@color/material_red_500">
 
@@ -51,7 +52,7 @@
             android:layout_height="fill_parent"
             android:gravity="center"
             android:scrollbars="vertical"
-            android:text="0:00"
+            tools:text="0:00"
             android:textStyle="bold"
             android:textSize="35sp" />
     </LinearLayout>
@@ -62,11 +63,11 @@
         android:layout_height="wrap_content"
         android:layout_weight=".1">
 
-        <com.google.android.material.button.MaterialButton
+        <ToggleButton
             android:id="@+id/togglePlayMission"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:text="ToggleButton"
+            tools:text="ToggleButton"
             android:textOff="@string/button_paused"
             android:textOn="@string/button_playing"
             android:textSize="20sp" />

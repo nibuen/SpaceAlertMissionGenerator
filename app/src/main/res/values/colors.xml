@@ -6,8 +6,11 @@
     <color name="material_red_500">#F44336</color>
     <color name="material_red_900">#B71C1C</color>
     <color name="material_color_100">#BDBDBD</color>
+    <color name="material_color_grey_900">#424242</color>
 
-    <color name="mission_name_color">@color/white_color</color>
+    <color name="secondary_color">@color/material_red_500</color>
+    <color name="primary_surface_color">@color/material_color_grey_900</color>
+    <color name="primary_text_color">@color/white_color</color>
     <color name="mission_name_background_color">@color/material_red_900</color>
     <color name="mission_card_background_color">@color/black_color</color>
 </resources>

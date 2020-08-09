@@ -38,11 +38,11 @@ public class MissionCardsAdapter extends RecyclerView.Adapter<MissionCardsAdapte
     public MissionCardsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
                                                              int viewType) {
         // create a new view
-        CardView v = (CardView) LayoutInflater.from(parent.getContext())
+        CardView cardView = (CardView) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.mission_card_view, parent, false);
 
-        ViewHolder vh = new ViewHolder(v);
-        return vh;
+        ViewHolder viewHolder = new ViewHolder(cardView);
+        return viewHolder;
     }
 
     // Replace the contents of a view (invoked by the layout manager)

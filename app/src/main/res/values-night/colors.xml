@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="mission_name_background_color">@color/black_color</color>
-    <color name="mission_card_background_color">@color/black_color</color>
+    <color name="primary_text_color">@color/white_color</color>
+    <color name="mission_name_background_color">@color/material_red_900</color>
 </resources>
