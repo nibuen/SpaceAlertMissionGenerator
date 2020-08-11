@@ -236,7 +236,8 @@ public class MediaPlayerMainMission extends MediaPlayerSequence {
      * Prints the mission introduction to the log.
     */
     public void printMissionIntroduction(String missionIntroduction) {
-        missionLog.add(new MissionLog(Html.fromHtml("<b><i><span style=\"color:#C7EBFC;\">" + missionIntroduction + "</span></i></b>")));
+        missionLog.add(MissionLog.formatIntro(missionActivity.getResources(),
+                missionIntroduction));
         missionActivity.updateMissionLog(missionLog.size() - 1);
     }
 
