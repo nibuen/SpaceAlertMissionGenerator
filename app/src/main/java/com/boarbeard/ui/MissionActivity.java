@@ -1,6 +1,5 @@
 package com.boarbeard.ui;
 
-import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -23,12 +22,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.boarbeard.R;
 import com.boarbeard.audio.MediaPlayerMainMission;
 import com.boarbeard.audio.MediaPlayerSequence;
@@ -37,6 +30,12 @@ import com.boarbeard.audio.parser.EventListParserFactory;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class MissionActivity extends AppCompatActivity {
 
@@ -164,7 +163,6 @@ public class MissionActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu, menu);
-        menuTypeMission = menu.findItem(R.id.menuTypeMission);
         return true;
     }
 
@@ -187,7 +185,6 @@ public class MissionActivity extends AppCompatActivity {
             case R.id.menuMissionHelp:
                 startActivity(new Intent(this, HelpActivity.class));
                 return true;
-            case R.id.menuTypeMission:
             case R.id.menuTypeMissionIcon:
                 showMissionTypeDialog();
                 return true;
