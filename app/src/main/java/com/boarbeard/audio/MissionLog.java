@@ -30,8 +30,7 @@ public class MissionLog {
      * Returns a new MissionLog entry formatted for a mission introduction
      * message.
      *
-     * @param res might be used for getting color or style information.  I said
-     *            <i>might.</i>
+     * @param res might be used for getting color or style information.
      * @param message the text to display.
      */
     public static MissionLog formatIntro(Resources res, String message) {
