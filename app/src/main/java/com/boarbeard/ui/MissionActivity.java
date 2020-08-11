@@ -240,11 +240,8 @@ public class MissionActivity extends AppCompatActivity {
             ((MediaPlayerMainMission) sequence).printMissionIntroduction(message);
         } else {
             //  sequence == null during onCreate(), before configureMission()
-            //  is called.  This is kind of nasty; duplicate code from
-            //  MediaPlayerMainMission.printMissionIntroduction().
-            missionLogs.add(new MissionLog(Html.fromHtml(
-                    "<b><i><span style=\"color:#C7EBFC;\"> " + message +
-                    "</span></i></b>")));
+            //  is called.
+            missionLogs.add(MissionLog.formatIntro(getResources(), message));
         }
     }
 
