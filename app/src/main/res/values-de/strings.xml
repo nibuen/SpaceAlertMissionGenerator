@@ -9,15 +9,10 @@
     <string name="mission_options">Optionen</string>
     <string name="mission_type">Missionsart</string>
     
-      <!-- Google Translated -->
-    <string name="pref_stomp_unconfirmed_reports_title">Stomp Unbestätigte Berichte</string>
-      <!-- Google Translated -->
-    <string name="pref_stomp_unconfirmed_reports_summary">Entfernen Sie nicht bestätigte Berichte oder ändern Sie sie je nach Anzahl der Spieler in normale Bedrohungen.</string>
-      <!-- Google Translated -->
-    <string name="pref_player_count_dialog_title">Spieler/Spielerinnen</string>
-      <!-- Google Translated -->
-    <string name="pref_player_count_title">Spieler/Spielerinnen: %1$d</string>
-      <!-- Google Translated -->
+    <string name="pref_stomp_unconfirmed_reports_title">Unbestätigte Berichte entfernen</string>
+    <string name="pref_stomp_unconfirmed_reports_summary">Unbestätigte Berichte entfernen oder je nach Anzahl der Spieler in normale Bedrohungen umwandeln.</string>
+    <string name="pref_player_count_dialog_title">Spieler</string>
+    <string name="pref_player_count_title">Spieler: %1$d</string>
     <string name="pref_player_count_summary">Anzahl menschlicher Spieler.</string>
     <string name="pref_mission">Missionsparameter</string>
     <string name="pref_mission_voice">Sprache</string>
@@ -32,16 +27,11 @@
  	<string name="pref_incoming_data_title">Eingehende Daten: %1$d - %2$d</string>   	
  	<string name="pref_incoming_data_dialog_title">Eingehende Daten</string>   	
 	<string name="pref_incoming_data_summary">Spielraum der eingehenden Daten</string>
-      <!-- Google Translated -->
     <string name="pref_development_title">Entwicklung</string>
-      <!-- Google Translated -->
-    <string name="pref_dump_misson_tree_title">Dump Missionsbaum</string>
-      <!-- Google Translated -->
-    <string name="pref_dump_mission_tree_summary">Zeigen Sie die Liste der Ereignisse an, wenn eine Mission ausgewählt ist.</string>
-      <!-- Google Translated -->
+    <string name="pref_dump_misson_tree_title">Missionsbaum anzeigen</string>
+    <string name="pref_dump_mission_tree_summary">Liste der Ereignisse anzeigen, wenn eine Mission ausgewählt ist.</string>
     <string name="pref_compress_time_title">Zeit komprimieren</string>
-      <!-- Google Translated -->
-    <string name="pref_compress_time_summary">Entfernen Sie Lücken zwischen Ereignissen.</string>
+    <string name="pref_compress_time_summary">Lücken zwischen Ereignissen entfernen.</string>
   	
   	<string name="mission_about">Info</string>
   	<string name="mission_help">Hilfe</string>
@@ -85,10 +75,8 @@
 
   	<string name="media_failed">Sounddatei konnte nicht abgespielt werden.</string>
   	<string name="button_playing">Mission läuft</string>
-      <!-- Google Translated -->
     <string name="player_count_message">Unbestätigte Berichte für %1$d Spieler angepasst</string>
-      <!-- Google Translated -->
-    <string name="time_compressed_message">Zeit für das Debuggen komprimiert</string>
+    <string name="time_compressed_message">Zeit komprimiert zum Debuggen</string>
     <string name="double_action_mission_introduction">Bitte beachten: Die Doppelaktionskarten aus der Erweiterung \"Space Alert - Unendliche Weiten\" sind erforderlich, um diese Mission zu spielen.</string>
   	<string name="button_paused">Angehalten</string>
   	<string name="pref_choose_mission">Wähle Missionstyp</string>
