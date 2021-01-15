@@ -9,12 +9,12 @@ import com.boarbeard.R;
 public class AboutActivity extends Activity {
 
     @Override
-	public void onCreate(Bundle icicle) {
-		super.onCreate(icicle);
-		setContentView(R.layout.activity_about);
+    public void onCreate(Bundle icicle) {
+        super.onCreate(icicle);
+        setContentView(R.layout.activity_about);
 
-        WebView browser = (WebView) findViewById(R.id.webkit);
-		browser.loadUrl("file:///android_asset/About.html");
-	}
-		
+        WebView browser = findViewById(R.id.webkit);
+        browser.loadUrl("file:///android_asset/About.html");
+    }
+
 }

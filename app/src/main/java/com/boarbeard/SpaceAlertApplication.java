@@ -12,9 +12,9 @@ public class SpaceAlertApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-		if(BuildConfig.DEBUG){
-			Timber.plant(new Timber.DebugTree());
-		}
+        if (BuildConfig.DEBUG) {
+            Timber.plant(new Timber.DebugTree());
+        }
 
         ExternalMedia.init(this);
     }

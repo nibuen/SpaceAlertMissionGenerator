@@ -306,6 +306,7 @@ public class MissionActivity extends AppCompatActivity {
     private void setKeepScreenOn(boolean keepScreenOn) {
         if (keepScreenOn) {
             setSystemUiVisibility(systemUiMode = View.SYSTEM_UI_FLAG_LOW_PROFILE);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         } else {
             getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         }
