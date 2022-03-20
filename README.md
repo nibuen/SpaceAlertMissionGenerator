@@ -1,7 +1,7 @@
 SpaceAlertMissionGenerator
 ==========================
 
-Mission Generator For Space Alert Board Game On Android
+Mission Generator For Space Alert Board Game On Android, uses https://github.com/mkalus/JSpaceAlertMissionGenerator for generating the random missions.
 
 Project uses Gradle and Android Studio formats.
 
