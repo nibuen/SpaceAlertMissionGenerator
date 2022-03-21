@@ -85,6 +85,6 @@
 	<!-- Google Translated -->
     <string name="pref_enableDoubleThreats_title">Doppelte Bedrohungen zulassen</string>
 	<!-- Google Translated -->
-	<string name="pref_pref_enableDoubleThreats_summary">Aktivieren Sie doppelte Bedrohungen (\"The New Frontier\": eine externe und eine interne Bedrohung treten in einem Zeitfenster auf)</string>
+	<string name="pref_enableDoubleThreats_summary">Aktivieren Sie doppelte Bedrohungen (\"The New Frontier\": eine externe und eine interne Bedrohung treten in einem Zeitfenster auf)</string>
 
 </resources>

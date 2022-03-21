@@ -3,12 +3,13 @@ package com.boarbeard.audio;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MediaPlayerSequence {
 
-    protected List<MediaInfo> mediaPlayerList = new ArrayList<MediaInfo>();
+    protected List<MediaInfo> mediaPlayerList = new ArrayList<>();
 
     protected int playerIndex = 0;
     protected boolean stopped = false;
@@ -16,10 +17,10 @@ public class MediaPlayerSequence {
 
     protected MediaPlayer activeMediaPlayer = null;
 
-    private Context context;
+    private final WeakReference<Context> context;
 
     public MediaPlayerSequence(Context context) {
-        this.context = context;
+        this.context = new WeakReference<>(context);
     }
 
     public void addAudioClip(MediaInfo mediaInfo) {
@@ -54,21 +55,22 @@ public class MediaPlayerSequence {
     }
 
     private synchronized void playNextAudio(final MediaInfo mediaInfo) {
-        activeMediaPlayer = MediaPlayer.create(context, mediaInfo.getResUri());
+        Context c = context.get();
+        if (c == null) {
+            return;
+        }
+        activeMediaPlayer = MediaPlayer.create(c, mediaInfo.getResUri());
         activeMediaPlayer
-                .setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    public void onCompletion(MediaPlayer mp) {
+                .setOnCompletionListener(mp -> {
+                    activeMediaPlayer.stop();
+                    activeMediaPlayer.release();
 
-                        activeMediaPlayer.stop();
-                        activeMediaPlayer.release();
+                    if (stopped)
+                        return;
 
-                        if (stopped)
-                            return;
-
-                        nextIndex();
-                        if (mediaPlayerList.size() > playerIndex) {
-                            playNextAudio(mediaPlayerList.get(playerIndex));
-                        }
+                    nextIndex();
+                    if (mediaPlayerList.size() > playerIndex) {
+                        playNextAudio(mediaPlayerList.get(playerIndex));
                     }
                 });
 

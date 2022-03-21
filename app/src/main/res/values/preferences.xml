@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="enable_double_threats" translatable="false">enable_double_threats</string>
+    <string name="voice_choices" translatable="false">voice_choices</string>
+    <string name="stompUnconfirmedReportsPreference" translatable="false">stompUnconfirmedReportsPreference</string>
+</resources>

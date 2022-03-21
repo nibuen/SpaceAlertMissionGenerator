@@ -1,8 +1,12 @@
 package com.boarbeard.generator.beimax;
 
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import android.content.SharedPreferences;
 
+import com.boarbeard.R;
 import com.boarbeard.generator.beimax.event.Announcement;
 import com.boarbeard.generator.beimax.event.DataTransfer;
 import com.boarbeard.generator.beimax.event.Event;
@@ -17,9 +21,6 @@ import org.junit.Test;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 /**
  * TestMissionImpl2 because there's already a TestMissionImpl under
  * app/src/androidtest, but it's not getting picked up as a test by Android
@@ -31,7 +32,7 @@ public class TestMissionImpl2 {
     @Test
     public void testParsePreferences() {
         BogoSharedPreferences sp;
-        MissionImpl.MissionPreferences mp;
+        MissionPreferences mp;
 
         sp = new BogoSharedPreferences();
         sp.set("stompUnconfirmedReportsPreference", false);
@@ -117,14 +118,14 @@ public class TestMissionImpl2 {
             //  unconfirmed report should've been removed
             if (compressed) off = -15;
         }
-        check(tl, idx++, at ? 110 : off + 40,  new Threat(4, true, false, Threat.Zone.Blue));
-        check(tl, idx++, at ? 140 : off + 55,  new IncomingData());
-        check(tl, idx++, at ? 165 : off + 65,  new Announcement(Announcement.ANNOUNCEMENT_PH1_ONEMINUTE));
-        check(tl, idx++, at ? 170 : off + 70,  new WhiteNoise(at ? 10 : 4));
-        check(tl, idx++, at ? 180 : off + 74,  new WhiteNoiseRestored());
-        check(tl, idx++, at ? 185 : off + 79,  new DataTransfer());
-        check(tl, idx++, at ? 205 : off + 94,  new Announcement(Announcement.ANNOUNCEMENT_PH1_TWENTYSECS));
-        check(tl, idx++, at ? 220 : off + 99,  new Announcement(Announcement.ANNOUNCEMENT_PH1_ENDS));
+        check(tl, idx++, at ? 110 : off + 40, new Threat(4, true, false, Threat.Zone.Blue));
+        check(tl, idx++, at ? 140 : off + 55, new IncomingData());
+        check(tl, idx++, at ? 165 : off + 65, new Announcement(Announcement.ANNOUNCEMENT_PH1_ONEMINUTE));
+        check(tl, idx++, at ? 170 : off + 70, new WhiteNoise(at ? 10 : 4));
+        check(tl, idx++, at ? 180 : off + 74, new WhiteNoiseRestored());
+        check(tl, idx++, at ? 185 : off + 79, new DataTransfer());
+        check(tl, idx++, at ? 205 : off + 94, new Announcement(Announcement.ANNOUNCEMENT_PH1_TWENTYSECS));
+        check(tl, idx++, at ? 220 : off + 99, new Announcement(Announcement.ANNOUNCEMENT_PH1_ENDS));
         check(tl, idx++, at ? 230 : off + 109, new IncomingData());
         check(tl, idx++, at ? 240 : off + 119, new Threat(5, true, false));
         check(tl, idx++, at ? 265 : off + 134, new DataTransfer());
@@ -163,16 +164,16 @@ public class TestMissionImpl2 {
         //  instead of three was maybe a little silly.
         if (showUnconfirmed) {
             assertEquals(30, tl.size());
-            check(tl, idx++, at ? 0   : 0,   new Announcement(Announcement.ANNOUNCEMENT_PH1_START));
-            check(tl, idx++, at ? 14  : 10,  new Threat(1, true, false, Threat.Zone.White));
-            check(tl, idx++, at ? 47  : 25,  new WhiteNoise(at ? 12 : 4));
-            check(tl, idx++, at ? 59  : 29,  new WhiteNoiseRestored());
-            check(tl, idx++, at ? 64  : 34,  new Threat(2, true, false, Threat.Zone.Red));
-            check(tl, idx++, at ? 95  : 49,  new DataTransfer());
-            check(tl, idx++, at ? 115 : 64,  new Threat(4, true, false));
-            check(tl, idx++, at ? 140 : 79,  new IncomingData());
-            check(tl, idx++, at ? 164 : 89,  new IncomingData());
-            check(tl, idx++, at ? 183 : 99,  new Announcement(Announcement.ANNOUNCEMENT_PH1_ONEMINUTE));
+            check(tl, idx++, at ? 0 : 0, new Announcement(Announcement.ANNOUNCEMENT_PH1_START));
+            check(tl, idx++, at ? 14 : 10, new Threat(1, true, false, Threat.Zone.White));
+            check(tl, idx++, at ? 47 : 25, new WhiteNoise(at ? 12 : 4));
+            check(tl, idx++, at ? 59 : 29, new WhiteNoiseRestored());
+            check(tl, idx++, at ? 64 : 34, new Threat(2, true, false, Threat.Zone.Red));
+            check(tl, idx++, at ? 95 : 49, new DataTransfer());
+            check(tl, idx++, at ? 115 : 64, new Threat(4, true, false));
+            check(tl, idx++, at ? 140 : 79, new IncomingData());
+            check(tl, idx++, at ? 164 : 89, new IncomingData());
+            check(tl, idx++, at ? 183 : 99, new Announcement(Announcement.ANNOUNCEMENT_PH1_ONEMINUTE));
             check(tl, idx++, at ? 223 : 104, new Announcement(Announcement.ANNOUNCEMENT_PH1_TWENTYSECS));
             check(tl, idx++, at ? 238 : 109, new Announcement(Announcement.ANNOUNCEMENT_PH1_ENDS));
             check(tl, idx++, at ? 275 : 119, new Threat(5, true, false));
@@ -195,15 +196,15 @@ public class TestMissionImpl2 {
             check(tl, idx++, at ? 623 : 261, new Announcement(Announcement.ANNOUNCEMENT_PH3_ENDS));
         } else if (players == 5) {
             assertEquals(28, tl.size());
-            check(tl, idx++, at ? 0   : 0,   new Announcement(Announcement.ANNOUNCEMENT_PH1_START));
-            check(tl, idx++, at ? 18  : 10,  new Threat(1, true, false, Threat.Zone.Blue));
-            check(tl, idx++, at ? 61  : 25,  new Threat(2, true, false, Threat.Zone.Red));
-            check(tl, idx++, at ? 95  : 40,  new Threat(3, true, true, Threat.Zone.White));
-            check(tl, idx++, at ? 140 : 55,  new DataTransfer());
-            check(tl, idx++, at ? 179 : 70,  new Announcement(Announcement.ANNOUNCEMENT_PH1_ONEMINUTE));
-            check(tl, idx++, at ? 192 : 75,  new IncomingData());
-            check(tl, idx++, at ? 219 : 85,  new Announcement(Announcement.ANNOUNCEMENT_PH1_TWENTYSECS));
-            check(tl, idx++, at ? 234 : 90,  new Announcement(Announcement.ANNOUNCEMENT_PH1_ENDS));
+            check(tl, idx++, at ? 0 : 0, new Announcement(Announcement.ANNOUNCEMENT_PH1_START));
+            check(tl, idx++, at ? 18 : 10, new Threat(1, true, false, Threat.Zone.Blue));
+            check(tl, idx++, at ? 61 : 25, new Threat(2, true, false, Threat.Zone.Red));
+            check(tl, idx++, at ? 95 : 40, new Threat(3, true, true, Threat.Zone.White));
+            check(tl, idx++, at ? 140 : 55, new DataTransfer());
+            check(tl, idx++, at ? 179 : 70, new Announcement(Announcement.ANNOUNCEMENT_PH1_ONEMINUTE));
+            check(tl, idx++, at ? 192 : 75, new IncomingData());
+            check(tl, idx++, at ? 219 : 85, new Announcement(Announcement.ANNOUNCEMENT_PH1_TWENTYSECS));
+            check(tl, idx++, at ? 234 : 90, new Announcement(Announcement.ANNOUNCEMENT_PH1_ENDS));
             check(tl, idx++, at ? 282 : 100, new Threat(5, true, false));
             check(tl, idx++, at ? 308 : 115, new WhiteNoise(at ? 9 : 4));
             check(tl, idx++, at ? 317 : 119, new WhiteNoiseRestored());
@@ -225,17 +226,17 @@ public class TestMissionImpl2 {
             check(tl, idx++, at ? 609 : 236, new Announcement(Announcement.ANNOUNCEMENT_PH3_ENDS));
         } else {
             assertEquals(29, tl.size());
-            check(tl, idx++, at ? 0   : 0,   new Announcement(Announcement.ANNOUNCEMENT_PH1_START));
-            check(tl, idx++, at ? 13  : 10,  new Threat(1, true, false, Threat.Zone.Red));
-            check(tl, idx++, at ? 38  : 25,  new IncomingData());
-            check(tl, idx++, at ? 65  : 35,  new IncomingData());
-            check(tl, idx++, at ? 95  : 45,  new Threat(2, true, false, Threat.Zone.White));
-            check(tl, idx++, at ? 129 : 60,  new Threat(4, true, true, Threat.Zone.Blue));
-            check(tl, idx++, at ? 178 : 75,  new Announcement(Announcement.ANNOUNCEMENT_PH1_ONEMINUTE));
-            check(tl, idx++, at ? 188 : 80,  new WhiteNoise(at ? 20 : 4));
-            check(tl, idx++, at ? 208 : 84,  new WhiteNoiseRestored());
-            check(tl, idx++, at ? 218 : 89,  new Announcement(Announcement.ANNOUNCEMENT_PH1_TWENTYSECS));
-            check(tl, idx++, at ? 233 : 94,  new Announcement(Announcement.ANNOUNCEMENT_PH1_ENDS));
+            check(tl, idx++, at ? 0 : 0, new Announcement(Announcement.ANNOUNCEMENT_PH1_START));
+            check(tl, idx++, at ? 13 : 10, new Threat(1, true, false, Threat.Zone.Red));
+            check(tl, idx++, at ? 38 : 25, new IncomingData());
+            check(tl, idx++, at ? 65 : 35, new IncomingData());
+            check(tl, idx++, at ? 95 : 45, new Threat(2, true, false, Threat.Zone.White));
+            check(tl, idx++, at ? 129 : 60, new Threat(4, true, true, Threat.Zone.Blue));
+            check(tl, idx++, at ? 178 : 75, new Announcement(Announcement.ANNOUNCEMENT_PH1_ONEMINUTE));
+            check(tl, idx++, at ? 188 : 80, new WhiteNoise(at ? 20 : 4));
+            check(tl, idx++, at ? 208 : 84, new WhiteNoiseRestored());
+            check(tl, idx++, at ? 218 : 89, new Announcement(Announcement.ANNOUNCEMENT_PH1_TWENTYSECS));
+            check(tl, idx++, at ? 233 : 94, new Announcement(Announcement.ANNOUNCEMENT_PH1_ENDS));
             check(tl, idx++, at ? 257 : 104, new IncomingData());
             check(tl, idx++, at ? 276 : 114, new Threat(5, true, false, Threat.Zone.Red));
             check(tl, idx++, at ? 305 : 129, new Threat(6, true, false, Threat.Zone.Blue));
@@ -299,12 +300,12 @@ public class TestMissionImpl2 {
         assertEquals(expectEvent.getTextColor(), ev.getTextColor());
         assertEquals(expectEvent.getTimeColor(), ev.getTimeColor());
         if (ev instanceof Announcement) {
-            Announcement te = (Announcement)expectEvent;
-            Announcement tg = (Announcement)ev;
+            Announcement te = (Announcement) expectEvent;
+            Announcement tg = (Announcement) ev;
             assertEquals(te.getType(), tg.getType());
         } else if (ev instanceof Threat) {
-            Threat te = (Threat)expectEvent;
-            Threat tg = (Threat)ev;
+            Threat te = (Threat) expectEvent;
+            Threat tg = (Threat) ev;
             assertEquals(te.getThreatLevel(), tg.getThreatLevel());
             assertEquals(te.getThreatPosition(), tg.getThreatPosition());
             if (tg.getThreatPosition() == Threat.THREAT_POSITION_EXTERNAL) {
@@ -315,7 +316,7 @@ public class TestMissionImpl2 {
         }
     }
 
-    private void check(MissionImpl.MissionPreferences got,
+    private void check(MissionPreferences got,
                        int expectPlayers, int expectThreatLevel,
                        int expectThreatUnconfirmed,
                        boolean expectShowUnconfirmedReports,
@@ -325,7 +326,7 @@ public class TestMissionImpl2 {
         assertEquals(expectPlayers, got.getPlayers());
         assertEquals(expectThreatLevel, got.getThreatLevel());
         assertEquals(expectThreatUnconfirmed, got.getThreatUnconfirmed());
-        assertEquals(expectShowUnconfirmedReports, got.showUnconfirmedReports());
+        assertEquals(expectShowUnconfirmedReports, got.getShowUnconfirmed());
         assertEquals(expectMinIncomingData, got.getMinIncomingData());
         assertEquals(expectMaxIncomingData, got.getMaxIncomingData());
         assertEquals(expectMinPhaseTime0, got.getMinPhaseTime()[0]);

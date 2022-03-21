@@ -25,7 +25,6 @@ import android.content.SharedPreferences;
 import com.boarbeard.generator.beimax.event.DataTransfer;
 import com.boarbeard.generator.beimax.event.IncomingData;
 import com.boarbeard.generator.beimax.event.Threat;
-import com.boarbeard.generator.beimax.event.WhiteNoise;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,101 +148,18 @@ public class MissionImpl implements IMission {
     Random generator;
 
 
-    public static class MissionPreferences {
-        private long seed = 0;  //  may be specified in unit tests
-        private boolean compressTime = false;  //  silly debug flag
-        private int players = 5;
-        private boolean showUnconfirmed = false;
-        private boolean enableDoubleThreats = false;
-
-        /**
-         * configuration: threat level (8 for std game)
-         */
-        private int threatLevel = 8;
-        /**
-         * ...of which 1 level is unconfirmed (for 5 players)
-         */
-        private int threatUnconfirmed = 1;
-
-        private int minIncomingData = 1;
-        private int maxIncomingData = 6;
-
-        /**
-         * minimum and maximum time for phases
-         */
-        private int[] minPhaseTime = {205, 180, 140};
-        private int[] maxPhaseTime = {240, 225, 155};
-
-        public int getPlayers() {
-            return players;
-        }
-
-        /**
-         * If true, then unconfirmed reports will show up as unconfirmed
-         * reports; if false, then they'll either show up as normal
-         * ("confirmed") threats, or not at all, depending on the player count.
-         */
-        public boolean showUnconfirmedReports() {
-            return showUnconfirmed;
-        }
-
-        public int getThreatLevel() {
-            return threatLevel;
-        }
-
-        public void setThreatLevel(int threatLevel) {
-            this.threatLevel = threatLevel;
-        }
-
-        public int getThreatUnconfirmed() {
-            return threatUnconfirmed;
-        }
-
-        public void setThreatUnconfirmed(int threatUnconfirmed) {
-            this.threatUnconfirmed = threatUnconfirmed;
-        }
-
-        public int getMinIncomingData() {
-            return minIncomingData;
-        }
-
-        public void setMinIncomingData(int minIncomingData) {
-            this.minIncomingData = minIncomingData;
-        }
-
-        public int getMaxIncomingData() {
-            return maxIncomingData;
-        }
-
-        public void setMaxIncomingData(int maxIncomingData) {
-            this.maxIncomingData = maxIncomingData;
-        }
-
-        public int[] getMinPhaseTime() {
-            return minPhaseTime;
-        }
-
-        public void setMinPhaseTime(int[] minPhaseTime) {
-            this.minPhaseTime = minPhaseTime;
-        }
-
-        public int[] getMaxPhaseTime() {
-            return maxPhaseTime;
-        }
-
-        public void setMaxPhaseTime(int[] maxPhaseTime) {
-            this.maxPhaseTime = maxPhaseTime;
-        }
-    }
-
     private final MissionPreferences missionPreferences;
 
     /**
      * @param preferences for the mission.
      */
     public MissionImpl(MissionPreferences preferences) {
-        long seed = System.nanoTime() + 8682522807148012L;
-        if (preferences.seed != 0) seed = preferences.seed;
+        long seed = 0;
+        if (preferences.getSeed() != 0) {
+            seed = preferences.getSeed();
+        } else {
+            seed = System.nanoTime() + 8682522807148012L;
+        }
         // random number generator
         generator = new Random(seed);
         missionPreferences = preferences;
@@ -252,49 +168,50 @@ public class MissionImpl implements IMission {
     public static MissionPreferences parsePreferences(SharedPreferences preferences) {
         MissionPreferences prefs = new MissionPreferences();
 
-        prefs.players = preferences.getInt("playerCount", 5);
-        prefs.threatLevel = preferences.getInt("threatDifficultyPreference", 8); // The threat level for 5 players!
+        prefs.setPlayers(preferences.getInt("playerCount", 5));
+        prefs.setThreatLevel(preferences.getInt("threatDifficultyPreference", 8)); // The threat level for 5 players!
+        prefs.setEnableDoubleThreats(preferences.getBoolean("enable_double_threats", false));
 
         if (!preferences.getBoolean("stompUnconfirmedReportsPreference", true)) {
             //  They want Unconfirmed Reports.
-            prefs.showUnconfirmed = true;
-            prefs.threatUnconfirmed = CONSTANT_THREAT_UNCONFIRMED; // if 5 players - then this is the unconfirmed part of the base threat level
+            prefs.setShowUnconfirmed(true);
+            prefs.setThreatUnconfirmed(CONSTANT_THREAT_UNCONFIRMED); // if 5 players - then this is the unconfirmed part of the base threat level
         } else {
             //  They want Unconfirmed Reports to appear as normal threats in
             //  5-player games, and to not appear at all in 4-or-fewer-player
             //  games.
-            prefs.showUnconfirmed = false;
+            prefs.setShowUnconfirmed(false);
             //  One way we *could* do this is is to generate the missions
             //  normally (including unconfirmed reports), and then go back and
             //  call EventList.stompUnconfirmedReports() in
             //  MissionType.getEventList() the way we do for the standard
             //  ConstructedMissions, but instead, let's just adjust the
             //  difficulty of the mission.
-            prefs.threatUnconfirmed = 0;
-            if (prefs.players != 5) {
-                prefs.threatLevel -= CONSTANT_THREAT_UNCONFIRMED; // if 4 players, then you have to subtract the unconfirmed part from the base level (8 - 1 = 7 in normal missions)
+            prefs.setThreatUnconfirmed(0);
+            if (prefs.getPlayers() != 5) {
+                prefs.setThreatLevel(prefs.getThreatLevel() - CONSTANT_THREAT_UNCONFIRMED); // if 4 players, then you have to subtract the unconfirmed part from the base level (8 - 1 = 7 in normal missions)
             }
         }
 
-        prefs.minIncomingData = preferences.getInt("numberIncomingData", prefs.minIncomingData);
-        prefs.maxIncomingData = preferences.getInt("numberIncomingData" + RIGHT_VALUE_SUFFIX, prefs.maxIncomingData);
+        prefs.setMinIncomingData(preferences.getInt("numberIncomingData", prefs.getMinIncomingData()));
+        prefs.setMaxIncomingData(preferences.getInt("numberIncomingData" + RIGHT_VALUE_SUFFIX, prefs.getMaxIncomingData()));
 
 
         int missionLength = preferences.getInt("missionLengthPreference", 600);
-        prefs.minPhaseTime[0] = (int) (missionLength * .4);
-        prefs.minPhaseTime[1] = (int) (missionLength * .35);
-        prefs.minPhaseTime[2] = (int) (missionLength * .25);
+        prefs.getMinPhaseTime()[0] = (int) (missionLength * .4);
+        prefs.getMinPhaseTime()[1] = (int) (missionLength * .35);
+        prefs.getMinPhaseTime()[2] = (int) (missionLength * .25);
 
-        prefs.maxPhaseTime[0] = (int) (missionLength * .4 + 15);
-        prefs.maxPhaseTime[1] = (int) (missionLength * .35 + 15);
-        prefs.maxPhaseTime[2] = (int) (missionLength * .25 + 15);
+        prefs.getMaxPhaseTime()[0] = (int) (missionLength * .4 + 15);
+        prefs.getMaxPhaseTime()[1] = (int) (missionLength * .35 + 15);
+        prefs.getMaxPhaseTime()[2] = (int) (missionLength * .25 + 15);
 
         //  For unit tests, we'd like to be able to repeatably generate "random"
         //  missions, so... look for an optional random number seed.  (I know
         //  we're looking for an int instead of a long here, but it doesn't
         //  matter; int is fine for unit tests.)
-        prefs.seed = preferences.getInt("randomSeed", 0);
-        prefs.compressTime = preferences.getBoolean("compressTimePreference", false);
+        prefs.setSeed(preferences.getInt("randomSeed", 0));
+        prefs.setCompressTime(preferences.getBoolean("compressTimePreference", false));
 
         return prefs;
     }
@@ -326,7 +243,7 @@ public class MissionImpl implements IMission {
      */
     public boolean generateMission() {
         // generate threats
-        boolean generated;
+        boolean generated = false;
         int tries = 100; //maximum number of tries to generate mission
         do {
             generated = generateThreats();
@@ -368,9 +285,9 @@ public class MissionImpl implements IMission {
      * Inner class to facilitate basic threat generation
      */
     class BasicThreatGenerator {
-        int threatLevel = missionPreferences.threatLevel;
-        int threatUnconfirmed = missionPreferences.threatUnconfirmed;
-        boolean enableDoubleThreats = missionPreferences.enableDoubleThreats;
+        int threatLevel = missionPreferences.getThreatLevel();
+        int threatUnconfirmed = missionPreferences.getThreatUnconfirmed();
+        boolean enableDoubleThreats = missionPreferences.getEnableDoubleThreats();
 
         // counters for threats by level, class, type, etc.
         int internalThreats, externalThreats,
@@ -387,7 +304,7 @@ public class MissionImpl implements IMission {
             internalThreats = generator.nextInt(maxInternalThreats - minInternalThreats + 1) + minInternalThreats;
             externalThreats = threatLevel - internalThreats;
 
-            Timber.v("Threat Level: " + threatLevel + "; interal = " + internalThreats + ", external = " + externalThreats);
+            Timber.v("Threat Level: " + threatLevel + "; internal = " + internalThreats + ", external = " + externalThreats);
 
             // generate number of serious threats
             seriousThreats = generator.nextInt(threatLevel / 2 + 1);
@@ -512,7 +429,7 @@ public class MissionImpl implements IMission {
          * @return generated threats
          */
         ThreatGroup[] generateThreats() {
-            boolean enableDoubleThreats = missionPreferences.enableDoubleThreats;
+            boolean enableDoubleThreats = missionPreferences.getEnableDoubleThreats();
 
             ThreatGroup[] threats = new ThreatGroup[enableDoubleThreats ? threatsSum - 1 : threatsSum];
             int threatIdx = 0; // current id in above array
@@ -521,7 +438,7 @@ public class MissionImpl implements IMission {
             if (enableDoubleThreats) {
                 Threat newThreat = new Threat(); // new threat created
                 // confirmed or unconfirmed?
-                if (generator.nextInt(threatsSum) + 1 > missionPreferences.threatUnconfirmed) {
+                if (missionPreferences.getShowUnconfirmed() && generator.nextInt(threatsSum) + 1 > missionPreferences.getThreatUnconfirmed()) {
                     if (generator.nextInt(normalUnconfirmed + seriousUnconfirmed) + 1 <= normalUnconfirmed) {
                         normalUnconfirmedThreatAdded(newThreat);
                     } else {
@@ -629,6 +546,7 @@ public class MissionImpl implements IMission {
 
     /**
      * "sane" generator method for threats
+     *
      * @return true if generation was successful
      */
     protected boolean generateThreats() {
@@ -659,29 +577,37 @@ public class MissionImpl implements IMission {
                 Threat externalThreat = threatGroup.getExternal();
                 if (externalThreat != null) {
                     if (externalThreat.getThreatLevel() == Threat.THREAT_LEVEL_SERIOUS) {
-                        if (minPhase < minTSeriousExternalThreat) minPhase = minTSeriousExternalThreat;
-                        if (maxPhase > maxTSeriousExternalThreat) maxPhase = maxTSeriousExternalThreat;
+                        if (minPhase < minTSeriousExternalThreat)
+                            minPhase = minTSeriousExternalThreat;
+                        if (maxPhase > maxTSeriousExternalThreat)
+                            maxPhase = maxTSeriousExternalThreat;
                     } else {
-                        if (minPhase < minTNormalExternalThreat) minPhase = minTNormalExternalThreat;
-                        if (maxPhase > maxTNormalExternalThreat) maxPhase = maxTNormalExternalThreat;
+                        if (minPhase < minTNormalExternalThreat)
+                            minPhase = minTNormalExternalThreat;
+                        if (maxPhase > maxTNormalExternalThreat)
+                            maxPhase = maxTNormalExternalThreat;
                     }
                 }
 
                 Threat internalThreat = threatGroup.getInternal();
                 if (internalThreat != null) {
                     if (internalThreat.getThreatLevel() == Threat.THREAT_LEVEL_SERIOUS) {
-                        if (minPhase < minTSeriousInternalThreat) minPhase = minTSeriousInternalThreat;
-                        if (maxPhase > maxTSeriousInternalThreat) maxPhase = maxTSeriousInternalThreat;
+                        if (minPhase < minTSeriousInternalThreat)
+                            minPhase = minTSeriousInternalThreat;
+                        if (maxPhase > maxTSeriousInternalThreat)
+                            maxPhase = maxTSeriousInternalThreat;
                     } else {
-                        if (minPhase < minTNormalInternalThreat) minPhase = minTNormalInternalThreat;
-                        if (maxPhase > maxTNormalInternalThreat) maxPhase = maxTNormalInternalThreat;
+                        if (minPhase < minTNormalInternalThreat)
+                            minPhase = minTNormalInternalThreat;
+                        if (maxPhase > maxTNormalInternalThreat)
+                            maxPhase = maxTNormalInternalThreat;
                     }
                 }
 
                 // create list of possible phases - find remaining possible phases and pick one
                 List<Integer> possiblePhases = new ArrayList<>();
                 for (int i = minPhase; i <= maxPhase; i++) {
-                    if (sortedThreats[i-1] == null) possiblePhases.add(i);
+                    if (sortedThreats[i - 1] == null) possiblePhases.add(i);
                 }
 
                 // no possible phases left - giving up to continue again
@@ -696,7 +622,7 @@ public class MissionImpl implements IMission {
                 // set stuff
                 if (externalThreat != null) externalThreat.setTime(phase);
                 if (internalThreat != null) internalThreat.setTime(phase);
-                sortedThreats[phase-1] = threatGroup;
+                sortedThreats[phase - 1] = threatGroup;
 
                 // add threat score
                 if (externalThreat != null && internalThreat != null) {
@@ -727,15 +653,18 @@ public class MissionImpl implements IMission {
                 if (t != null) {
                     switch (generator.nextInt(3)) {
                         case 0:
-                            if (lastSector != Threat.THREAT_SECTOR_BLUE) t.setSector(Threat.THREAT_SECTOR_BLUE);
+                            if (lastSector != Threat.THREAT_SECTOR_BLUE)
+                                t.setSector(Threat.THREAT_SECTOR_BLUE);
                             else t.setSector(Threat.THREAT_SECTOR_WHITE);
                             break;
                         case 1:
-                            if (lastSector != Threat.THREAT_SECTOR_WHITE) t.setSector(Threat.THREAT_SECTOR_WHITE);
+                            if (lastSector != Threat.THREAT_SECTOR_WHITE)
+                                t.setSector(Threat.THREAT_SECTOR_WHITE);
                             else t.setSector(Threat.THREAT_SECTOR_RED);
                             break;
                         case 2:
-                            if (lastSector != Threat.THREAT_SECTOR_RED) t.setSector(Threat.THREAT_SECTOR_RED);
+                            if (lastSector != Threat.THREAT_SECTOR_RED)
+                                t.setSector(Threat.THREAT_SECTOR_RED);
                             else t.setSector(Threat.THREAT_SECTOR_BLUE);
                             break;
                         // default: System.out.println("No Way!");
@@ -772,7 +701,7 @@ public class MissionImpl implements IMission {
         int incomingSum = 0;
         int transferSum = 0;
 
-        int randomIncomingData = generator.nextInt(missionPreferences.maxIncomingData - missionPreferences.minIncomingData + 1) + missionPreferences.minIncomingData;
+        int randomIncomingData = generator.nextInt(missionPreferences.getMaxIncomingData() - missionPreferences.getMinIncomingData() + 1) + missionPreferences.getMinIncomingData();
 
         // start with a random in one of the first two phases
         incomingData[generator.nextInt(2)]++;
@@ -827,7 +756,7 @@ public class MissionImpl implements IMission {
     protected void generateTimes() {
         // generate white noise
         int whiteNoiseTime = generator.nextInt(maxWhiteNoise - minWhiteNoise + 1) + minWhiteNoise;
-        Timber.tag("generateTimes()").v("White noise time: " + whiteNoiseTime);
+        Timber.tag("generateTimes()").v("White noise time: %d", whiteNoiseTime);
 
         // create chunks
         ArrayList<Integer> whiteNoiseChunks = new ArrayList<>();
@@ -872,12 +801,13 @@ public class MissionImpl implements IMission {
         // add mission lengths
         phaseTimes = new int[3];
         for (int i = 0; i < 3; i++) {
-            phaseTimes[i] = generator.nextInt(missionPreferences.maxPhaseTime[i] - missionPreferences.minPhaseTime[i] + 1) + missionPreferences.minPhaseTime[i];
+            phaseTimes[i] = generator.nextInt(missionPreferences.getMaxPhaseTime()[i] - missionPreferences.getMinPhaseTime()[i] + 1) + missionPreferences.getMinPhaseTime()[i];
         }
     }
 
     /**
      * generate phase stuff from data above
+     *
      * @return true if phase generation succeeded
      */
     protected boolean generatePhases() {
@@ -908,12 +838,12 @@ public class MissionImpl implements IMission {
         }
 
         // to be used further down
-        int[] lastThreatTime = { 0, 0 };
+        int[] lastThreatTime = {0, 0};
 
         // add the rest of the threats
         int currentTime = generator.nextInt(maxTimeForFirst[0] - minTimeForFirst[0] + 1) + minTimeForFirst[0];
         // threats should appear within this time
-        int lastTime = (int) (phaseTimes[0] * (((float)threatsWithInPercent) / 100));
+        int lastTime = (int) (phaseTimes[0] * (((float) threatsWithInPercent) / 100));
         boolean first = true;
         // look for first threat
         for (int i = 0; i <= 3; i++) {
@@ -930,7 +860,8 @@ public class MissionImpl implements IMission {
             }
             // first event?
             if (first) {
-                if (!eventList.addEvent(currentTime, activeThreat)) Timber.w("Could not add first event to list (time " + currentTime + ") - arg!");
+                if (!eventList.addEvent(currentTime, activeThreat))
+                    Timber.w("Could not add first event to list (time " + currentTime + ") - arg!");
                 first = false;
             } else {
                 boolean done = false; // try until it fits
@@ -941,7 +872,7 @@ public class MissionImpl implements IMission {
                     // next element occurs
                     int divisor = 2;
                     if (++tries > 10) divisor = 3;
-                    else if (tries > 20) divisor = 4;
+                    if (tries > 20) divisor = 4;
                     if (lastTime <= currentTime) return false;
                     nextTime = generator.nextInt((lastTime - currentTime) / divisor) + 5;
                     if (tries > 30) return false;
@@ -974,7 +905,7 @@ public class MissionImpl implements IMission {
         // add the rest of the threats
         currentTime = phaseTimes[0] + generator.nextInt(maxTimeForFirst[1] - minTimeForFirst[1] + 1) + minTimeForFirst[1];
         // threats should appear within this time
-        lastTime = phaseTimes[0] + (int) (phaseTimes[1] * (((float)threatsWithInPercent) / 100));
+        lastTime = phaseTimes[0] + (int) (phaseTimes[1] * (((float) threatsWithInPercent) / 100));
         first = true;
         // look for first threat
         for (int i = 4; i <= 7; i++) {
@@ -991,7 +922,8 @@ public class MissionImpl implements IMission {
             }
             // first event?
             if (first) {
-                if (!eventList.addEvent(currentTime, activeThreat)) Timber.w("Could not add first event to list in second phase (time " + currentTime + ") - arg!");
+                if (!eventList.addEvent(currentTime, activeThreat))
+                    Timber.w("Could not add first event to list in second phase (time " + currentTime + ") - arg!");
                 first = false;
             } else {
                 boolean done = false; // try until it fits

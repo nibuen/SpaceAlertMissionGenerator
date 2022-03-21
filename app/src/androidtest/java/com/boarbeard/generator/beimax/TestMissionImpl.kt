@@ -1,42 +1,33 @@
-package com.boarbeard.generator.beimax;
+package com.boarbeard.generator.beimax
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.boarbeard.generator.beimax.event.IncomingData
+import org.junit.Assert
+import org.junit.Test
+import org.junit.runner.RunWith
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-
-import com.boarbeard.generator.beimax.event.Event;
-import com.boarbeard.generator.beimax.event.IncomingData;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Map;
-
-import static org.junit.Assert.assertTrue;
-
-@RunWith(AndroidJUnit4.class)
-public class TestMissionImpl {
-
+@RunWith(AndroidJUnit4::class)
+class TestMissionImpl {
     /**
      * Assert incoming data stays between the preferences.
      */
     @Test
-    public void testGenerateIncomingDataBetweenValues() {
-        MissionImpl.MissionPreferences missionPreferences = new MissionImpl.MissionPreferences();
-        missionPreferences.setMaxIncomingData(4);
-        missionPreferences.setMinIncomingData(2);
+    fun testGenerateIncomingDataBetweenValues() {
+        val missionPreferences = MissionPreferences()
+        missionPreferences.maxIncomingData = 4
+        missionPreferences.minIncomingData = 2
 
-        for (int i = 0; i < 10; i++) {
-            MissionImpl missionImpl = new MissionImpl(missionPreferences);
-            assertTrue(missionImpl.generateMission());
+        for (i in 0..9) {
+            val missionImpl = MissionImpl(missionPreferences)
+            Assert.assertTrue(missionImpl.generateMission())
 
-            int incomingDataCount = 0;
-            for (Map.Entry<Integer, Event> entry : missionImpl.getMissionEvents().getEntrySet()) {
-                if (entry.getValue() instanceof IncomingData) {
-                    incomingDataCount++;
+            var incomingDataCount = 0
+            for ((_, value) in missionImpl.missionEvents.entrySet) {
+                if (value is IncomingData) {
+                    incomingDataCount++
                 }
             }
-
-            assertTrue(incomingDataCount >= 2 && incomingDataCount <= 4);
+            Assert.assertTrue(incomingDataCount in 2..4)
         }
     }
 }
