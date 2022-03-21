@@ -1,7 +1,5 @@
 package com.boarbeard.audio.parser;
 
-import android.util.Log;
-
 import com.boarbeard.audio.MediaInfo;
 import com.boarbeard.audio.MediaPlayerSequence;
 import com.boarbeard.audio.parser.Grammar.Element;
@@ -12,6 +10,8 @@ import com.boarbeard.generator.beimax.event.IncomingData;
 import com.boarbeard.generator.beimax.event.Threat;
 import com.boarbeard.generator.beimax.event.WhiteNoise;
 import com.boarbeard.generator.beimax.event.WhiteNoiseRestored;
+
+import timber.log.Timber;
 
 /**
  * Parser which supports English grammars.
@@ -218,7 +218,7 @@ public class EnglishParser extends EventListParser {
 			elem = Element.AnnounceThirdPhaseEnds;
 			break;
 		default:
-			Log.e(LOG_TAG, "Unknown announcement type: " + event.getType());
+			Timber.e("Unknown announcement type: %s", event.getType());
 			return;
 		}
 

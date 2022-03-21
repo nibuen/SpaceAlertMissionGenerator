@@ -117,10 +117,10 @@ public enum MissionType {
 
 	public EventList getEventList(SharedPreferences preferences) {
         EventList copyOfList = null;
-        MissionImpl.MissionPreferences mp = MissionImpl.parsePreferences(preferences);
-        if (!mp.showUnconfirmedReports()) {
+        MissionImpl.MissionPreferences missionPreferences = MissionImpl.parsePreferences(preferences);
+        if (!missionPreferences.showUnconfirmedReports()) {
             copyOfList = new EventList(eventList);
-            copyOfList.stompUnconfirmedReports(mp.getPlayers() == 5);
+            copyOfList.stompUnconfirmedReports(missionPreferences.getPlayers() == 5);
         }
         if (preferences.getBoolean("compressTimePreference", false)) {
             if (copyOfList == null) copyOfList = new EventList(eventList);

@@ -173,7 +173,7 @@ public class EventList {
 		}
 
 		// otherwise add event
-		events.put(new Integer(time), event);
+		events.put(time, event);
 		return true;
 	}
 

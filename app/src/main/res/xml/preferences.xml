@@ -46,7 +46,12 @@
             android:persistent="true"
             android:summary="@string/pref_incoming_data_summary"
             android:title="@string/pref_incoming_data_title" />
-        <CheckBoxPreference android:key="logColorsPreference"
+		<CheckBoxPreference android:key="enableDoubleThreats"
+			android:defaultValue="false"
+			android:title="@string/pref_enableDoubleThreats_title"
+			android:persistent="true"
+			android:summary="@string/pref_pref_enableDoubleThreats_summary" />
+		<CheckBoxPreference android:key="logColorsPreference"
 			android:defaultValue="true"
 			android:title="@string/pref_logColors_title"
 			android:persistent="true"

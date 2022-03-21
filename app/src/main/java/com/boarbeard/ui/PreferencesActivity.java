@@ -45,8 +45,8 @@ public class PreferencesActivity extends PreferenceActivity implements
 		ListPreference listPreferenceCategory = (ListPreference) findPreference("voice_choices");
 		if (listPreferenceCategory != null) {
 			List<Uri> mediaFolderList = ExternalMedia.getMediaFolders(this);
-			CharSequence entries[] = new String[mediaFolderList.size() + 1];
-			CharSequence entryValues[] = new String[mediaFolderList.size() + 1];
+			CharSequence[] entries = new String[mediaFolderList.size() + 1];
+			CharSequence[] entryValues = new String[mediaFolderList.size() + 1];
 
 			int i = 0;
 			entries[i] = DefaultGrammar.NAME;
