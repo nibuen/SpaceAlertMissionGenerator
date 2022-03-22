@@ -82,9 +82,7 @@
   	<string name="pref_choose_mission">Wähle Missionstyp</string>
 	<string name="pref_logColors_title">Protokoll Farben</string>
     <string name="pref_logColors_summary">Stellt die Protkolleinträge in verschiedenen Farben dar. Sonst in weiß.</string>
-	<!-- Google Translated -->
     <string name="pref_enableDoubleThreats_title">Doppelte Bedrohungen zulassen</string>
-	<!-- Google Translated -->
-	<string name="pref_enableDoubleThreats_summary">Aktivieren Sie doppelte Bedrohungen (\"The New Frontier\": eine externe und eine interne Bedrohung treten in einem Zeitfenster auf)</string>
+	<string name="pref_enableDoubleThreats_summary">Aktivieren Sie doppelte Bedrohungen (\"Space Alert - Unendliche Weiten\": eine externe und eine interne Bedrohung treten gleichzeitig auf)</string>
 
 </resources>
