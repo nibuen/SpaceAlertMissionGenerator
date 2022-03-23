@@ -9,25 +9,22 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class TestMissionImpl {
     /**
-     * Assert incoming data stays between the preferences.
+     * Assert incoming data stays between the preferences for incoming data.
      */
     @Test
     fun testGenerateIncomingDataBetweenValues() {
         val missionPreferences = MissionPreferences()
-        missionPreferences.maxIncomingData = 4
-        missionPreferences.minIncomingData = 2
+        missionPreferences.incomingDataRange = 2..4
+        Assert.assertEquals(2, missionPreferences.getMinIncomingData())
+        Assert.assertEquals(4, missionPreferences.getMaxIncomingData())
 
-        for (i in 0..9) {
+        for (i in 0..25) {
             val missionImpl = MissionImpl(missionPreferences)
             Assert.assertTrue(missionImpl.generateMission())
 
-            var incomingDataCount = 0
-            for ((_, value) in missionImpl.missionEvents.entrySet) {
-                if (value is IncomingData) {
-                    incomingDataCount++
-                }
-            }
-            Assert.assertTrue(incomingDataCount in 2..4)
+            val foundIncomingDataList = missionImpl.missionEvents.entrySet.filter { it.value is IncomingData }
+            val incomingDataCount = foundIncomingDataList.size
+            Assert.assertTrue("found $incomingDataCount instead \n $foundIncomingDataList on test $i", incomingDataCount in 2..4)
         }
     }
 }

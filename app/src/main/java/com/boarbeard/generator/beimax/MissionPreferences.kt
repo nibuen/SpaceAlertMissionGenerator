@@ -29,9 +29,16 @@ class MissionPreferences {
      * ...of which 1 level is unconfirmed (for 5 players)
      */
     var threatUnconfirmed = 1
-    var minIncomingData = 1
-    var maxIncomingData = 6
 
+    var incomingDataRange = IntRange(1, 6)
+
+    fun getMinIncomingData(): Int {
+        return incomingDataRange.first
+    }
+
+    fun getMaxIncomingData(): Int {
+        return incomingDataRange.last
+    }
 
     /**
      * minimum and maximum time for phases

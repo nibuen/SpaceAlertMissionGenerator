@@ -26,10 +26,14 @@ import com.boarbeard.generator.beimax.event.DataTransfer;
 import com.boarbeard.generator.beimax.event.IncomingData;
 import com.boarbeard.generator.beimax.event.Threat;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import kotlin.ranges.IntRange;
 import timber.log.Timber;
 
 /**
@@ -118,7 +122,7 @@ public class MissionImpl implements IMission {
     /**
      * keeps threats
      */
-    private ThreatGroup[] threats;
+    ThreatGroup[] threats;
 
     /**
      * keeps incoming and data transfers
@@ -140,7 +144,7 @@ public class MissionImpl implements IMission {
     /**
      * event list
      */
-    EventList eventList;
+    private EventList eventList;
 
     /**
      * random number generator
@@ -160,7 +164,6 @@ public class MissionImpl implements IMission {
         } else {
             seed = System.nanoTime() + 8682522807148012L;
         }
-        // random number generator
         generator = new Random(seed);
         missionPreferences = preferences;
     }
@@ -193,8 +196,12 @@ public class MissionImpl implements IMission {
             }
         }
 
-        prefs.setMinIncomingData(preferences.getInt("numberIncomingData", prefs.getMinIncomingData()));
-        prefs.setMaxIncomingData(preferences.getInt("numberIncomingData" + RIGHT_VALUE_SUFFIX, prefs.getMaxIncomingData()));
+        prefs.setIncomingDataRange(
+                new IntRange(
+                        preferences.getInt("numberIncomingData", prefs.getMinIncomingData()),
+                        preferences.getInt("numberIncomingData" + RIGHT_VALUE_SUFFIX, prefs.getMaxIncomingData())
+                )
+        );
 
 
         int missionLength = preferences.getInt("missionLengthPreference", 600);
@@ -685,6 +692,8 @@ public class MissionImpl implements IMission {
             }
         }
 
+        assert (Arrays.stream(threats).anyMatch(threatGroup -> threatGroup.getExternal() != null || threatGroup.getInternal() != null));
+
         return true;
     }
 
@@ -702,10 +711,12 @@ public class MissionImpl implements IMission {
         int transferSum = 0;
 
         int randomIncomingData = generator.nextInt(missionPreferences.getMaxIncomingData() - missionPreferences.getMinIncomingData() + 1) + missionPreferences.getMinIncomingData();
+        Timber.tag("generateData").v("randomIncomingData: %d", randomIncomingData);
 
         // start with a random in one of the first two phases
         incomingData[generator.nextInt(2)]++;
         randomIncomingData--;
+        assert (Arrays.stream(incomingData).sum() <= missionPreferences.getMaxIncomingData());
 
         // split evenly until we can't
         while ((randomIncomingData / 3) >= 1) {
@@ -714,6 +725,7 @@ public class MissionImpl implements IMission {
             incomingData[2]++;
             randomIncomingData -= 3;
         }
+        assert (Arrays.stream(incomingData).sum() <= missionPreferences.getMaxIncomingData());
 
         // finally just fit stuff randomly
         int lastPlaced = -1;
@@ -726,6 +738,7 @@ public class MissionImpl implements IMission {
             incomingData[value]++;
             randomIncomingData--;
         }
+        assert (Arrays.stream(incomingData).sum() <= missionPreferences.getMaxIncomingData());
 
         // generate stuff by phase
         for (int i = 0; i < 3; i++) {
@@ -738,14 +751,16 @@ public class MissionImpl implements IMission {
             incomingSum += incomingData[i];
             transferSum += dataTransfers[i];
         }
+        assert (Arrays.stream(incomingData).sum() <= missionPreferences.getMaxIncomingData());
 
         // check minimums
         if (incomingSum < minIncomingDataTotal || transferSum < minDataTransferTotal) return false;
 
         // debugging information
         for (int i = 0; i < 3; i++) {
-            Timber.tag("generateThreats()").v("Phase " + (i + 1) + ": Incoming Data = " + incomingData[i] + "; Data Transfers = " + dataTransfers[i]);
+            Timber.tag("generateData").v("Phase " + (i + 1) + ": Incoming Data = " + incomingData[i] + "; Data Transfers = " + dataTransfers[i]);
         }
+        assert (Arrays.stream(incomingData).sum() <= missionPreferences.getMaxIncomingData());
 
         return true;
     }
@@ -813,6 +828,13 @@ public class MissionImpl implements IMission {
     protected boolean generatePhases() {
         Timber.i("Data gathered: Generating phases.");
 
+        // Deep copy as we modify the groups when attempting to fit
+        ThreatGroup[] threats = new ThreatGroup[this.threats.length];
+        for (int i = 0; i < threats.length; i++) {
+            ThreatGroup original = this.threats[i];
+            threats[i] = new ThreatGroup(original.getInternal(), original.getExternal());
+        }
+
         // create events
         eventList = new EventList();
 
@@ -858,10 +880,13 @@ public class MissionImpl implements IMission {
             } else {
                 continue;
             }
+
             // first event?
             if (first) {
                 if (!eventList.addEvent(currentTime, activeThreat))
                     Timber.w("Could not add first event to list (time " + currentTime + ") - arg!");
+                else
+                    Timber.i("adding first threat %s", activeThreat);
                 first = false;
             } else {
                 boolean done = false; // try until it fits
@@ -872,7 +897,7 @@ public class MissionImpl implements IMission {
                     // next element occurs
                     int divisor = 2;
                     if (++tries > 10) divisor = 3;
-                    if (tries > 20) divisor = 4;
+                    else if (tries > 20) divisor = 4;
                     if (lastTime <= currentTime) return false;
                     nextTime = generator.nextInt((lastTime - currentTime) / divisor) + 5;
                     if (tries > 30) return false;
@@ -895,8 +920,10 @@ public class MissionImpl implements IMission {
             do {
                 // TODO: remove hardcoded length here:
                 int ambushTime = generator.nextInt(35) + phaseTimes[0] + phaseTimes[1] - 59;
-                Timber.i("Ambush in phase 2 at time: %d", ambushTime);
                 done = eventList.addEvent(ambushTime, maybeAmbush);
+                if (done) {
+                    Timber.i("Ambush in phase 2 at time: %d", ambushTime);
+                }
             } while (!done);
 
             threats[7].removeExternal();
@@ -933,7 +960,6 @@ public class MissionImpl implements IMission {
                     // next element occurs
                     int divisor = 2;
                     if (++tries > 10) divisor = 3;
-                    if (tries > 20) divisor = 4;
                     if (lastTime <= currentTime) return false;
                     nextTime = generator.nextInt((lastTime - currentTime) / divisor) + 5;
                     if (tries > 30) return false;
@@ -972,12 +998,12 @@ public class MissionImpl implements IMission {
         startTime = 0;
         endTime = 0;
         // distribute rest of data transfers and incoming data randomly within the phases
-        for (int i = 0; i < 3; i++) {
+        for (int phase = 0; phase < 3; phase++) {
             // recalculate phase times
             startTime = endTime;
-            endTime += phaseTimes[i];
+            endTime += phaseTimes[phase];
             // data transfer first, since these are fairly long
-            for (int j = 0; j < dataTransfers[i]; j++) {
+            for (int dataTransferIndex = 0; dataTransferIndex < dataTransfers[phase]; dataTransferIndex++) {
                 boolean done = false; // try until it fits
                 do {
                     // white noise can pretty much occur everywhere
@@ -986,7 +1012,7 @@ public class MissionImpl implements IMission {
                 } while (!done);
             }
             // incoming data second
-            for (int j = 0; j < incomingData[j]; j++) {
+            for (int incomingDataIndex = 0; incomingDataIndex < incomingData[phase]; incomingDataIndex++) {
                 boolean done = false; // try until it fits
                 do {
                     // white noise can pretty much occur everywhere
@@ -1012,6 +1038,7 @@ public class MissionImpl implements IMission {
     /**
      * Prints list of missions
      */
+    @NotNull
     @Override
     public String toString() {
         return eventList.toString();

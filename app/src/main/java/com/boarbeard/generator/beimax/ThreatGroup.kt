@@ -1,75 +1,65 @@
-package com.boarbeard.generator.beimax;
+package com.boarbeard.generator.beimax
 
-import com.boarbeard.generator.beimax.event.Threat;
+import com.boarbeard.generator.beimax.event.Threat
 
-public class ThreatGroup {
-    private Threat internal;
-    private Threat external;
+class ThreatGroup {
+    var internal: Threat? = null
+    var external: Threat? = null
 
-    public ThreatGroup() {
+    constructor()
+    constructor(e: Threat) {
+        set(e)
+    }
+    constructor(internal: Threat?, external: Threat?) {
+        this.internal = internal
+        this.external = external
     }
 
-    public ThreatGroup(Threat e) {
-        set(e);
+    fun hasInternal(): Boolean {
+        return internal != null
     }
 
-    public Threat getInternal() {
-        return internal;
+    fun hasExternal(): Boolean {
+        return external != null
     }
 
-    public Threat getExternal() {
-        return external;
-    }
-
-    public boolean hasInternal() {
-        return internal != null;
-    }
-
-    public boolean hasExternal() {
-        return external != null;
-    }
-
-    public boolean addInternal(Threat i) {
+    fun addInternal(i: Threat?): Boolean {
         if (internal == null) {
-            internal = i;
-            return true;
+            internal = i
+            return true
         }
-        return false;
+        return false
     }
 
-    public boolean addExternal(Threat e) {
+    fun addExternal(e: Threat?): Boolean {
         if (external == null) {
-            external = e;
-            return true;
+            external = e
+            return true
         }
-        return false;
+        return false
     }
 
-    public void setExternal(Threat e) {
-        external = e;
-    }
-
-    public void setInternal(Threat e) {
-        internal = e;
-    }
-
-    public void set(Threat e) {
-        if (e.getThreatPosition() == Threat.THREAT_POSITION_INTERNAL) {
-            setInternal(e);
+    fun set(e: Threat) {
+        if (e.threatPosition == Threat.THREAT_POSITION_INTERNAL) {
+            internal = e
         } else {
-            setExternal(e);
+            external = e
         }
     }
 
-    public Threat removeInternal() {
-        Threat ret = internal;
-        internal = null;
-        return ret;
+    fun removeInternal(): Threat? {
+        val ret = internal
+        internal = null
+        return ret
     }
 
-    public Threat removeExternal() {
-        Threat ret = external;
-        external = null;
-        return ret;
+    fun removeExternal(): Threat? {
+        val ret = external
+        external = null
+        return ret
+    }
+
+    override fun toString(): String {
+        return "internal: $internal + external: $external"
     }
 }
