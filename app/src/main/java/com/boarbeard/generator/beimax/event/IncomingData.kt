@@ -12,43 +12,31 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **/
-package com.boarbeard.generator.beimax.event;
+ * along with this program.  If not, see <http:></http:>//www.gnu.org/licenses/>.
+ */
+package com.boarbeard.generator.beimax.event
 
 /**
  * @author mkalus
- * 
  */
-public class IncomingData implements Event {
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.beimax.spacealert.Event#getLengthInSeconds()
-	 */
-	public int getLengthInSeconds() {
-		return 10;
-	}
+class IncomingData : Event {
+    override val lengthInSeconds: Int
+        get() = 10
+    override val textColor: String
+        get() = "#FFF9AD"
+    override val timeColor: String
+        get() = "#80A9BC"
 
-	public String getTimeColor() {
-		return "#80A9BC";
-	}
-
-	public String getTextColor() {
-		return "#FFF9AD";
-	}
-
-	/*
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
-	@Override
-	public String toString() {
-		return "IncomingData [getLengthInSeconds()=" + getLengthInSeconds()
-				+ ", getTimeColor()=" + getTimeColor() + ", getTextColor()="
-				+ getTextColor() + "]";
-	}
+    override fun toString(): String {
+        return ("IncomingData [getLengthInSeconds()=" + lengthInSeconds
+                + ", getTimeColor()=" + timeColor + ", getTextColor()="
+                + textColor + "]")
+    }
 }

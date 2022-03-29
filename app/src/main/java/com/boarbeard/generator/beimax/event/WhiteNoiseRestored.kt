@@ -12,28 +12,31 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **/
-package com.boarbeard.generator.beimax.event;
+ * along with this program.  If not, see <http:></http:>//www.gnu.org/licenses/>.
+ */
+package com.boarbeard.generator.beimax.event
 
 /**
- * Event that can occur on missions...
- * 
  * @author mkalus
- * 
  */
-public interface Event {
+class WhiteNoiseRestored : Event {
+    override val lengthInSeconds: Int
+        get() = 5
+    override val timeColor: String
+        get() = "#80A9BC"
+    override val textColor: String
+        get() = "#A8A9A8"
 
-	/**
-	 * Get length of event in seconds
+    /*
+	 * (non-Javadoc)
 	 * 
-	 * @return length of the event in seconds
+	 * @see java.lang.Object#toString()
 	 */
-	public int getLengthInSeconds();
-
-	public String getTimeColor();
-
-	public String getTextColor();
+    override fun toString(): String {
+        return ("WhiteNoiseRestored [getLengthInSeconds()="
+                + lengthInSeconds + ", getTimeColor()=" + timeColor
+                + ", getTextColor()=" + textColor + "]")
+    }
 }

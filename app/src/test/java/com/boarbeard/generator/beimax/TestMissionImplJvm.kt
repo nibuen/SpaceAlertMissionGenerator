@@ -10,7 +10,7 @@ import timber.log.Timber
 
 class JvmDebugTree : Timber.Tree() {
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
-        println("${if(tag != null) "[$tag]" else ""}[${parsePriority(priority)}] --- $message")
+        println("${if (tag != null) "[$tag]" else ""}[${parsePriority(priority)}] --- $message")
     }
 
     /*
@@ -45,7 +45,7 @@ class JvmDebugTree : Timber.Tree() {
     public static final int ASSERT = 7;
      */
     private fun parsePriority(priority: Int): String {
-        return when(priority) {
+        return when (priority) {
             2 -> "V"
             3 -> "D"
             4 -> "W"
@@ -123,6 +123,13 @@ class TestMissionImplJvm {
             val missionImpl = MissionImpl(missionPreferences)
             Assert.assertTrue(missionImpl.generateMission())
 
+            // Verify count matches to configurations
+            Assert.assertEquals(
+                missionPreferences.threatLevel,
+                missionImpl.missionEvents.events.values.sumOf { (it as? Threat)?.threatLevel ?: 0 }
+            )
+
+            // more detailed checks based on preferences
             val foundUnconfirmedReports = missionImpl.missionEvents.entrySet.filter {
                 val checkIfThreat = it.value
                 checkIfThreat is Threat && !checkIfThreat.isConfirmed
@@ -144,6 +151,8 @@ class TestMissionImplJvm {
                 "found $confirmedReportsCount instead \n $foundConfirmedReports on test $i",
                 confirmedReportsCount > 0
             )
+
+
         }
     }
 
