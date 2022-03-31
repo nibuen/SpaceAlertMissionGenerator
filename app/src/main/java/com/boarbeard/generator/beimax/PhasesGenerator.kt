@@ -60,13 +60,12 @@ class PhasesGenerator(
             ) + 1 < chanceForAmbush[0]
         ) {
             //...then add an "ambush" threat between 1 minute and 20 secs warnings
-            var done = false // try until it fits
-            do {
+            eventList.fit {
                 // TODO: remove hardcoded length here:
                 val ambushTime: Int = generator.nextInt(35) + phaseTimes[0] - 59
                 Timber.i("Ambush in phase 1 at time: %d", ambushTime)
-                done = eventList.addEvent(ambushTime, maybeAmbush)
-            } while (!done)
+                eventList.addEvent(ambushTime, maybeAmbush)
+            }
             threats[3].removeExternal()
             ambushOccurred = true // to disallow two ambushes in one game
         }
@@ -85,12 +84,8 @@ class PhasesGenerator(
             var i = 0
             while (i <= 3) {
                 val now = threats[i]
-                var activeThreat: Threat?
-                if (now.hasExternal()) {
-                    activeThreat = now.removeExternal()
-                    i-- //check again
-                } else if (now.hasInternal()) {
-                    activeThreat = now.removeInternal()
+                val activeThreat: Threat? = now.pop()
+                if (activeThreat != null) {
                     i-- //check again
                 } else {
                     i++
@@ -109,25 +104,23 @@ class PhasesGenerator(
                     )
                     first = false
                 } else {
-                    var done = false // try until it fits
                     var nextTime = 0
-                    var tries = 0 // number of tries
-                    do {
-                        // next threat appears
-                        // next element occurs
-                        var divisor = 2
-                        if (++tries > 10) divisor = 3 else if (tries > 20) divisor = 4
-                        if (lastTime <= currentTime) return false
-                        nextTime = generator.nextInt((lastTime - currentTime) / divisor) + 5
-                        if (tries > 30) return false
-                        done = eventList.addEvent(currentTime + nextTime, activeThreat)
-                    } while (!done)
+                    if (lastTime > currentTime) {
+                        val success = eventList.fit(attempts = 30) { currentAttempt ->
+                            // next element occurs
+                            val divisor = if (currentAttempt > 10) 3 else 2
+                            nextTime =
+                                generator.nextInt(max(1, (lastTime - currentTime) / divisor)) + 5
+                            eventList.addEvent(currentTime + nextTime, activeThreat)
+                        }
+                        if (!success) return false
+                    }
                     currentTime += nextTime
                     // save lastThreatTime for data transfers further down
                     if (i < 3) lastThreatTime[0] = currentTime
                 }
                 // add to time
-                currentTime += activeThreat!!.lengthInSeconds
+                currentTime += activeThreat.lengthInSeconds
                 i++
             }
         }
@@ -165,12 +158,8 @@ class PhasesGenerator(
             var i = 4
             while (i <= 7) {
                 val now = threats[i]
-                var activeThreat: Threat?
-                if (now.hasExternal()) {
-                    activeThreat = now.removeExternal()
-                    i-- //check again
-                } else if (now.hasInternal()) {
-                    activeThreat = now.removeInternal()
+                val activeThreat: Threat? = now.pop()
+                if (activeThreat != null) {
                     i-- //check again
                 } else {
                     i++
@@ -202,7 +191,7 @@ class PhasesGenerator(
                     if (i < 7) lastThreatTime[1] = currentTime
                 }
                 // add to time
-                currentTime += activeThreat!!.lengthInSeconds
+                currentTime += activeThreat.lengthInSeconds
                 i++
             }
         }

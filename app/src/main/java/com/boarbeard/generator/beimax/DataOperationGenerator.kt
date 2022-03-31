@@ -53,7 +53,10 @@ data class DataOperationsBundle(
         // debugging information
         for (phase in 0..2) {
             Timber.tag("generateData").v(
-                "Phase ${(phase + 1)} : Incoming Data = ${incomingData[phase]}; Data Transfers = ${dataTransfers[phase]}"
+                "Phase %d : Incoming Data = %d; Data Transfers = %d",
+                phase + 1,
+                incomingData[phase],
+                dataTransfers[phase]
             )
         }
     }

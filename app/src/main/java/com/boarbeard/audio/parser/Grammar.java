@@ -17,8 +17,6 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Set;
 
-import timber.log.Timber;
-
 public abstract class Grammar {
     private static final String LOG_TAG = Grammar.class.getSimpleName();
     private static final String GRAMMAR_XML_ROOT_TAG = "Settings";
@@ -219,7 +217,6 @@ public abstract class Grammar {
                 result.put(Element.valueOfIC(parser.getName()),
                         parser.nextText());
             } catch (IllegalArgumentException e) {
-                Timber.tag(LOG_TAG).e(e);
                 skipTag(parser);
             }
 
