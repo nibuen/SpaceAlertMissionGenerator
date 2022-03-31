@@ -52,7 +52,7 @@ class ThreatsGenerator(
         val tg = BasicThreatGenerator(missionPreferences, generator)
 
         // initialize numbers - might fail, then we return false to try again
-        if (!tg.initialize()) {
+        if (!tg.initializeThreatNumbers()) {
             Timber.i("Threat initialization failed. Retrying.")
             return threats
         }
@@ -197,7 +197,7 @@ class BasicThreatGenerator(
      *
      * @return false if something goes wrong
      */
-    fun initialize(): Boolean {
+    fun initializeThreatNumbers(): Boolean {
         internalThreats =
             generator.nextInt(maxInternalThreats - minInternalThreats + 1) + minInternalThreats
         externalThreats = threatLevel - internalThreats

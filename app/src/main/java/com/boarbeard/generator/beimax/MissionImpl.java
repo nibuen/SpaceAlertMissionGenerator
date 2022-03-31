@@ -22,14 +22,9 @@ import static com.boarbeard.ui.widget.SeekBarPreference.RIGHT_VALUE_SUFFIX;
 
 import android.content.SharedPreferences;
 
-import com.boarbeard.generator.beimax.event.DataTransfer;
-import com.boarbeard.generator.beimax.event.IncomingData;
-import com.boarbeard.generator.beimax.event.Threat;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 import kotlin.ranges.IntRange;
@@ -46,46 +41,12 @@ public class MissionImpl implements IMission {
     //private int constantThreatUnconfirmedExpansion = 2;
 
     /**
-     * minimum data operations (either data transfer or incoming data)
-     */
-    private int[] minDataOperations = {2, 2, 0};
-    private int[] maxDataOperations = {4, 4, 3};
-
-    /**
-     * minimum and maximum incoming data by phases
-     */
-    private int minIncomingDataTotal = 1;
-
-    /**
-     * minimum and maximum data transfers by phases
-     */
-    private int[] minDataTransfer = {0, 1, 1};
-    private int[] maxDataTransfer = {1, 2, 1};
-    private int minDataTransferTotal = 3;
-
-    /**
      * minimum and maximum time for white noise
      */
     private int minWhiteNoise = 45;
     private int maxWhiteNoise = 60;
     private int minWhiteNoiseTime = 9;
     private int maxWhiteNoiseTime = 20;
-
-    /**
-     * times for first threats to appear
-     */
-    private int[] minTimeForFirst = {10, 10};
-    private int[] maxTimeForFirst = {20, 40};
-
-    /**
-     * chance for ambush in phases 4/8 in %
-     */
-    private int[] chanceForAmbush = {40, 40};
-
-    /**
-     * "middle" threats (2+3/5+6) should appear with % of phase length
-     */
-    private int threatsWithInPercent = 70;
 
     /**
      * keeps threats
@@ -95,8 +56,7 @@ public class MissionImpl implements IMission {
     /**
      * keeps incoming and data transfers
      */
-    private int[] incomingData;
-    private int[] dataTransfers;
+    DataOperationsBundle dataOperationsBundle;
 
     /**
      * white noise chunks in seconds (to distribute)
@@ -233,7 +193,8 @@ public class MissionImpl implements IMission {
         generated = false;
         tries = 100;
         do {
-            generated = generateDataOperations();
+            dataOperationsBundle = new DataOperationGenerator(missionPreferences, generator).generateDataOperations();
+            generated = dataOperationsBundle.getSuccess();
         } while (!generated && tries-- > 0);
         if (!generated) {
             Timber.tag("generateMission()").w("Giving up creating data operations.");
@@ -247,7 +208,9 @@ public class MissionImpl implements IMission {
         generated = false;
         tries = 100;
         do {
-            generated = generatePhases();
+            PhasesGenerator phasesGenerator = new PhasesGenerator(threats, generator, phaseTimes, dataOperationsBundle, whiteNoiseChunksGlob);
+            generated = phasesGenerator.generatePhases();
+            eventList = phasesGenerator.getEventList();
         } while (!generated && tries-- > 0);
         if (!generated) {
             Timber.tag("generateMission()").w("Giving up creating phase details.");
@@ -257,74 +220,6 @@ public class MissionImpl implements IMission {
         return true;
     }
 
-
-    /**
-     * Generate data operations (either data transfer or incoming data)
-     *
-     * @return true, if data creation could be generated
-     */
-    protected boolean generateDataOperations() {
-        // clear data
-        incomingData = new int[3];
-        dataTransfers = new int[3];
-
-        int incomingSum = 0;
-        int transferSum = 0;
-
-        int randomIncomingData = generator.nextInt(missionPreferences.getMaxIncomingData() - missionPreferences.getMinIncomingData() + 1) + missionPreferences.getMinIncomingData();
-        Timber.tag("generateData").v("randomIncomingData: %d", randomIncomingData);
-
-        // start with a random in one of the first two phases
-        incomingData[generator.nextInt(2)]++;
-        randomIncomingData--;
-        assert (Arrays.stream(incomingData).sum() <= missionPreferences.getMaxIncomingData());
-
-        // split evenly until we can't
-        while ((randomIncomingData / 3) >= 1) {
-            incomingData[0]++;
-            incomingData[1]++;
-            incomingData[2]++;
-            randomIncomingData -= 3;
-        }
-        assert (Arrays.stream(incomingData).sum() <= missionPreferences.getMaxIncomingData());
-
-        // finally just fit stuff randomly
-        int lastPlaced = -1;
-        while (randomIncomingData > 0) {
-            int value;
-            do {
-                value = generator.nextInt(3);
-            } while (lastPlaced == value);
-            lastPlaced = value;
-            incomingData[value]++;
-            randomIncomingData--;
-        }
-        assert (Arrays.stream(incomingData).sum() <= missionPreferences.getMaxIncomingData());
-
-        // generate stuff by phase
-        for (int i = 0; i < 3; i++) {
-            dataTransfers[i] = generator.nextInt(maxDataTransfer[i] - minDataTransfer[i] + 1) + minDataTransfer[i];
-
-            // check minimums
-            if (incomingData[i] + dataTransfers[i] < minDataOperations[i] ||
-                    incomingData[i] + dataTransfers[i] > maxDataOperations[i]) return false;
-
-            incomingSum += incomingData[i];
-            transferSum += dataTransfers[i];
-        }
-        assert (Arrays.stream(incomingData).sum() <= missionPreferences.getMaxIncomingData());
-
-        // check minimums
-        if (incomingSum < minIncomingDataTotal || transferSum < minDataTransferTotal) return false;
-
-        // debugging information
-        for (int i = 0; i < 3; i++) {
-            Timber.tag("generateData").v("Phase " + (i + 1) + ": Incoming Data = " + incomingData[i] + "; Data Transfers = " + dataTransfers[i]);
-        }
-        assert (Arrays.stream(incomingData).sum() <= missionPreferences.getMaxIncomingData());
-
-        return true;
-    }
 
     /**
      * simple generation of times for phases, white noise etc.
@@ -379,221 +274,6 @@ public class MissionImpl implements IMission {
         for (int i = 0; i < 3; i++) {
             phaseTimes[i] = generator.nextInt(missionPreferences.getMaxPhaseTime()[i] - missionPreferences.getMinPhaseTime()[i] + 1) + missionPreferences.getMinPhaseTime()[i];
         }
-    }
-
-    /**
-     * generate phase stuff from data above
-     *
-     * @return true if phase generation succeeded
-     */
-    protected boolean generatePhases() {
-        Timber.i("Data gathered: Generating phases.");
-
-        // Deep copy as we modify the groups when attempting to fit
-        ThreatGroup[] threats = new ThreatGroup[this.threats.length];
-        for (int i = 0; i < threats.length; i++) {
-            ThreatGroup original = this.threats[i];
-            threats[i] = new ThreatGroup(original.getInternal(), original.getExternal());
-        }
-
-        // create events
-        eventList = new EventList();
-
-        // add fixed events: announcements
-        eventList.addPhaseEvents(phaseTimes[0], phaseTimes[1], phaseTimes[2]);
-
-        boolean ambushOccurred = false;
-        // add threats in first phase
-        // ambush handling - is there a phase 4, and it is a normal external threat? ... and chance is taken?
-        Threat maybeAmbush = threats[3].getExternal();
-        if (maybeAmbush != null && maybeAmbush.getThreatLevel() == Threat.THREAT_LEVEL_NORMAL && generator.nextInt(100) + 1 < chanceForAmbush[0]) {
-            //...then add an "ambush" threat between 1 minute and 20 secs warnings
-            boolean done = false; // try until it fits
-            do {
-                // TODO: remove hardcoded length here:
-                int ambushTime = generator.nextInt(35) + phaseTimes[0] - 59;
-                Timber.i("Ambush in phase 1 at time: %d", ambushTime);
-                done = eventList.addEvent(ambushTime, maybeAmbush);
-            } while (!done);
-
-            threats[3].removeExternal();
-            ambushOccurred = true; // to disallow two ambushes in one game
-        }
-
-        // to be used further down
-        int[] lastThreatTime = {0, 0};
-
-        // add the rest of the threats
-        int currentTime = generator.nextInt(maxTimeForFirst[0] - minTimeForFirst[0] + 1) + minTimeForFirst[0];
-        // threats should appear within this time
-        int lastTime = (int) (phaseTimes[0] * (((float) threatsWithInPercent) / 100));
-        boolean first = true;
-        // look for first threat
-        for (int i = 0; i <= 3; i++) {
-            ThreatGroup now = threats[i];
-            Threat activeThreat;
-            if (now.hasExternal()) {
-                activeThreat = now.removeExternal();
-                i--; //check again
-            } else if (now.hasInternal()) {
-                activeThreat = now.removeInternal();
-                i--; //check again
-            } else {
-                continue;
-            }
-
-            // first event?
-            if (first) {
-                if (!eventList.addEvent(currentTime, activeThreat))
-                    Timber.w("Could not add first event to list (time " + currentTime + ") - arg!");
-                else
-                    Timber.i("adding first threat %s", activeThreat);
-                first = false;
-            } else {
-                boolean done = false; // try until it fits
-                int nextTime = 0;
-                int tries = 0; // number of tries
-                do {
-                    // next threat appears
-                    // next element occurs
-                    int divisor = 2;
-                    if (++tries > 10) divisor = 3;
-                    else if (tries > 20) divisor = 4;
-                    if (lastTime <= currentTime) return false;
-                    nextTime = generator.nextInt((lastTime - currentTime) / divisor) + 5;
-                    if (tries > 30) return false;
-                    done = eventList.addEvent(currentTime + nextTime, activeThreat);
-                } while (!done);
-                currentTime += nextTime;
-                // save lastThreatTime for data transfers further down
-                if (i < 3) lastThreatTime[0] = currentTime;
-            }
-            // add to time
-            currentTime += activeThreat.getLengthInSeconds();
-        }
-
-        // add threats in second phase
-        // ambush handling - is there a phase 8, and it is a normal external threat? ... and chance is taken?
-        maybeAmbush = threats[7].getExternal();
-        if (!ambushOccurred && maybeAmbush != null && maybeAmbush.getThreatLevel() == Threat.THREAT_LEVEL_NORMAL && generator.nextInt(100) + 1 < chanceForAmbush[1]) {
-            //...then add an "ambush" threat between 1 minute and 20 secs warnings
-            boolean done = false; // try until it fits
-            do {
-                // TODO: remove hardcoded length here:
-                int ambushTime = generator.nextInt(35) + phaseTimes[0] + phaseTimes[1] - 59;
-                done = eventList.addEvent(ambushTime, maybeAmbush);
-                if (done) {
-                    Timber.i("Ambush in phase 2 at time: %d", ambushTime);
-                }
-            } while (!done);
-
-            threats[7].removeExternal();
-        }
-
-        // add the rest of the threats
-        currentTime = phaseTimes[0] + generator.nextInt(maxTimeForFirst[1] - minTimeForFirst[1] + 1) + minTimeForFirst[1];
-        // threats should appear within this time
-        lastTime = phaseTimes[0] + (int) (phaseTimes[1] * (((float) threatsWithInPercent) / 100));
-        first = true;
-        // look for first threat
-        for (int i = 4; i <= 7; i++) {
-            ThreatGroup now = threats[i];
-            Threat activeThreat;
-            if (now.hasExternal()) {
-                activeThreat = now.removeExternal();
-                i--; //check again
-            } else if (now.hasInternal()) {
-                activeThreat = now.removeInternal();
-                i--; //check again
-            } else {
-                continue;
-            }
-            // first event?
-            if (first) {
-                if (!eventList.addEvent(currentTime, activeThreat))
-                    Timber.w("Could not add first event to list in second phase (time " + currentTime + ") - arg!");
-                first = false;
-            } else {
-                boolean done = false; // try until it fits
-                int nextTime = 0;
-                int tries = 0; // number of tries
-                do {
-                    // next element occurs
-                    int divisor = 2;
-                    if (++tries > 10) divisor = 3;
-                    if (lastTime <= currentTime) return false;
-                    nextTime = generator.nextInt((lastTime - currentTime) / divisor) + 5;
-                    if (tries > 30) return false;
-                    done = eventList.addEvent(currentTime + nextTime, activeThreat);
-                } while (!done);
-                currentTime += nextTime;
-                // save lastThreatTime for data transfers further down
-                if (i < 7) lastThreatTime[1] = currentTime;
-            }
-            // add to time
-            currentTime += activeThreat.getLengthInSeconds();
-        }
-
-        //add data transfers
-        // get start and end times
-        int startTime = 0;
-        int endTime = 0;
-        // special balance: first data transfers in phase 1 and 2 should occur shortly after first threat wave
-        for (int i = 0; i < 2; i++) {
-            startTime = endTime;
-            endTime += phaseTimes[i];
-            if (dataTransfers[i] > 0) { // if there is a data transfer
-                startTime = lastThreatTime[i];
-                boolean done = false; // try until it fits
-                do { // try to add incoming data within 30 seconds of event
-                    startTime = generator.nextInt(31) + startTime + 1;
-                    done = eventList.addEvent(startTime, new DataTransfer());
-                } while (!done && startTime < endTime);
-                if (done) {
-                    // reduce data transfers below
-                    dataTransfers[i]--;
-                }
-            }
-        }
-
-        startTime = 0;
-        endTime = 0;
-        // distribute rest of data transfers and incoming data randomly within the phases
-        for (int phase = 0; phase < 3; phase++) {
-            // recalculate phase times
-            startTime = endTime;
-            endTime += phaseTimes[phase];
-            // data transfer first, since these are fairly long
-            for (int dataTransferIndex = 0; dataTransferIndex < dataTransfers[phase]; dataTransferIndex++) {
-                boolean done = false; // try until it fits
-                do {
-                    // white noise can pretty much occur everywhere
-                    int time = generator.nextInt(endTime - startTime) + startTime - 5; // to fend off events after mission ends
-                    done = eventList.addEvent(time, new DataTransfer());
-                } while (!done);
-            }
-            // incoming data second
-            for (int incomingDataIndex = 0; incomingDataIndex < incomingData[phase]; incomingDataIndex++) {
-                boolean done = false; // try until it fits
-                do {
-                    // white noise can pretty much occur everywhere
-                    int time = generator.nextInt(endTime - startTime) + startTime - 5; // to fend off events after mission ends
-                    done = eventList.addEvent(time, new IncomingData());
-                } while (!done);
-            }
-        }
-
-        //add white noise at random times
-        for (int i = 0; i < whiteNoiseChunksGlob.size(); i++) {
-            boolean done = false; // try until it fits
-            do {
-                // white noise can pretty much occur everywhere
-                int time = generator.nextInt(phaseTimes[0] + phaseTimes[1] + phaseTimes[2] - 30) + 10;
-                done = eventList.addWhiteNoiseEvents(time, whiteNoiseChunksGlob.get(i));
-            } while (!done);
-        }
-
-        return true;
     }
 
     /**

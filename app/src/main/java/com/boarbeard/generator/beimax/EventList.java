@@ -35,6 +35,8 @@ import com.boarbeard.generator.beimax.event.WhiteNoiseRestored;
 
 import androidx.annotation.NonNull;
 
+import timber.log.Timber;
+
 /**
  * Keeps mission events in an ordered state and also checks for collisions and
  * the like
@@ -149,10 +151,10 @@ public class EventList {
 				whitenoiserestored);
 
 		if (!returnValue1) {
-			System.err.println("retunValue1 was false!");
+			Timber.e("retunValue1 was false!");
 		}
 		if (!returnValue2) {
-			System.err.println("retunValue2 was false!");
+			Timber.e("retunValue1 was false!");
 		}
 
 		return (true);
