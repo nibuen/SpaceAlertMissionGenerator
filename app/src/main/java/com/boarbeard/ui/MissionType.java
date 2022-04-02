@@ -7,6 +7,7 @@ import com.boarbeard.R;
 import com.boarbeard.generator.beimax.ConstructedMissions;
 import com.boarbeard.generator.beimax.EventList;
 import com.boarbeard.generator.beimax.MissionImpl;
+import com.boarbeard.generator.beimax.MissionPreferences;
 
 public enum MissionType {
 	/**
@@ -117,10 +118,10 @@ public enum MissionType {
 
 	public EventList getEventList(SharedPreferences preferences) {
         EventList copyOfList = null;
-        MissionImpl.MissionPreferences mp = MissionImpl.parsePreferences(preferences);
-        if (!mp.showUnconfirmedReports()) {
+        MissionPreferences missionPreferences = MissionImpl.parsePreferences(preferences);
+        if (!missionPreferences.getShowUnconfirmed()) {
             copyOfList = new EventList(eventList);
-            copyOfList.stompUnconfirmedReports(mp.getPlayers() == 5);
+            copyOfList.stompUnconfirmedReports(missionPreferences.getPlayers() == 5);
         }
         if (preferences.getBoolean("compressTimePreference", false)) {
             if (copyOfList == null) copyOfList = new EventList(eventList);

@@ -35,6 +35,8 @@ import com.boarbeard.generator.beimax.event.WhiteNoiseRestored;
 
 import androidx.annotation.NonNull;
 
+import timber.log.Timber;
+
 /**
  * Keeps mission events in an ordered state and also checks for collisions and
  * the like
@@ -59,7 +61,7 @@ public class EventList {
 	 * Constructor
 	 */
 	public EventList() {
-		events = new TreeMap<Integer, Event>();
+		events = new TreeMap<>();
 	}
 
     /**
@@ -149,10 +151,10 @@ public class EventList {
 				whitenoiserestored);
 
 		if (!returnValue1) {
-			System.err.println("retunValue1 was false!");
+			Timber.e("retunValue1 was false!");
 		}
 		if (!returnValue2) {
-			System.err.println("retunValue2 was false!");
+			Timber.e("retunValue1 was false!");
 		}
 
 		return (true);
@@ -173,44 +175,38 @@ public class EventList {
 		}
 
 		// otherwise add event
-		events.put(new Integer(time), event);
+		events.put(time, event);
 		return true;
 	}
 
 	/**
 	 * Checks whether a certain time slot is free
-	 * 
 	 * @param time
-	 * @param length
-	 *            in seconds
+	 * @param length in seconds
 	 * @return false, if time slot is not free
 	 */
 	public boolean checkTime(int time, int length) {
 		// if empty set, you can add stuff
-		if (events.isEmpty())
-			return true;
+		if (events.isEmpty()) return true;
 
 		// lowest or highest keys?
 		int lowest = events.firstKey();
 		if (lowest > time) { // there is no key before?
-            return time + length <= lowest;
+			return time + length <= lowest; // too long
 		}
 		int highest = events.lastKey();
-		int lengthOfLastEvent = events.get(highest).getLengthInSeconds();
-		if (highest + lengthOfLastEvent < time)
-			return true;
+		if (highest < time + length) return true;
 
 		// ok, we are in between somewhere - check event before
-		Integer beforeKey = floorKey(time);
-		int endTime = beforeKey + events.get(beforeKey).getLengthInSeconds();
-		if (endTime > time)
-			return false;
+		Entry<Integer, Event> before = events.floorEntry(time);
+		int endTime = before.getKey() + before.getValue().getLengthInSeconds();
+		if (endTime > time) return false;
 
 		// check event after
-		int after = ceilingKey(beforeKey + 1); // next event after before key
-        return time + length <= after;
+		int after = events.ceilingKey(before.getKey() + 1); // next event after before key
 
-    }
+		return time + length <= after;
+	}
 
     /**
      * Remove Unconfirmed Reports, or replace them with normal (confirmed)
@@ -220,7 +216,7 @@ public class EventList {
      *                if they should be removed from the list.
      */
     public void stompUnconfirmedReports(boolean replace) {
-        ArrayList<Integer> toRemove = replace ? null : new ArrayList<Integer>();
+        ArrayList<Integer> toRemove = replace ? null : new ArrayList<>();
         for (Entry<Integer, Event> te : events.entrySet()) {
             if (!(te.getValue() instanceof Threat)) continue;
             Threat tt = (Threat)(te.getValue());

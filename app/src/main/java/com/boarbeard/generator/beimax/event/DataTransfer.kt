@@ -12,43 +12,34 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **/
-package com.boarbeard.generator.beimax.event;
+ * along with this program.  If not, see <http:></http:>//www.gnu.org/licenses/>.
+ */
+package com.boarbeard.generator.beimax.event
 
 /**
  * @author mkalus
- * 
  */
-public class WhiteNoiseRestored implements Event {
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.beimax.spacealert.Event#getLengthInSeconds()
-	 */
-	public int getLengthInSeconds() {
-		return 5;
-	}
+class DataTransfer : Event {
+    /**
+     * @see de.beimax.spacealert.Event#getLengthInSeconds()
+     */
+    override val lengthInSeconds: Int
+        get() = 15 // fairly long
+    override val timeColor: String
+        get() = "#80A9BC"
+    override val textColor: String
+        get() = "#FFF9AD"
 
-	public String getTimeColor() {
-		return "#80A9BC";
-	}
-
-	public String getTextColor() {
-		return "#A8A9A8";
-	}
-
-	/*
+    /*
 	 * (non-Javadoc)
 	 * 
 	 * @see java.lang.Object#toString()
 	 */
-	@Override
-	public String toString() {
-		return "WhiteNoiseRestored [getLengthInSeconds()="
-				+ getLengthInSeconds() + ", getTimeColor()=" + getTimeColor()
-				+ ", getTextColor()=" + getTextColor() + "]";
-	}
+    override fun toString(): String {
+        return ("DataTransfer [getLengthInSeconds()=" + lengthInSeconds
+                + ", getTimeColor()=" + timeColor + ", getTextColor()="
+                + textColor + "]")
+    }
 }

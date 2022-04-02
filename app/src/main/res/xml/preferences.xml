@@ -1,71 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:widget="http://schemas.android.com/apk/res-auto">
+    xmlns:widget="http://schemas.android.com/apk/res-auto">
     <com.boarbeard.ui.widget.SeekBarPreference
-        android:key="playerCount"
+        android:defaultValue="5"
         android:dependency="stompUnconfirmedReportsPreference"
         android:dialogTitle="@string/pref_player_count_dialog_title"
-        android:title="@string/pref_player_count_title"
+        android:key="playerCount"
+        android:persistent="true"
         android:summary="@string/pref_player_count_summary"
-        widget:minValue="1"
+        android:title="@string/pref_player_count_title"
         widget:maxValue="5"
-        android:defaultValue="5"
-        android:persistent="true" />
-    <CheckBoxPreference android:key="stompUnconfirmedReportsPreference"
-        android:title="@string/pref_stomp_unconfirmed_reports_title"
-        android:summary="@string/pref_stomp_unconfirmed_reports_summary"
+        widget:minValue="1" />
+    <CheckBoxPreference
         android:defaultValue="true"
-        android:persistent="true" />
-	<PreferenceCategory android:title="@string/pref_mission">		
-		<com.boarbeard.ui.widget.SeekBarPreference
+        android:key="stompUnconfirmedReportsPreference"
+        android:persistent="true"
+        android:summary="@string/pref_stomp_unconfirmed_reports_summary"
+        android:title="@string/pref_stomp_unconfirmed_reports_title" />
+    <PreferenceCategory android:title="@string/pref_mission">
+        <com.boarbeard.ui.widget.SeekBarPreference
             android:defaultValue="540"
             android:dialogTitle="@string/pref_mission_length_dialog_title"
             android:key="missionLengthPreference"
-            widget:maxValue="840"
-            widget:minValue="540"
-            widget:seekBarLineSpacing="30"
             android:persistent="true"
             android:summary="@string/pref_mission_length_summary"
-            android:title="@string/pref_mission_length_title" />
+            android:title="@string/pref_mission_length_title"
+            widget:maxValue="840"
+            widget:minValue="540"
+            widget:seekBarLineSpacing="30" />
         <com.boarbeard.ui.widget.SeekBarPreference
             android:defaultValue="8"
             android:dialogTitle="@string/pref_threat_difficulty_dialog_title"
             android:key="threatDifficultyPreference"
-            widget:maxValue="14"
-            widget:minValue="1"
             android:persistent="true"
             android:summary="@string/pref_threat_difficulty_summary"
-            android:title="@string/pref_threat_difficulty_title" />
+            android:title="@string/pref_threat_difficulty_title"
+            widget:maxValue="14"
+            widget:minValue="1" />
         <com.boarbeard.ui.widget.SeekBarPreference
             android:defaultValue="2"
-            widget:defaultSecondValue="4"
             android:dialogTitle="@string/pref_incoming_data_dialog_title"
             android:key="numberIncomingData"
-            widget:maxValue="6"
-            widget:minValue="1"
             android:persistent="true"
             android:summary="@string/pref_incoming_data_summary"
-            android:title="@string/pref_incoming_data_title" />
-        <CheckBoxPreference android:key="logColorsPreference"
-			android:defaultValue="true"
-			android:title="@string/pref_logColors_title"
-			android:persistent="true"
-        	android:summary="@string/pref_logColors_summary" />        
-</PreferenceCategory>
-	<PreferenceCategory android:title="@string/pref_mission_voice">
-		<ListPreference android:key="voice_choices" android:title="@string/pref_voice_title" android:summary="@string/pref_voice_summary"
-            android:defaultValue="0" />
-	</PreferenceCategory>
+            android:title="@string/pref_incoming_data_title"
+            widget:defaultSecondValue="4"
+            widget:maxValue="6"
+            widget:minValue="1" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="@string/enable_double_threats"
+            android:persistent="true"
+            android:summary="@string/pref_enableDoubleThreats_summary"
+            android:title="@string/pref_enableDoubleThreats_title" />
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="logColorsPreference"
+            android:persistent="true"
+            android:summary="@string/pref_logColors_summary"
+            android:title="@string/pref_logColors_title" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_mission_voice">
+        <ListPreference
+            android:defaultValue="0"
+            android:key="voice_choices"
+            android:summary="@string/pref_voice_summary"
+            android:title="@string/pref_voice_title" />
+    </PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_development_title">
-        <CheckBoxPreference android:key="dumpMissionTreePreference"
-            android:title="@string/pref_dump_misson_tree_title"
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="dumpMissionTreePreference"
+            android:persistent="true"
             android:summary="@string/pref_dump_mission_tree_summary"
+            android:title="@string/pref_dump_misson_tree_title" />
+        <CheckBoxPreference
             android:defaultValue="false"
-            android:persistent="true" />
-        <CheckBoxPreference android:key="compressTimePreference"
-            android:title="@string/pref_compress_time_title"
+            android:key="compressTimePreference"
+            android:persistent="true"
             android:summary="@string/pref_compress_time_summary"
-            android:defaultValue="false"
-            android:persistent="true" />
+            android:title="@string/pref_compress_time_title" />
     </PreferenceCategory>
 </PreferenceScreen>

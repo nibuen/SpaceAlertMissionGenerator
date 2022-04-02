@@ -11,16 +11,20 @@ import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.text.Html;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.boarbeard.R;
 import com.boarbeard.audio.MediaPlayerMainMission;
@@ -30,12 +34,6 @@ import com.boarbeard.audio.parser.EventListParserFactory;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class MissionActivity extends AppCompatActivity {
 
@@ -53,10 +51,9 @@ public class MissionActivity extends AppCompatActivity {
 
     private TextView missionTypeTextView;
 
-    private List<MissionLog> missionLogs = new ArrayList<MissionLog>();
+    private final List<MissionLog> missionLogs = new ArrayList<>();
 
     private RecyclerView mRecyclerView;
-    private LinearLayoutManager mLayoutManager;
     private MissionCardsAdapter mAdapter;
     private MenuItem menuTypeMission;
 
@@ -73,9 +70,9 @@ public class MissionActivity extends AppCompatActivity {
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
         stopWatch = new StopWatch(
-                (TextView) findViewById(R.id.missionClockTextView));
+                findViewById(R.id.missionClockTextView));
 
-        missionTypeTextView = (TextView) findViewById(R.id.mission_type_text_view);
+        missionTypeTextView = findViewById(R.id.mission_type_text_view);
         if (missionTypeTextView != null) {
             // is null if we use action bar
             missionTypeTextView.setText(missionType
@@ -83,27 +80,22 @@ public class MissionActivity extends AppCompatActivity {
         }
 
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.mission_cards_recycler_view);
+        mRecyclerView = findViewById(R.id.mission_cards_recycler_view);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
         mRecyclerView.setHasFixedSize(true);
 
         // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
         mAdapter = new MissionCardsAdapter(missionLogs);
         mRecyclerView.setAdapter(mAdapter);
 
-        togglebutton = (ToggleButton) findViewById(R.id.togglePlayMission);
-        togglebutton.setOnClickListener(new OnClickListener() {
-
-            public void onClick(View v) {
-                toggleMission(togglebutton.isChecked());
-            }
-        });
+        togglebutton = findViewById(R.id.togglePlayMission);
+        togglebutton.setOnClickListener(v -> toggleMission(togglebutton.isChecked()));
 
         //  This is a pretty bad kludge.  When the app first starts up, Random
         //  is selected, but configureMission() hasn't been called, so we don't
@@ -361,7 +353,7 @@ public class MissionActivity extends AppCompatActivity {
         // Intent to bring you back to app
         Intent viewIntent = new Intent(this, MissionActivity.class);
         PendingIntent viewPendingIntent =
-                PendingIntent.getActivity(this, 0, viewIntent, 0);
+                PendingIntent.getActivity(this, 0, viewIntent, PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this)
@@ -378,7 +370,7 @@ public class MissionActivity extends AppCompatActivity {
         mediaIntent.setAction(MEDIA_ACTION);
         mediaIntent.putExtra(Intent.EXTRA_SUBJECT, Boolean.valueOf(!isRunning));
         PendingIntent startStopIntent =
-                PendingIntent.getActivity(this, 0, mediaIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent.getActivity(this, 0, mediaIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         if (isRunning) {
             notificationBuilder.addAction(android.R.drawable.ic_media_pause,

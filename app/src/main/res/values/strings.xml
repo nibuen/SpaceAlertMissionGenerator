@@ -82,5 +82,7 @@
   	<string name="pref_choose_mission">Choose Mission Type</string>
 	<string name="pref_logColors_title">Log Colors</string>
     <string name="pref_logColors_summary">Display log entrys in different colors. Otherwise they are white.</string>
-    
+    <string name="pref_enableDoubleThreats_title">Allow Double Threats</string>
+	<string name="pref_enableDoubleThreats_summary">Enable double threats (\"The New Frontier\": one external and internal threat will occur on one time slot)</string>
+
 </resources>

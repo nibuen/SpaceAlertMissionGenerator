@@ -1,15 +1,16 @@
 package com.boarbeard.audio.parser;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.boarbeard.R;
 import com.boarbeard.io.ExternalMedia;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class EventListParserFactory {
 
@@ -61,7 +62,7 @@ public class EventListParserFactory {
     public EventListParser getParser(Context context) {
         SharedPreferences preferences = PreferenceManager
                 .getDefaultSharedPreferences(context);
-        String grammarName = preferences.getString("voice_choices",
+        String grammarName = preferences.getString(context.getString(R.string.voice_choices),
                 DefaultGrammar.NAME);
         return getParser(grammarName, context, false);
     }
