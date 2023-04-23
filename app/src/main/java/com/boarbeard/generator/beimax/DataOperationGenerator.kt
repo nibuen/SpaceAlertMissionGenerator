@@ -2,26 +2,17 @@ package com.boarbeard.generator.beimax
 
 import timber.log.Timber
 import java.util.*
-
-//private int constantThreatUnconfirmedExpansion = 2;
-/**
- * minimum data operations (either data transfer or incoming data)
- */
-private val minDataOperations = arrayOf(2..4, 2..4, 0..3)
-
+import kotlin.collections.ArrayList
 
 /**
  * minimum and maximum incoming data by phases
  */
 private const val minIncomingDataTotal = 1
 
-
 /**
  * minimum and maximum data transfers by phases
  */
-private val minDataTransfer = intArrayOf(0, 1, 1)
-private val maxDataTransfer = intArrayOf(1, 2, 1)
-private const val minDataTransferTotal = 3
+private const val minDataTransferTotal = 1
 
 data class DataOperationsBundle(
     // The size are the three phases, TODO bind this better to a phase configuration
@@ -35,18 +26,6 @@ data class DataOperationsBundle(
 
     fun setDataTransfers(phase: Int, amount: Int) {
         dataTransfers[phase] = amount
-    }
-
-    fun withinRanges(): Boolean {
-        for (phase in 0..2) {
-            // check ranges
-            val totalDataOperationsForPhase = incomingData[phase] + dataTransfers[phase]
-            if (!minDataOperations[phase].contains(totalDataOperationsForPhase)) {
-                return false
-            }
-        }
-
-        return true
     }
 
     fun debugPrint() {
@@ -86,7 +65,7 @@ class DataOperationGenerator(
     private val missionPreferences: MissionPreferences,
     private val generator: Random,
 ) {
-
+    var dataTransferPhases = intArrayOf(0,0,0)
     /**
      * Generate data operations (either data transfer or incoming data)
      *
@@ -123,17 +102,27 @@ class DataOperationGenerator(
             randomIncomingData--
         }
 
-        // generate stuff by phase
-        for (phase in 0..2) {
-            bundle.setDataTransfers(
-                phase,
-                generator.nextInt(maxDataTransfer[phase] - minDataTransfer[phase] + 1) + minDataTransfer[phase]
-            )
+        // set data transfers
 
-            if (!bundle.withinRanges()) return bundle
+        var randomDataTransfer: Int =
+            generator.nextInt(missionPreferences.getMaxDataTransfer() - missionPreferences.getMinDataTransfer() + 1) + missionPreferences.getMinDataTransfer()
+        Timber.tag("generateData").v("randomDataTransfer: %d", randomDataTransfer)
+
+        // start with one in the first phase
+        dataTransferPhases[0]++
+        randomDataTransfer--
+
+        // randomly put the rest of the data transfers
+        for (i in 0 until randomDataTransfer) {
+            dataTransferPhases[generator.nextInt(3)]++
         }
 
-        // check minimums
+        // now set the data transfers
+        dataTransferPhases.forEachIndexed {phase, num ->
+            bundle.setDataTransfers(phase, num)
+        }
+
+        // check minimums and maximums
         if (bundle.incomingData.sum() < minIncomingDataTotal || bundle.dataTransfers.sum() < minDataTransferTotal) return bundle
 
         // debugging information
