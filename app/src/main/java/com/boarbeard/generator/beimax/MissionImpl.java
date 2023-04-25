@@ -190,7 +190,7 @@ public class MissionImpl implements IMission {
     public boolean generateMission() {
         // generate threats
         boolean generated = false;
-        int tries = 500; //maximum number of tries to generate mission
+        int tries = 100; //maximum number of tries to generate mission
         do {
             threats = new ThreatsGenerator(missionPreferences, generator).generateThreats();
             generated = threats.length > 0;
