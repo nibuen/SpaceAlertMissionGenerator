@@ -99,7 +99,7 @@ class ThreatsGenerator(
         // create list of possible phases - find remaining possible phases and pick one
         val possibleTurns: MutableList<Int> = ArrayList()
         for (i in minTurn..maxTurn) {
-            // if intenral threat and previous turn was internal, skip, reduce number of retries creating the mission
+            // if internal threat and previous turn was internal, skip, reduce number of retries creating the mission
             if (threat.threatPosition == Threat.THREAT_POSITION_INTERNAL && (i - 1) in internalThreatTurns) {
                 continue
             }
@@ -347,7 +347,7 @@ class ThreatsGenerator(
             return emptyArray()
         }
 
-        // generate the basic threats
+        // generate internal and external threats
         var internalThreats: ArrayList<Threat> = tg.generateThreats(Threat.THREAT_POSITION_INTERNAL)
         var externalThreats: ArrayList<Threat> = tg.generateThreats(Threat.THREAT_POSITION_EXTERNAL)
 
