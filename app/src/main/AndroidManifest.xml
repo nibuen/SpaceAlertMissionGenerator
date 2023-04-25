@@ -3,6 +3,7 @@
     android:versionCode="20"
     android:versionName="3.3.0">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="31" />

@@ -3,6 +3,7 @@ package com.boarbeard.generator.beimax
 import android.content.SharedPreferences
 import com.boarbeard.generator.beimax.event.*
 import com.boarbeard.ui.MissionType
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
 import timber.log.Timber
@@ -12,38 +13,6 @@ class JvmDebugTree : Timber.Tree() {
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         println("${if (tag != null) "[$tag]" else ""}[${parsePriority(priority)}] --- $message")
     }
-
-    /*
-    /**
-     * Priority constant for the println method; use Log.v.
-     */
-    public static final int VERBOSE = 2;
-
-    /**
-     * Priority constant for the println method; use Log.d.
-     */
-    public static final int DEBUG = 3;
-
-    /**
-     * Priority constant for the println method; use Log.i.
-     */
-    public static final int INFO = 4;
-
-    /**
-     * Priority constant for the println method; use Log.w.
-     */
-    public static final int WARN = 5;
-
-    /**
-     * Priority constant for the println method; use Log.e.
-     */
-    public static final int ERROR = 6;
-
-    /**
-     * Priority constant for the println method.
-     */
-    public static final int ASSERT = 7;
-     */
     private fun parsePriority(priority: Int): String {
         return when (priority) {
             2 -> "V"
@@ -179,9 +148,9 @@ class TestMissionImplJvm {
     private fun testMission1UnconfirmedReports(
         showUnconfirmed: Boolean,
         players: Int, compressed: Boolean
-    ) {
+    ) = runBlocking {
         val sp = mockPreferences(showUnconfirmed, players, compressed, 0)
-        val eventList = MissionType.RealMission1.getEventList(sp)
+        val eventList = MissionType.RealMission1.buildEvents(sp)
 
         //  if you run into problems
         //dumpEvents(eventList);

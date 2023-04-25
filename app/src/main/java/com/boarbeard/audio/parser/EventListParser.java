@@ -15,6 +15,8 @@ import com.boarbeard.generator.beimax.event.WhiteNoiseRestored;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
+import timber.log.Timber;
+
 public abstract class EventListParser {
 
 	private static final String LOG_TAG = EventListParser.class.getName();
@@ -43,7 +45,7 @@ public abstract class EventListParser {
 			visitWhiteNoiseRestored((WhiteNoiseRestored) event, startTime,
 					output);
 		} else {
-			Log.w(LOG_TAG, "Unknown event: " + event);
+			Timber.tag(LOG_TAG).w("Unknown event: %s", event);
 		}
 
 	}
