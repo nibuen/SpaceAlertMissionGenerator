@@ -56,6 +56,19 @@ class ThreatsGenerator(
     var internalThreatTurns = ArrayList<Int>()
     var unconfirmedThreatsFirstPhase = 0
     var unconfirmedThreatsSecondPhase = 0
+
+    /**
+     * Insert a threat into the mission on a randomly selected turn, within certain conditions.
+     * Conditions:
+     *      Two internal threats should not appear right after each other
+     *      If single threats, each turn should only have 1 threat
+     *      If double threats, turns may have two threats
+     *      Adhere to max/min turns for threat type
+     *
+     *
+     * @param threat Threat object to place
+     * @return false if something went wrong
+     */
     fun insertThreat(threat: Threat): Boolean {
         // set min and max phases depending on the threat position and level
         var minTurn = 1
@@ -139,6 +152,13 @@ class ThreatsGenerator(
         return true
     }
 
+    /**
+     * Place threats on random turns and perform sanity checks of placement
+     *
+     * @param internalThreats list of internal threats that have been generated
+     * @param externalThreats list of external threats that have been generated
+     * @return
+     */
     fun placeAndCheckThreats(
         internalThreats: ArrayList<Threat>,
         externalThreats: ArrayList<Threat>
@@ -209,6 +229,11 @@ class ThreatsGenerator(
         return true
     }
 
+    /**
+     * Get random serious threat index
+     *
+     * @return index of random serious threat
+     */
     fun getRandomSeriousThreatIndex(): Int? {
         var idx = firstSecondPhase[generator.nextInt(firstSecondPhase.size)]
         var loopArray = firstSecondPhase
@@ -231,6 +256,11 @@ class ThreatsGenerator(
         return null
     }
 
+    /**
+     * Get random normal threat index
+     *
+     * @return index of random normal threat
+     */
     fun getRandomNormalThreatIndex(): Int? {
         var idx = firstSecondPhase[generator.nextInt(firstSecondPhase.size)]
         var loopArray = firstSecondPhase
@@ -253,6 +283,11 @@ class ThreatsGenerator(
         return null
     }
 
+    /**
+     * Makes one of the serious threats unconfirmed
+     *
+     * @return false if something goes wrong
+     */
     fun makeSeriousUnconfirmed(): Boolean {
         val idx = getRandomSeriousThreatIndex() ?: return false
         if (idx <= 3) unconfirmedThreatsFirstPhase++ else unconfirmedThreatsSecondPhase++
@@ -266,6 +301,11 @@ class ThreatsGenerator(
         return false
     }
 
+    /**
+     * Makes one of the normal threats unconfirmed
+     *
+     * @return false if something goes wrong
+     */
     fun makeNormalUnconfirmed(): Boolean {
         val idx = getRandomNormalThreatIndex() ?: return false
         if (idx <= 3) unconfirmedThreatsFirstPhase++ else unconfirmedThreatsSecondPhase++
@@ -418,30 +458,55 @@ class BasicThreatGenerator(
         return true
     }
 
+    /**
+     * Util function for returning how many serious threats will be generated
+     *
+     * @return Number of serious threats
+     */
     fun seriousThreats(): Int {
         return seriousExternalThreats + seriousInternalThreats
     }
 
+    /**
+     * Util function for returning how many normal threats will be generated
+     *
+     * @return Number of normal threats
+     */
     fun normalThreats(): Int {
         return normalExternalThreats + normalInternalThreats
     }
 
+    /**
+     * Util function for returning how many internal threats will be generated
+     *
+     * @return Number of internal threats
+     */
     fun internalThreats(): Int {
         return normalInternalThreats + seriousInternalThreats
     }
 
+    /**
+     * Util function for returning how many external threats will be generated
+     *
+     * @return Number of external threats
+     */
     fun externalThreats(): Int {
         return normalExternalThreats + seriousExternalThreats
     }
 
+    /**
+     * Util function for returning how many threats will be generated
+     *
+     * @return total amount of threats
+     */
     fun threatSum(): Int {
         return internalThreats() + externalThreats()
     }
 
     /**
-     * Actually generate threats
+     * Actually generate threats for a given position (external/internal)
      *
-     * @return generated threats
+     * @return list of generated threats
      */
     fun generateThreats(threatPosition: Int): ArrayList<Threat> {
         val threats = ArrayList<Threat>()
