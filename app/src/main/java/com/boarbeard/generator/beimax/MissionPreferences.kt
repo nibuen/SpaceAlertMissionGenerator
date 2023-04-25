@@ -32,12 +32,22 @@ class MissionPreferences {
 
     var incomingDataRange = IntRange(1, 6)
 
+    var dataTransferRange = IntRange(1, 10)
+
     fun getMinIncomingData(): Int {
         return incomingDataRange.first
     }
 
     fun getMaxIncomingData(): Int {
         return incomingDataRange.last
+    }
+
+    fun getMinDataTransfer(): Int {
+        return dataTransferRange.first
+    }
+
+    fun getMaxDataTransfer(): Int {
+        return dataTransferRange.last
     }
 
     /**

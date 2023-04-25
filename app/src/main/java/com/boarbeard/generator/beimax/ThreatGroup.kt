@@ -49,6 +49,14 @@ class ThreatGroup {
         return external != null
     }
 
+    fun hasNormal(): Boolean {
+        return  (external?.threatLevel == Threat.THREAT_LEVEL_NORMAL) or (internal?.threatLevel == Threat.THREAT_LEVEL_NORMAL)
+    }
+
+    fun hasSerious(): Boolean {
+        return  (external?.threatLevel == Threat.THREAT_LEVEL_SERIOUS) or (internal?.threatLevel == Threat.THREAT_LEVEL_SERIOUS)
+    }
+
     fun addInternal(i: Threat?): Boolean {
         if (internal == null) {
             internal = i

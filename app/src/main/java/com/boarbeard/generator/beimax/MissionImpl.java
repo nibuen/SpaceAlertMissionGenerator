@@ -38,7 +38,7 @@ import timber.log.Timber;
 public class MissionImpl implements IMission {
 
     private static final int CONSTANT_THREAT_UNCONFIRMED = 1; // You have to subtract a value from the threatLevel for 4-player-games, and this is that value
-    //private int constantThreatUnconfirmedExpansion = 2;
+    private static final int CONSTANT_THREAT_UNCONFIRMED_LARGE = 2; // use a larger value if the threat count is high (normally for double actions)
 
     /**
      * minimum and maximum time for white noise
@@ -103,10 +103,15 @@ public class MissionImpl implements IMission {
         prefs.setThreatLevel(preferences.getInt("threatDifficultyPreference", 8)); // The threat level for 5 players!
         prefs.setEnableDoubleThreats(preferences.getBoolean("enable_double_threats", false));
 
+        int unconfirmedValue = CONSTANT_THREAT_UNCONFIRMED;
+        if(prefs.getThreatLevel() > 10){
+            unconfirmedValue = CONSTANT_THREAT_UNCONFIRMED_LARGE;
+        }
+
         if (!preferences.getBoolean("stompUnconfirmedReportsPreference", true)) {
             //  They want Unconfirmed Reports.
             prefs.setShowUnconfirmed(true);
-            prefs.setThreatUnconfirmed(CONSTANT_THREAT_UNCONFIRMED); // if 5 players - then this is the unconfirmed part of the base threat level
+            prefs.setThreatUnconfirmed(unconfirmedValue); // if 5 players - then this is the unconfirmed part of the base threat level
         } else {
             //  They want Unconfirmed Reports to appear as normal threats in
             //  5-player games, and to not appear at all in 4-or-fewer-player
@@ -120,7 +125,7 @@ public class MissionImpl implements IMission {
             //  difficulty of the mission.
             prefs.setThreatUnconfirmed(0);
             if (prefs.getPlayers() != 5) {
-                prefs.setThreatLevel(prefs.getThreatLevel() - CONSTANT_THREAT_UNCONFIRMED); // if 4 players, then you have to subtract the unconfirmed part from the base level (8 - 1 = 7 in normal missions)
+                prefs.setThreatLevel(prefs.getThreatLevel() - unconfirmedValue); // if 4 players, then you have to subtract the unconfirmed part from the base level (8 - 1 = 7 in normal missions)
             }
         }
 
@@ -128,6 +133,12 @@ public class MissionImpl implements IMission {
                 new IntRange(
                         preferences.getInt("numberIncomingData", prefs.getMinIncomingData()),
                         preferences.getInt("numberIncomingData" + RIGHT_VALUE_SUFFIX, prefs.getMaxIncomingData())
+                )
+        );
+        prefs.setDataTransferRange(
+                new IntRange(
+                        preferences.getInt("numberDataTransfer", prefs.getMinDataTransfer()),
+                        preferences.getInt("numberDataTransfer" + RIGHT_VALUE_SUFFIX, prefs.getMaxDataTransfer())
                 )
         );
 

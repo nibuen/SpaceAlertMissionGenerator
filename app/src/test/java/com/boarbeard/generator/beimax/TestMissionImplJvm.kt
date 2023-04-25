@@ -106,6 +106,30 @@ class TestMissionImplJvm {
     }
 
     /**
+     * Assert data tranfer stays between the preferences for incoming data.
+     */
+    @Test
+    fun testGenerateDataTransferBetweenValues() {
+        val missionPreferences = MissionPreferences()
+        missionPreferences.dataTransferRange = 2..4
+        Assert.assertEquals(2, missionPreferences.getMinDataTransfer())
+        Assert.assertEquals(4, missionPreferences.getMaxDataTransfer())
+
+        for (i in 0..25) {
+            val missionImpl = MissionImpl(missionPreferences)
+            Assert.assertTrue(missionImpl.generateMission())
+
+            val foundDataTransferList =
+                missionImpl.missionEvents.entrySet.filter { it.value is DataTransfer }
+            val incomingDataCount = foundDataTransferList.size
+            Assert.assertTrue(
+                "found $incomingDataCount instead \n $foundDataTransferList on test $i",
+                incomingDataCount in 2..4
+            )
+        }
+    }
+
+    /**
      * Assert incoming data stays between the preferences for incoming data.
      */
     @Test
