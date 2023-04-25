@@ -2,18 +2,25 @@ package com.boarbeard.ui
 
 import android.Manifest
 import android.app.AlertDialog
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.media.AudioManager
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.preference.PreferenceManager
-import android.view.*
+import android.view.KeyEvent
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.WindowManager
 import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.appcompat.app.AppCompatActivity
@@ -33,6 +40,7 @@ import kotlinx.coroutines.android.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
+
 class MissionActivity : AppCompatActivity() {
     private var systemUiMode = View.SYSTEM_UI_FLAG_VISIBLE
     private var sequence: MediaPlayerSequence? = null
@@ -45,6 +53,8 @@ class MissionActivity : AppCompatActivity() {
     private lateinit var missionLogsRecyclerView: RecyclerView
     private lateinit var mAdapter: MissionCardsAdapter
     private val menuTypeMission: MenuItem? = null
+
+    private val notificationRequestCode = 1001
 
     private val eventParserDispatcher = HandlerThread("EventParserDispatcher")
         .apply { start() }
@@ -329,12 +339,12 @@ class MissionActivity : AppCompatActivity() {
         mAdapter.notifyDataSetChanged()
     }
 
-    private fun toggleOn() {
+    private fun toggleOn() = runOnUiThread {
         togglebutton.isChecked = true
         notificationUpdate(true)
     }
 
-    fun toggleOff() {
+    fun toggleOff() = runOnUiThread {
         togglebutton.isChecked = false
         notificationUpdate(false)
     }
@@ -360,12 +370,24 @@ class MissionActivity : AppCompatActivity() {
 
     private fun notificationUpdate(isRunning: Boolean) {
         val notificationId = 1
+        val id = "mission_channel"
+        val importance = NotificationManager.IMPORTANCE_LOW
+        val name = "Mission Updates"
+        val description = "Space alert mission updates"
 
         // Intent to bring you back to app
         val viewIntent = Intent(this, MissionActivity::class.java)
         val viewPendingIntent =
             PendingIntent.getActivity(this, 0, viewIntent, PendingIntent.FLAG_IMMUTABLE)
-        val notificationBuilder = NotificationCompat.Builder(this)
+
+        val channel = NotificationChannel(id, name, importance)
+        channel.description = description
+        channel.enableLights(true)
+        channel.lightColor = Color.RED
+        channel.enableVibration(true)
+        channel.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
+
+        val notificationBuilder = NotificationCompat.Builder(this, id)
             .setSmallIcon(R.drawable.ic_notification)
             .setLargeIcon(
                 BitmapFactory.decodeResource(
@@ -402,6 +424,7 @@ class MissionActivity : AppCompatActivity() {
 
         // Get an instance of the NotificationManager service
         val notificationManager = NotificationManagerCompat.from(this)
+        notificationManager.createNotificationChannel(channel)
 
         // Build the notification and issues it with notification manager.
         if (ActivityCompat.checkSelfPermission(
@@ -416,6 +439,7 @@ class MissionActivity : AppCompatActivity() {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), notificationRequestCode)
             return
         }
         notificationManager.notify(notificationId, notificationBuilder.build())

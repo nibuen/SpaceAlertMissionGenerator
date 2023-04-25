@@ -17,7 +17,7 @@ android {
     defaultConfig {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         applicationId "com.boarbeard"
-        minSdkVersion 24
+        minSdkVersion 26
         targetSdkVersion 33
 
     }
