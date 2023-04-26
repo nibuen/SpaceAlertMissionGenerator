@@ -16,7 +16,6 @@ import java.util.concurrent.TimeUnit
 
 class MediaPlayerMainMission(
     protected var missionActivity: MissionActivity,
-    protected val missionLog: List<MissionLog>,
     protected var stopWatch: StopWatch, // Displays the log texts, so needs
     private val preferences: SharedPreferences
 ) : MediaPlayerSequence(missionActivity) {
@@ -160,7 +159,7 @@ class MediaPlayerMainMission(
                 missionLog = MissionLog(
                     Html.fromHtml(actionText.toString(), 0),
                     Html.fromHtml(timeText.toString(), 0)
-                ), missionLog.size - 1
+                )
             )
         }
     }
@@ -224,6 +223,6 @@ class MediaPlayerMainMission(
         missionActivity.updateMissionLog(MissionLog.formatIntro(
             missionActivity.resources,
             missionIntroduction
-        ), missionLog.size - 1)
+        ),)
     }
 }

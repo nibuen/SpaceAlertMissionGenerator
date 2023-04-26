@@ -48,7 +48,7 @@ class MissionActivity : AppCompatActivity() {
     private var stopWatch: StopWatch? = null
     private var missionType = MissionType.Random
     private var missionTypeTextView: TextView? = null
-    private val missionLogs: MutableList<MissionLog> = mutableListOf()
+    private val missionLogs = mutableListOf<MissionLog>()
 
     private lateinit var missionLogsRecyclerView: RecyclerView
     private lateinit var mAdapter: MissionCardsAdapter
@@ -151,10 +151,8 @@ class MissionActivity : AppCompatActivity() {
      * @param visibility Bitwise-or of flags [View.SYSTEM_UI_FLAG_LOW_PROFILE] or
      * [View.SYSTEM_UI_FLAG_HIDE_NAVIGATION].
      */
-    private fun setSystemUiVisibility(visibility: Int) {
-        runOnUiThread {
+    private fun setSystemUiVisibility(visibility: Int) = runOnUiThread {
             window.decorView.systemUiVisibility = visibility
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -205,7 +203,7 @@ class MissionActivity : AppCompatActivity() {
         // Displays the log texts, so needs the log color preferences
         if (sequence == null || newGame) {
             // TODO replace with some real scopes and error handling
-            sequence = MediaPlayerMainMission(this@MissionActivity, missionLogs.toList(),
+            sequence = MediaPlayerMainMission(this@MissionActivity,
                 stopWatch!!, preferences)
             withContext(eventParserDispatcher) {
                 EventListParserFactory.getInstance().getParser(this@MissionActivity)
@@ -264,8 +262,8 @@ class MissionActivity : AppCompatActivity() {
 
     private fun showMissionTypeDialog() {
         val builder = AlertDialog.Builder(this)
-        builder.setTitle(getString(R.string.pref_choose_mission))
-        builder.setItems(
+            .setTitle(getString(R.string.pref_choose_mission))
+            .setItems(
             toStringValues(this)
         ) { dialog, item ->
             missionType = MissionType.values()[item]
@@ -293,17 +291,17 @@ class MissionActivity : AppCompatActivity() {
     }
 
     private fun startMission() {
-        if (sequence != null) {
-            setKeepScreenOn(true)
-            sequence!!.start()
+        sequence?.apply {
+            start()
             toggleOn()
+            setKeepScreenOn(true)
             setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE.also { systemUiMode = it })
         }
     }
 
     private fun pauseMission() {
-        if (sequence != null) {
-            sequence!!.pause()
+        sequence?.apply {
+            pause()
             toggleOff()
             setKeepScreenOn(false)
         }
@@ -311,8 +309,8 @@ class MissionActivity : AppCompatActivity() {
     }
 
     private fun stopMission() {
-        if (sequence != null) {
-            sequence!!.stop()
+        sequence?.apply {
+            stop()
             toggleOff()
             setKeepScreenOn(false)
         }
@@ -328,9 +326,9 @@ class MissionActivity : AppCompatActivity() {
         }
     }
 
-    fun updateMissionLog(missionLog: MissionLog, itemAddedPosition: Int) = runOnUiThread {
+    fun updateMissionLog(missionLog: MissionLog) = runOnUiThread {
             missionLogs.add(missionLog)
-            mAdapter.notifyItemInserted(itemAddedPosition)
+            mAdapter.notifyItemInserted(missionLogs.size - 1)
             missionLogsRecyclerView.post { missionLogsRecyclerView.smoothScrollToPosition(mAdapter.itemCount) }
     }
 

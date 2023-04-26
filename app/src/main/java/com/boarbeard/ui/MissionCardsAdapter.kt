@@ -1,22 +1,23 @@
 package com.boarbeard.ui
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.recyclerview.widget.RecyclerView
 import com.boarbeard.R
 import com.boarbeard.audio.MissionLog
 
-class MissionCardsAdapter     // Provide a suitable constructor (depends on the kind of dataset)
+class MissionCardsAdapter
     (private val missionLogs: List<MissionLog>) :
     RecyclerView.Adapter<MissionCardsAdapter.ViewHolder>() {
-    // Provide a reference to the views for each data item
-    // Complex data items may need more than one view per item, and
-    // you provide access to all the views for a data item in a view holder
-    class ViewHolder(  // each data item is just a string in this case
-        var cardView: CardView
+    class ViewHolder(
+        val cardView: CardView
     ) : RecyclerView.ViewHolder(cardView)
 
     // Create new views (invoked by the layout manager)
@@ -36,11 +37,7 @@ class MissionCardsAdapter     // Provide a suitable constructor (depends on the 
         val missionTextView = holder.cardView.findViewById<View>(R.id.missionTextView) as TextView
         missionTextView.text = missionLog.actionText
         val clockTextView = holder.cardView.findViewById<View>(R.id.clockTextView) as TextView
-        if (missionLog.clockText != null) {
-            clockTextView.text = missionLog.clockText
-        } else {
-            clockTextView.text = ""
-        }
+        clockTextView.text = missionLog.clockText ?: ""
     }
 
     // Return the size of your dataset (invoked by the layout manager)
