@@ -35,17 +35,18 @@ import com.boarbeard.audio.MediaPlayerSequence
 import com.boarbeard.audio.MissionLog
 import com.boarbeard.audio.parser.EventListParserFactory
 import com.boarbeard.ui.MissionType.Companion.toStringValues
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.android.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 
 class MissionActivity : AppCompatActivity() {
     private var systemUiMode = View.SYSTEM_UI_FLAG_VISIBLE
     private var sequence: MediaPlayerSequence? = null
     private lateinit var togglebutton: ToggleButton
-    private var stopWatch: StopWatch? = null
+    private lateinit var stopWatch: StopWatch
     private var missionType = MissionType.Random
     private var missionTypeTextView: TextView? = null
     private val missionLogs = mutableListOf<MissionLog>()
@@ -92,7 +93,7 @@ class MissionActivity : AppCompatActivity() {
         missionLogsRecyclerView.adapter = mAdapter
         togglebutton = findViewById(R.id.togglePlayMission)
         togglebutton.setOnClickListener {
-            GlobalScope.launch {
+            MainScope().launch {
                 toggleMission(
                     togglebutton.isChecked
                 )
@@ -139,7 +140,7 @@ class MissionActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (MEDIA_ACTION == intent.action) {
-            GlobalScope.launch {
+            MainScope().launch {
                 toggleMission(intent.getBooleanExtra(Intent.EXTRA_SUBJECT, false))
             }
         }
@@ -165,13 +166,13 @@ class MissionActivity : AppCompatActivity() {
         // Handle item selection
         return when (item.itemId) {
             R.id.menuNewMission -> {
-                GlobalScope.launch {
+                MainScope().launch {
                     configureMission(true)
                 }
                 true
             }
             R.id.menuResetMission -> {
-                GlobalScope.launch {
+                MainScope().launch {
                     configureMission(false)
                 }
                 true
@@ -204,14 +205,14 @@ class MissionActivity : AppCompatActivity() {
         if (sequence == null || newGame) {
             // TODO replace with some real scopes and error handling
             sequence = MediaPlayerMainMission(this@MissionActivity,
-                stopWatch!!, preferences)
+                stopWatch, preferences)
             withContext(eventParserDispatcher) {
                 EventListParserFactory.getInstance().getParser(this@MissionActivity)
                     .parse(missionType.buildEvents(preferences), sequence)
             }
         } else {
             sequence!!.reset()
-            stopWatch!!.reset()
+            stopWatch.reset()
         }
 
         runOnUiThread {
@@ -246,6 +247,7 @@ class MissionActivity : AppCompatActivity() {
             )
         }
         if (preferences.getBoolean("dumpMissionTreePreference", false)) {
+            Timber.v("dumping full mission log")
             (sequence as? MediaPlayerMainMission)?.dumpMissionTreeToLog()
         }
     }
@@ -269,8 +271,8 @@ class MissionActivity : AppCompatActivity() {
             missionType = MissionType.values()[item]
             val missionName = missionType
                 .toString(this@MissionActivity)
-            missionTypeTextView!!.text = missionName
-            GlobalScope.launch {
+            missionTypeTextView?.text = missionName
+            MainScope().launch {
                 configureMission(true)
             }
         }
@@ -349,7 +351,7 @@ class MissionActivity : AppCompatActivity() {
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            GlobalScope.launch {
+            MainScope().launch {
                 configureMission(false)
             }
         }
@@ -359,11 +361,10 @@ class MissionActivity : AppCompatActivity() {
     public override fun onDestroy() {
         super.onDestroy()
 
-        // Get an instance of the NotificationManager service
-        val notificationManager = NotificationManagerCompat.from(this)
-
         // Cancel any ongoing notifications
-        notificationManager.cancelAll()
+        NotificationManagerCompat.from(this).apply {
+            cancelAll()
+        }
     }
 
     private fun notificationUpdate(isRunning: Boolean) {
