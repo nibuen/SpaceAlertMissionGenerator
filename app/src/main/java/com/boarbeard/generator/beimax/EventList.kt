@@ -167,13 +167,10 @@ class EventList {
      * @return false, if a collision was detected
      */
     fun addEvent(time: Int, event: Event): Boolean {
-        // check first
-
         if (!checkTime(time, event.lengthInSeconds)) {
             return false
         }
 
-        // otherwise add event
         events[time] = event
         return true
     }

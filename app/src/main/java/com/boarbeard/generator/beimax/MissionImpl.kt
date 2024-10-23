@@ -36,10 +36,8 @@ class MissionImpl(preferences: MissionPreferences) : IMission {
     /**
      * minimum and maximum time for white noise
      */
-    private val minWhiteNoise = 45
-    private val maxWhiteNoise = 60
-    private val minWhiteNoiseTime = 9
-    private val maxWhiteNoiseTime = 20
+    private val whiteNoiseTotalRange: IntRange = 45..60
+    private val whiteNoiseEventTimeRange: IntRange = 9..20
 
     /**
      * keeps threats
@@ -186,7 +184,8 @@ class MissionImpl(preferences: MissionPreferences) : IMission {
                 //  They want Unconfirmed Reports.
                 prefs.showUnconfirmed = true
                 prefs.threatUnconfirmed =
-                    CONSTANT_THREAT_UNCONFIRMED // if 5 players - then this is the unconfirmed part of the base threat level
+                        // if 5 players - then this is the unconfirmed part of the base threat level
+                    CONSTANT_THREAT_UNCONFIRMED
             } else {
                 //  They want Unconfirmed Reports to appear as normal threats in
                 //  5-player games, and to not appear at all in 4-or-fewer-player
@@ -200,8 +199,9 @@ class MissionImpl(preferences: MissionPreferences) : IMission {
                 //  difficulty of the mission.
                 prefs.threatUnconfirmed = 0
                 if (prefs.players != 5) {
-                    prefs.threatLevel =
-                        prefs.threatLevel - CONSTANT_THREAT_UNCONFIRMED // if 4 players, then you have to subtract the unconfirmed part from the base level (8 - 1 = 7 in normal missions)
+                    // if 4 players, then you have to subtract the unconfirmed
+                    // part from the base level (8 - 1 = 7 in normal missions)
+                    prefs.threatLevel -= CONSTANT_THREAT_UNCONFIRMED
                 }
             }
 
@@ -236,30 +236,25 @@ class MissionImpl(preferences: MissionPreferences) : IMission {
         /**
          * simple generation of times for phases, white noise etc.
          */
-        protected fun generateTimes(missionImpl: MissionImpl) {
+        private fun generateTimes(missionImpl: MissionImpl) {
             // generate white noise
-            var whiteNoiseTime = missionImpl.generator.nextInt(
-                missionImpl.maxWhiteNoise - missionImpl.minWhiteNoise + 1
-            ) + missionImpl.minWhiteNoise
+            var whiteNoiseTime = missionImpl.whiteNoiseTotalRange.random()
             Timber.tag("generateTimes()").v("White noise time: %d", whiteNoiseTime)
-    
+
             // create chunks
-            val whiteNoiseChunks = ArrayList<Int>()
+            val whiteNoiseChunks = arrayListOf<Int>()
             while (whiteNoiseTime > 0) {
                 // create random chunk
-                val chunk =
-                    missionImpl.generator.nextInt(
-                        missionImpl.maxWhiteNoiseTime - missionImpl.minWhiteNoiseTime + 1
-                    ) + missionImpl.minWhiteNoiseTime
+                val chunk = missionImpl.whiteNoiseEventTimeRange.random()
                 // check if there is enough time left
                 if (chunk > whiteNoiseTime) {
                     // hard case: smaller than minimum time
-                    if (chunk < missionImpl.minWhiteNoiseTime) {
+                    if (chunk < missionImpl.whiteNoiseTotalRange.min()) {
                         // add to last chunk that fits
                         for (i in whiteNoiseChunks.indices.reversed()) {
                             val sumChunk = whiteNoiseChunks[i] + chunk
                             // if smaller than maximum time: add to this chunk
-                            if (sumChunk <= missionImpl.maxWhiteNoiseTime) {
+                            if (sumChunk <= missionImpl.whiteNoiseTotalRange.max()) {
                                 whiteNoiseChunks[i] = sumChunk
                                 whiteNoiseTime = 0
                                 break
@@ -280,13 +275,13 @@ class MissionImpl(preferences: MissionPreferences) : IMission {
                     whiteNoiseTime -= chunk
                 }
             }
-    
+
             // ok, add chunks to mission
             //whiteNoise = new WhiteNoise[whiteNoiseChunks.size()];
             //for (int i = 0; i < whiteNoiseChunks.size(); i++) whiteNoise[i] = new WhiteNoise(whiteNoiseChunks.get(i));
             missionImpl.whiteNoiseChunksGlob =
                 whiteNoiseChunks // White noise consists of two events, which will be constructed later
-    
+
             // add mission lengths
             missionImpl.phaseTimes = IntArray(3)
             for (i in 0..2) {
