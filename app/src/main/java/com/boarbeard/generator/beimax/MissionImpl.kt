@@ -2,153 +2,91 @@
  * This file is part of the JSpaceAlertMissionGenerator software.
  * Copyright (C) 2011 Maximilian Kalus
  * See http://www.beimax.de/ and https://github.com/mkalus/JSpaceAlertMissionGenerator
- * <p>
+ *
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- * <p>
+ *
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * <p>
+ *
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **/
-package com.boarbeard.generator.beimax;
+ * along with this program.  If not, see <http:></http:>//www.gnu.org/licenses/>.
+ */
+package com.boarbeard.generator.beimax
 
-import static com.boarbeard.ui.widget.SeekBarPreference.RIGHT_VALUE_SUFFIX;
-
-import android.content.SharedPreferences;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.Random;
-
-import kotlin.ranges.IntRange;
-import timber.log.Timber;
+import android.content.SharedPreferences
+import com.boarbeard.ui.widget.SeekBarPreference
+import timber.log.Timber
+import java.util.Random
 
 /**
  * Default Mission Generator
  *
  * @author mkalus
  */
-public class MissionImpl implements IMission {
-
-    private static final int CONSTANT_THREAT_UNCONFIRMED = 1; // You have to subtract a value from the threatLevel for 4-player-games, and this is that value
+class MissionImpl(preferences: MissionPreferences) : IMission {
     //private int constantThreatUnconfirmedExpansion = 2;
-
     /**
      * minimum and maximum time for white noise
      */
-    private int minWhiteNoise = 45;
-    private int maxWhiteNoise = 60;
-    private int minWhiteNoiseTime = 9;
-    private int maxWhiteNoiseTime = 20;
+    private val minWhiteNoise = 45
+    private val maxWhiteNoise = 60
+    private val minWhiteNoiseTime = 9
+    private val maxWhiteNoiseTime = 20
 
     /**
      * keeps threats
      */
-    ThreatGroup[] threats;
+    var threats: Array<ThreatGroup> = arrayOf()
 
     /**
      * keeps incoming and data transfers
      */
-    DataOperationsBundle dataOperationsBundle;
+    var dataOperationsBundle: DataOperationsBundle? = null
 
     /**
      * white noise chunks in seconds (to distribute)
      */
     //private WhiteNoise[] whiteNoise;
-    ArrayList<Integer> whiteNoiseChunksGlob;
+    var whiteNoiseChunksGlob: List<Int>? = null
 
     /**
      * phase times in seconds
      */
-    private int[] phaseTimes;
+    private var phaseTimes: IntArray = emptyArray<Int>().toIntArray()
 
     /**
      * event list
      */
-    private EventList eventList;
+    private var eventList: EventList? = null
 
     /**
      * random number generator
      */
-    Random generator;
+    var generator: Random
 
 
-    private final MissionPreferences missionPreferences;
+    private val missionPreferences: MissionPreferences
 
     /**
      * @param preferences for the mission.
      */
-    public MissionImpl(MissionPreferences preferences) {
-        long seed = 0;
-        if (preferences.getSeed() != 0) {
-            seed = preferences.getSeed();
+    init {
+        var seed: Long = 0
+        seed = if (preferences.seed != 0L) {
+            preferences.seed
         } else {
-            seed = System.nanoTime() + 8682522807148012L;
+            System.nanoTime() + 8682522807148012L
         }
-        generator = new Random(seed);
-        missionPreferences = preferences;
-    }
-
-    public static MissionPreferences parsePreferences(SharedPreferences preferences) {
-        MissionPreferences prefs = new MissionPreferences();
-
-        prefs.setPlayers(preferences.getInt("playerCount", 5));
-        prefs.setThreatLevel(preferences.getInt("threatDifficultyPreference", 8)); // The threat level for 5 players!
-        prefs.setEnableDoubleThreats(preferences.getBoolean("enable_double_threats", false));
-
-        if (!preferences.getBoolean("stompUnconfirmedReportsPreference", true)) {
-            //  They want Unconfirmed Reports.
-            prefs.setShowUnconfirmed(true);
-            prefs.setThreatUnconfirmed(CONSTANT_THREAT_UNCONFIRMED); // if 5 players - then this is the unconfirmed part of the base threat level
-        } else {
-            //  They want Unconfirmed Reports to appear as normal threats in
-            //  5-player games, and to not appear at all in 4-or-fewer-player
-            //  games.
-            prefs.setShowUnconfirmed(false);
-            //  One way we *could* do this is is to generate the missions
-            //  normally (including unconfirmed reports), and then go back and
-            //  call EventList.stompUnconfirmedReports() in
-            //  MissionType.getEventList() the way we do for the standard
-            //  ConstructedMissions, but instead, let's just adjust the
-            //  difficulty of the mission.
-            prefs.setThreatUnconfirmed(0);
-            if (prefs.getPlayers() != 5) {
-                prefs.setThreatLevel(prefs.getThreatLevel() - CONSTANT_THREAT_UNCONFIRMED); // if 4 players, then you have to subtract the unconfirmed part from the base level (8 - 1 = 7 in normal missions)
-            }
-        }
-
-        prefs.setIncomingDataRange(
-                new IntRange(
-                        preferences.getInt("numberIncomingData", prefs.getMinIncomingData()),
-                        preferences.getInt("numberIncomingData" + RIGHT_VALUE_SUFFIX, prefs.getMaxIncomingData())
-                )
-        );
-
-
-        int missionLength = preferences.getInt("missionLengthPreference", 600);
-        prefs.getMinPhaseTime()[0] = (int) (missionLength * .4);
-        prefs.getMinPhaseTime()[1] = (int) (missionLength * .35);
-        prefs.getMinPhaseTime()[2] = (int) (missionLength * .25);
-
-        prefs.getMaxPhaseTime()[0] = (int) (missionLength * .4 + 15);
-        prefs.getMaxPhaseTime()[1] = (int) (missionLength * .35 + 15);
-        prefs.getMaxPhaseTime()[2] = (int) (missionLength * .25 + 15);
-
-        //  For unit tests, we'd like to be able to repeatably generate "random"
-        //  missions, so... look for an optional random number seed.  (I know
-        //  we're looking for an int instead of a long here, but it doesn't
-        //  matter; int is fine for unit tests.)
-        prefs.setSeed(preferences.getInt("randomSeed", 0));
-        prefs.setCompressTime(preferences.getBoolean("compressTimePreference", false));
-
-        return prefs;
+        generator = Random(seed)
+        missionPreferences = preferences
     }
 
     /**
@@ -156,8 +94,8 @@ public class MissionImpl implements IMission {
      *
      * @return ordered event list of mission
      */
-    public EventList getMissionEvents() {
-        return eventList;
+    override fun getMissionEvents(): EventList {
+        return eventList!!
     }
 
     /**
@@ -166,9 +104,9 @@ public class MissionImpl implements IMission {
      * @param phase 1-3
      * @return phase length of mission or -1
      */
-    public int getMissionPhaseLength(int phase) {
-        if (phase < 1 || phase > phaseTimes.length) return -1;
-        return phaseTimes[phase - 1];
+    override fun getMissionPhaseLength(phase: Int): Int {
+        if (phase < 1 || phase > phaseTimes.size) return -1
+        return phaseTimes[phase - 1]
     }
 
     /**
@@ -176,112 +114,185 @@ public class MissionImpl implements IMission {
      *
      * @return true if mission creation succeeded
      */
-    public boolean generateMission() {
+    override fun generateMission(): Boolean {
         // generate threats
-        boolean generated = false;
-        int tries = 100; //maximum number of tries to generate mission
+        var generated: Boolean
+        var tries = 100 //maximum number of tries to generate mission
         do {
-            threats = new ThreatsGenerator(missionPreferences, generator).generateThreats();
-            generated = threats.length > 0;
-        } while (!generated && tries-- > 0);
+            threats = ThreatsGenerator(missionPreferences, generator).generateThreats()
+            generated = threats.isNotEmpty()
+        } while (!generated && tries-- > 0)
         if (!generated) {
-            Timber.tag("generateMission()").w("Giving up creating threats.");
-            return false; //fail
+            Timber.tag("generateMission()").w("Giving up creating threats.")
+            return false //fail
         }
 
         // generate data transfer and incoming data
-        generated = false;
-        tries = 100;
+        tries = 100
         do {
-            dataOperationsBundle = new DataOperationGenerator(missionPreferences, generator).generateDataOperations();
-            generated = dataOperationsBundle.getSuccess();
-        } while (!generated && tries-- > 0);
+            dataOperationsBundle =
+                DataOperationGenerator(missionPreferences, generator).generateDataOperations()
+            generated = dataOperationsBundle!!.success
+        } while (!generated && tries-- > 0)
         if (!generated) {
-            Timber.tag("generateMission()").w("Giving up creating data operations.");
-            return false; //fail
+            Timber.tag("generateMission()").w("Giving up creating data operations.")
+            return false //fail
         }
 
         //generate times
-        generateTimes();
+        Companion.generateTimes(this)
 
-        //generate phases
-        generated = false;
-        tries = 100;
-        do {
-            PhasesGenerator phasesGenerator = new PhasesGenerator(threats, generator, phaseTimes, dataOperationsBundle, whiteNoiseChunksGlob);
-            generated = phasesGenerator.generatePhases();
-            eventList = phasesGenerator.getEventList();
-        } while (!generated && tries-- > 0);
-        if (!generated) {
-            Timber.tag("generateMission()").w("Giving up creating phase details.");
-            return false; //fail
+        // generate phases
+        eventList = PhasesGenerator(
+            threats,
+            generator,
+            phaseTimes,
+            dataOperationsBundle!!,
+            whiteNoiseChunksGlob!!
+        )
+            .generatePhases(100)
+
+        if (eventList == null) {
+            Timber.tag("generateMission()").w("Giving up creating phase details.")
+            return false //fail
         }
 
-        return true;
+        return true
     }
 
-
-    /**
-     * simple generation of times for phases, white noise etc.
-     */
-    protected void generateTimes() {
-        // generate white noise
-        int whiteNoiseTime = generator.nextInt(maxWhiteNoise - minWhiteNoise + 1) + minWhiteNoise;
-        Timber.tag("generateTimes()").v("White noise time: %d", whiteNoiseTime);
-
-        // create chunks
-        ArrayList<Integer> whiteNoiseChunks = new ArrayList<>();
-        while (whiteNoiseTime > 0) {
-            // create random chunk
-            int chunk = generator.nextInt(maxWhiteNoiseTime - minWhiteNoiseTime + 1) + minWhiteNoiseTime;
-            // check if there is enough time left
-            if (chunk > whiteNoiseTime) {
-                // hard case: smaller than minimum time
-                if (chunk < minWhiteNoiseTime) {
-                    // add to last chunk that fits
-                    for (int i = whiteNoiseChunks.size() - 1; i >= 0; i--) {
-                        int sumChunk = whiteNoiseChunks.get(i) + chunk;
-                        // if smaller than maximum time: add to this chunk
-                        if (sumChunk <= maxWhiteNoiseTime) {
-                            whiteNoiseChunks.set(i, sumChunk);
-                            whiteNoiseTime = 0;
-                            break;
-                        }
-                    }
-                    // still not zeroed
-                    if (whiteNoiseTime > 0) { // add to last element, regardless - quite unlikely though
-                        int lastIdx = whiteNoiseChunks.size() - 1;
-                        whiteNoiseChunks.set(lastIdx, whiteNoiseChunks.get(lastIdx) + chunk);
-                        whiteNoiseTime = 0;
-                    }
-                } else { // easy case: create smaller rest chunk
-                    whiteNoiseChunks.add(whiteNoiseTime);
-                    whiteNoiseTime = 0;
-                }
-            } else { // add new chunk
-                whiteNoiseChunks.add(chunk);
-                whiteNoiseTime -= chunk;
-            }
-        }
-
-        // ok, add chunks to mission
-        //whiteNoise = new WhiteNoise[whiteNoiseChunks.size()];
-        //for (int i = 0; i < whiteNoiseChunks.size(); i++) whiteNoise[i] = new WhiteNoise(whiteNoiseChunks.get(i));
-        whiteNoiseChunksGlob = whiteNoiseChunks; // White noise consists of two events, which will be constructed later
-
-        // add mission lengths
-        phaseTimes = new int[3];
-        for (int i = 0; i < 3; i++) {
-            phaseTimes[i] = generator.nextInt(missionPreferences.getMaxPhaseTime()[i] - missionPreferences.getMinPhaseTime()[i] + 1) + missionPreferences.getMinPhaseTime()[i];
-        }
-    }
 
     /**
      * Prints list of missions
      */
-    @NotNull
-    @Override
-    public String toString() {
-        return eventList.toString();
+    override fun toString(): String {
+        return eventList.toString()
+    }
+
+    companion object {
+        private const val CONSTANT_THREAT_UNCONFIRMED =
+            1 // You have to subtract a value from the threatLevel for 4-player-games, and this is that value
+
+        fun parsePreferences(preferences: SharedPreferences): MissionPreferences {
+            val prefs = MissionPreferences()
+
+            prefs.players = preferences.getInt("playerCount", 5)
+            prefs.threatLevel = preferences.getInt(
+                "threatDifficultyPreference",
+                8
+            ) // The threat level for 5 players!
+            prefs.enableDoubleThreats = preferences.getBoolean("enable_double_threats", false)
+
+            if (!preferences.getBoolean("stompUnconfirmedReportsPreference", true)) {
+                //  They want Unconfirmed Reports.
+                prefs.showUnconfirmed = true
+                prefs.threatUnconfirmed =
+                    CONSTANT_THREAT_UNCONFIRMED // if 5 players - then this is the unconfirmed part of the base threat level
+            } else {
+                //  They want Unconfirmed Reports to appear as normal threats in
+                //  5-player games, and to not appear at all in 4-or-fewer-player
+                //  games.
+                prefs.showUnconfirmed = false
+                //  One way we *could* do this is is to generate the missions
+                //  normally (including unconfirmed reports), and then go back and
+                //  call EventList.stompUnconfirmedReports() in
+                //  MissionType.getEventList() the way we do for the standard
+                //  ConstructedMissions, but instead, let's just adjust the
+                //  difficulty of the mission.
+                prefs.threatUnconfirmed = 0
+                if (prefs.players != 5) {
+                    prefs.threatLevel =
+                        prefs.threatLevel - CONSTANT_THREAT_UNCONFIRMED // if 4 players, then you have to subtract the unconfirmed part from the base level (8 - 1 = 7 in normal missions)
+                }
+            }
+
+            prefs.incomingDataRange = IntRange(
+                preferences.getInt("numberIncomingData", prefs.getMinIncomingData()),
+                preferences.getInt(
+                    "numberIncomingData" + SeekBarPreference.RIGHT_VALUE_SUFFIX,
+                    prefs.getMaxIncomingData()
+                )
+            )
+
+
+            val missionLength = preferences.getInt("missionLengthPreference", 600)
+            prefs.minPhaseTime[0] = (missionLength * .4).toInt()
+            prefs.minPhaseTime[1] = (missionLength * .35).toInt()
+            prefs.minPhaseTime[2] = (missionLength * .25).toInt()
+
+            prefs.maxPhaseTime[0] = (missionLength * .4 + 15).toInt()
+            prefs.maxPhaseTime[1] = (missionLength * .35 + 15).toInt()
+            prefs.maxPhaseTime[2] = (missionLength * .25 + 15).toInt()
+
+            //  For unit tests, we'd like to be able to repeatably generate "random"
+            //  missions, so... look for an optional random number seed.  (I know
+            //  we're looking for an int instead of a long here, but it doesn't
+            //  matter; int is fine for unit tests.)
+            prefs.seed = preferences.getInt("randomSeed", 0).toLong()
+            prefs.compressTime = preferences.getBoolean("compressTimePreference", false)
+
+            return prefs
+        }
+
+        /**
+         * simple generation of times for phases, white noise etc.
+         */
+        protected fun generateTimes(missionImpl: MissionImpl) {
+            // generate white noise
+            var whiteNoiseTime = missionImpl.generator.nextInt(
+                missionImpl.maxWhiteNoise - missionImpl.minWhiteNoise + 1
+            ) + missionImpl.minWhiteNoise
+            Timber.tag("generateTimes()").v("White noise time: %d", whiteNoiseTime)
+    
+            // create chunks
+            val whiteNoiseChunks = ArrayList<Int>()
+            while (whiteNoiseTime > 0) {
+                // create random chunk
+                val chunk =
+                    missionImpl.generator.nextInt(
+                        missionImpl.maxWhiteNoiseTime - missionImpl.minWhiteNoiseTime + 1
+                    ) + missionImpl.minWhiteNoiseTime
+                // check if there is enough time left
+                if (chunk > whiteNoiseTime) {
+                    // hard case: smaller than minimum time
+                    if (chunk < missionImpl.minWhiteNoiseTime) {
+                        // add to last chunk that fits
+                        for (i in whiteNoiseChunks.indices.reversed()) {
+                            val sumChunk = whiteNoiseChunks[i] + chunk
+                            // if smaller than maximum time: add to this chunk
+                            if (sumChunk <= missionImpl.maxWhiteNoiseTime) {
+                                whiteNoiseChunks[i] = sumChunk
+                                whiteNoiseTime = 0
+                                break
+                            }
+                        }
+                        // still not zeroed
+                        if (whiteNoiseTime > 0) { // add to last element, regardless - quite unlikely though
+                            val lastIdx = whiteNoiseChunks.size - 1
+                            whiteNoiseChunks[lastIdx] = whiteNoiseChunks[lastIdx] + chunk
+                            whiteNoiseTime = 0
+                        }
+                    } else { // easy case: create smaller rest chunk
+                        whiteNoiseChunks.add(whiteNoiseTime)
+                        whiteNoiseTime = 0
+                    }
+                } else { // add new chunk
+                    whiteNoiseChunks.add(chunk)
+                    whiteNoiseTime -= chunk
+                }
+            }
+    
+            // ok, add chunks to mission
+            //whiteNoise = new WhiteNoise[whiteNoiseChunks.size()];
+            //for (int i = 0; i < whiteNoiseChunks.size(); i++) whiteNoise[i] = new WhiteNoise(whiteNoiseChunks.get(i));
+            missionImpl.whiteNoiseChunksGlob =
+                whiteNoiseChunks // White noise consists of two events, which will be constructed later
+    
+            // add mission lengths
+            missionImpl.phaseTimes = IntArray(3)
+            for (i in 0..2) {
+                missionImpl.phaseTimes[i] =
+                    missionImpl.generator.nextInt(missionImpl.missionPreferences.maxPhaseTime[i] - missionImpl.missionPreferences.minPhaseTime[i] + 1) + missionImpl.missionPreferences.minPhaseTime[i]
+            }
+        }
     }
 }

@@ -12,57 +12,49 @@
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **/
-package com.boarbeard.generator.beimax;
+ * along with this program.  If not, see <http:></http:>//www.gnu.org/licenses/>.
+ */
+package com.boarbeard.generator.beimax
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import com.boarbeard.generator.beimax.event.Announcement
+import com.boarbeard.generator.beimax.event.Event
+import com.boarbeard.generator.beimax.event.Threat
+import com.boarbeard.generator.beimax.event.WhiteNoise
+import com.boarbeard.generator.beimax.event.WhiteNoiseRestored
+import timber.log.Timber
+import java.util.TreeMap
 
-import com.boarbeard.generator.beimax.event.Announcement;
-import com.boarbeard.generator.beimax.event.Event;
-import com.boarbeard.generator.beimax.event.Threat;
-import com.boarbeard.generator.beimax.event.WhiteNoise;
-import com.boarbeard.generator.beimax.event.WhiteNoiseRestored;
+fun fit(attempts: Int = 100000, runner: (currentAttempt: Int) -> Boolean): Boolean {
+    var done: Boolean
+    var currentAttempts = 0
+    do {
+        currentAttempts++
+        done = runner.invoke(currentAttempts)
+    } while (!done && currentAttempts < attempts)
 
-import androidx.annotation.NonNull;
-
-import timber.log.Timber;
+    return done
+}
 
 /**
  * Keeps mission events in an ordered state and also checks for collisions and
  * the like
- * 
- * @author mkalus
- * 
+ *
+ * @author mkalus, leifnorcott
  */
-public class EventList {
-	public static String formatTime(int time) {
-		int minute = time / 60;
-		int seconds = time % 60;
-		return String.format("%02d", minute) + ":"
-				+ String.format("%02d", seconds);
-	}
+class EventList {
+    /**
+     * actual time table for this mission
+     */
+    var events: TreeMap<Int, Event>
 
-	/**
-	 * actual time table for this mission
-	 */
-	TreeMap<Integer, Event> events;
-
-	/**
-	 * Constructor
-	 */
-	public EventList() {
-		events = new TreeMap<>();
-	}
+    /**
+     * Constructor
+     */
+    constructor() {
+        events = TreeMap()
+    }
 
     /**
      * Copy constructor.  This just does a shallow copy of the tree; the events
@@ -71,172 +63,175 @@ public class EventList {
      *
      * @param other must not be null
      */
-    public EventList(@NonNull EventList other) {
-        events = new TreeMap<>(other.events.comparator());
-        events.putAll(other.events);
+    constructor(other: EventList) {
+        events = TreeMap(other.events.comparator())
+        events.putAll(other.events)
     }
 
-	/**
-	 * Add announcements
-	 * 
-	 * @param phase1
-	 *            - length of phase 1
-	 * @param phase2
-	 *            - length of phase 2
-	 * @param phase3
-	 *            - length of phase 3
-	 */
-	public void addPhaseEvents(int phase1, int phase2, int phase3) {
-		addEvent(0, new Announcement(Announcement.ANNOUNCEMENT_PH1_START));
-		Announcement a = new Announcement(
-				Announcement.ANNOUNCEMENT_PH1_ONEMINUTE);
-		addEvent(phase1 - 60 - a.getLengthInSeconds(), a);
-		a = new Announcement(Announcement.ANNOUNCEMENT_PH1_TWENTYSECS);
-		addEvent(phase1 - 20 - a.getLengthInSeconds(), a);
-		a = new Announcement(Announcement.ANNOUNCEMENT_PH1_ENDS);
-		addEvent(phase1 - a.getLengthInSeconds(), a);
-		a = new Announcement(Announcement.ANNOUNCEMENT_PH2_ONEMINUTE);
-		addEvent(phase1 + phase2 - 60 - a.getLengthInSeconds(), a);
-		a = new Announcement(Announcement.ANNOUNCEMENT_PH2_TWENTYSECS);
-		addEvent(phase1 + phase2 - 20 - a.getLengthInSeconds(), a);
-		a = new Announcement(Announcement.ANNOUNCEMENT_PH2_ENDS);
-		addEvent(phase1 + phase2 - a.getLengthInSeconds(), a);
-		a = new Announcement(Announcement.ANNOUNCEMENT_PH3_ONEMINUTE);
-		addEvent(phase1 + phase2 + phase3 - 60 - a.getLengthInSeconds(), a);
-		a = new Announcement(Announcement.ANNOUNCEMENT_PH3_TWENTYSECS);
-		addEvent(phase1 + phase2 + phase3 - 20 - a.getLengthInSeconds(), a);
-		a = new Announcement(Announcement.ANNOUNCEMENT_PH3_ENDS);
-		addEvent(phase1 + phase2 + phase3 - a.getLengthInSeconds(), a);
-	}
+    /**
+     * Add announcements
+     *
+     * @param phase1
+     * - length of phase 1
+     * @param phase2
+     * - length of phase 2
+     * @param phase3
+     * - length of phase 3
+     */
+    fun addPhaseEvents(phase1: Int, phase2: Int, phase3: Int) {
+        addEvent(0, Announcement(Announcement.ANNOUNCEMENT_PH1_START))
+        var a = Announcement(
+            Announcement.ANNOUNCEMENT_PH1_ONEMINUTE
+        )
+        addEvent(phase1 - 60 - a.lengthInSeconds, a)
+        a = Announcement(Announcement.ANNOUNCEMENT_PH1_TWENTYSECS)
+        addEvent(phase1 - 20 - a.lengthInSeconds, a)
+        a = Announcement(Announcement.ANNOUNCEMENT_PH1_ENDS)
+        addEvent(phase1 - a.lengthInSeconds, a)
+        a = Announcement(Announcement.ANNOUNCEMENT_PH2_ONEMINUTE)
+        addEvent(phase1 + phase2 - 60 - a.lengthInSeconds, a)
+        a = Announcement(Announcement.ANNOUNCEMENT_PH2_TWENTYSECS)
+        addEvent(phase1 + phase2 - 20 - a.lengthInSeconds, a)
+        a = Announcement(Announcement.ANNOUNCEMENT_PH2_ENDS)
+        addEvent(phase1 + phase2 - a.lengthInSeconds, a)
+        a = Announcement(Announcement.ANNOUNCEMENT_PH3_ONEMINUTE)
+        addEvent(phase1 + phase2 + phase3 - 60 - a.lengthInSeconds, a)
+        a = Announcement(Announcement.ANNOUNCEMENT_PH3_TWENTYSECS)
+        addEvent(phase1 + phase2 + phase3 - 20 - a.lengthInSeconds, a)
+        a = Announcement(Announcement.ANNOUNCEMENT_PH3_ENDS)
+        addEvent(phase1 + phase2 + phase3 - a.lengthInSeconds, a)
+    }
 
-	/**
-	 * Add announcements
-	 * 
-	 * @param phase1
-	 *            - length of phase 1
-	 * @param phase2
-	 *            - length of phase 2
-	 */
-	public void addPhaseEvents(int phase1, int phase2) {
-		addEvent(0, new Announcement(Announcement.ANNOUNCEMENT_PH1_START));
-		Announcement a = new Announcement(
-				Announcement.ANNOUNCEMENT_PH1_ONEMINUTE);
-		addEvent(phase1 - 60 - a.getLengthInSeconds(), a);
-		a = new Announcement(Announcement.ANNOUNCEMENT_PH1_TWENTYSECS);
-		addEvent(phase1 - 20 - a.getLengthInSeconds(), a);
-		a = new Announcement(Announcement.ANNOUNCEMENT_PH1_ENDS);
-		addEvent(phase1 - a.getLengthInSeconds(), a);
-		a = new Announcement(Announcement.ANNOUNCEMENT_PH3_ONEMINUTE);
-		addEvent(phase1 + phase2 - 60 - a.getLengthInSeconds(), a);
-		a = new Announcement(Announcement.ANNOUNCEMENT_PH3_TWENTYSECS);
-		addEvent(phase1 + phase2 - 20 - a.getLengthInSeconds(), a);
-		a = new Announcement(Announcement.ANNOUNCEMENT_PH3_ENDS);
-		addEvent(phase1 + phase2 - a.getLengthInSeconds(), a);
-	}
+    /**
+     * Add announcements
+     *
+     * @param phase1
+     * - length of phase 1
+     * @param phase2
+     * - length of phase 2
+     */
+    fun addPhaseEvents(phase1: Int, phase2: Int) {
+        addEvent(0, Announcement(Announcement.ANNOUNCEMENT_PH1_START))
+        var a = Announcement(
+            Announcement.ANNOUNCEMENT_PH1_ONEMINUTE
+        )
+        addEvent(phase1 - 60 - a.lengthInSeconds, a)
+        a = Announcement(Announcement.ANNOUNCEMENT_PH1_TWENTYSECS)
+        addEvent(phase1 - 20 - a.lengthInSeconds, a)
+        a = Announcement(Announcement.ANNOUNCEMENT_PH1_ENDS)
+        addEvent(phase1 - a.lengthInSeconds, a)
+        a = Announcement(Announcement.ANNOUNCEMENT_PH3_ONEMINUTE)
+        addEvent(phase1 + phase2 - 60 - a.lengthInSeconds, a)
+        a = Announcement(Announcement.ANNOUNCEMENT_PH3_TWENTYSECS)
+        addEvent(phase1 + phase2 - 20 - a.lengthInSeconds, a)
+        a = Announcement(Announcement.ANNOUNCEMENT_PH3_ENDS)
+        addEvent(phase1 + phase2 - a.lengthInSeconds, a)
+    }
 
-	// Attempts to add a White Noise Event
-	// This adds TWO events, WhiteNoise and WhiteNoiseRestored
-	public boolean addWhiteNoiseEvents(int time, int length) {
-		boolean returnValue1 = false, returnValue2 = false;
-		Event whitenoise = new WhiteNoise(length);
-		Event whitenoiserestored = new WhiteNoiseRestored();
+    // Attempts to add a White Noise Event
+    // This adds TWO events, WhiteNoise and WhiteNoiseRestored
+    fun addWhiteNoiseEvents(time: Int, length: Int): Boolean {
+        val returnValue1: Boolean
+        val returnValue2: Boolean
+        val whiteNoise: Event = WhiteNoise(length)
+        val whiteNoiseRestored: Event = WhiteNoiseRestored()
 
-		if (!checkTime(time, whitenoise.getLengthInSeconds()
-				+ whitenoiserestored.getLengthInSeconds()))
-			return false;
+        if (!checkTime(
+                time, whiteNoise.lengthInSeconds
+                        + whiteNoiseRestored.lengthInSeconds
+            )
+        ) return false
 
-		returnValue1 = addEvent(time, whitenoise);
+        returnValue1 = addEvent(time, whiteNoise)
 
-		returnValue2 = addEvent(time + whitenoise.getLengthInSeconds(),
-				whitenoiserestored);
+        returnValue2 = addEvent(
+            time + whiteNoise.lengthInSeconds,
+            whiteNoiseRestored
+        )
 
-		if (!returnValue1) {
-			Timber.e("retunValue1 was false!");
-		}
-		if (!returnValue2) {
-			Timber.e("retunValue1 was false!");
-		}
+        if (!returnValue1) {
+            Timber.e("retunValue1 was false!")
+        }
+        if (!returnValue2) {
+            Timber.e("retunValue1 was false!")
+        }
 
-		return (true);
-	}
+        return returnValue1 && returnValue2
+    }
 
-	/**
-	 * attempts to add event at time
-	 * 
-	 * @param time
-	 * @param event
-	 * @return false, if a collision was detected
-	 */
-	public boolean addEvent(int time, Event event) {
+    /**
+     * attempts to add event at time
+     *
+     * @param time
+     * @param event
+     * @return false, if a collision was detected
+     */
+    fun addEvent(time: Int, event: Event): Boolean {
+        // check first
 
-		// check first
-		if (!checkTime(time, event.getLengthInSeconds())) {
-			return false;
-		}
+        if (!checkTime(time, event.lengthInSeconds)) {
+            return false
+        }
 
-		// otherwise add event
-		events.put(time, event);
-		return true;
-	}
+        // otherwise add event
+        events[time] = event
+        return true
+    }
 
-	/**
-	 * Checks whether a certain time slot is free
-	 * @param time
-	 * @param length in seconds
-	 * @return false, if time slot is not free
-	 */
-	public boolean checkTime(int time, int length) {
-		// if empty set, you can add stuff
-		if (events.isEmpty()) return true;
+    /**
+     * Checks whether a certain time slot is free
+     * @param time
+     * @param length in seconds
+     * @return false, if time slot is not free
+     */
+    private fun checkTime(time: Int, length: Int): Boolean {
+        // if empty set, you can add stuff
+        if (events.isEmpty()) return true
 
-		// lowest or highest keys?
-		int lowest = events.firstKey();
-		if (lowest > time) { // there is no key before?
-			return time + length <= lowest; // too long
-		}
-		int highest = events.lastKey();
-		if (highest < time + length) return true;
+        // lowest or highest keys?
+        val lowest = events.firstKey()
+        if (lowest > time) { // there is no key before?
+            return time + length <= lowest // too long
+        }
+        val highest = events.lastKey()
+        if (highest < time + length) return true
 
-		// ok, we are in between somewhere - check event before
-		Entry<Integer, Event> before = events.floorEntry(time);
-		int endTime = before.getKey() + before.getValue().getLengthInSeconds();
-		if (endTime > time) return false;
+        // ok, we are in between somewhere - check event before
+        var after = -1
+        events.floorEntry(time)?.let { before ->
+            val endTime = before.key + before.value.lengthInSeconds
+            if (endTime > time) return false
 
-		// check event after
-		int after = events.ceilingKey(before.getKey() + 1); // next event after before key
+            // check event after
+            after = events.ceilingKey(before.key + 1) ?: -1
+        }
 
-		return time + length <= after;
-	}
+        return time + length <= after
+    }
 
     /**
      * Remove Unconfirmed Reports, or replace them with normal (confirmed)
      * threats.
      *
      * @param replace true if they should be replaced with normal threats; false
-     *                if they should be removed from the list.
+     * if they should be removed from the list.
      */
-    public void stompUnconfirmedReports(boolean replace) {
-        ArrayList<Integer> toRemove = replace ? null : new ArrayList<>();
-        for (Entry<Integer, Event> te : events.entrySet()) {
-            if (!(te.getValue() instanceof Threat)) continue;
-            Threat tt = (Threat)(te.getValue());
-            if (tt.isConfirmed()) continue;
-            if (replace) {
-                //  We don't want to fiddle with the existing Threat instance
-                //  itself (as it may be shared by another instance of this
-                //  MissionType), so copy it.
-                te.setValue(new Threat(tt));
-                ((Threat) te.getValue()).setConfirmed(true);
-            } else {
-                //  can't actually remove the element here without a
-                //  ConcurrentModificationException, so add it to the list (of
-                //  probably one element) to remove afterward.
-                toRemove.add(te.getKey());
+    fun stompUnconfirmedReports(replace: Boolean) {
+        val toRemove = if (replace) null else mutableListOf<Int>()
+        events.entries.forEach { event ->
+            val threat = event.value as? Threat
+            if (threat?.isConfirmed == false) {
+                if (replace) {
+                    //  We don't want to fiddle with the existing Threat instance
+                    //  itself (as it may be shared by another instance of this
+                    //  MissionType), so copy it.
+                    event.setValue(Threat(threat).apply { isConfirmed = true })
+                } else {
+                    toRemove?.add(event.key)
+                }
             }
         }
-        for (int ii = replace ? -1 : toRemove.size() - 1; ii >= 0; --ii) {
-            events.remove(toRemove.get(ii));
-        }
+        toRemove?.forEach { key -> events.remove(key) }
     }
 
     /**
@@ -247,94 +242,51 @@ public class EventList {
      * we'll give it the full 15 seconds, even if its sound file only takes 8
      * seconds to play.
      */
-    public void compressTime() {
-        if (events.isEmpty()) return;
-        TreeMap<Integer, Event> tl = new TreeMap<>(events.comparator());
-        Integer nextKey = null;
-        for (Entry<Integer, Event> ent : events.entrySet()) {
+    fun compressTime() {
+        if (events.isEmpty()) return
+
+        val tl = TreeMap<Int, Event>(events.comparator())
+        var nextKey: Int? = null
+        for (ent in events.entries) {
             if (nextKey == null) {
-                tl.put(0, ent.getValue());
-                nextKey = ent.getValue().getLengthInSeconds();
+                tl[0] = ent.value
+                nextKey = ent.value.lengthInSeconds
             } else {
-                Event ev = ent.getValue();
+                var ev = ent.value
                 //  just for fun, let's also clamp white noise at 4 seconds.
-                if ((ev instanceof WhiteNoise) && (ev.getLengthInSeconds() > 4)) {
-                    ev = new WhiteNoise(4);
+                if ((ev is WhiteNoise) && (ev.lengthInSeconds > 4)) {
+                    ev = WhiteNoise(4)
                 }
-                tl.put(nextKey, ev);
-                nextKey = nextKey + ev.getLengthInSeconds();
+                tl[nextKey] = ev
+                nextKey += ev.lengthInSeconds
             }
         }
-        events = tl;
+        events = tl
     }
 
-	/**
-	 * returns the entry set itself
-	 * 
-	 * @return Set<Map.Entry<Integer,Event>> set of events
-	 */
-	public Set<Map.Entry<Integer, Event>> getEntrySet() {
-		return events.entrySet();
-	}
+    val entrySet: Set<Map.Entry<Int, Event>>
+        /**
+         * returns the entry set itself
+         *
+         * @return Set<Map.Entry></Map.Entry><Integer></Integer>,Event>> set of events
+         */
+        get() = events.entries
+
+    val entryList: List<Map.Entry<Int, Event>>
+        /**
+         * Returns a shallow copy of the list into a List.  This is just used in
+         * unit tests.
+         */
+        get() {
+            val rv: MutableList<Map.Entry<Int, Event>> = ArrayList(events.size)
+            rv.addAll(events.entries)
+            return rv
+        }
 
     /**
-     * Returns a shallow copy of the list into a List.  This is just used in
-     * unit tests.
+     * Prints list of missions
      */
-    public List<Entry<Integer, Event>> getEntryList() {
-        List<Entry<Integer, Event>> rv = new ArrayList<>(events.size());
-        rv.addAll(events.entrySet());
-        return rv;
+    override fun toString(): String {
+        return events.entries.toString()
     }
-
-	/**
-	 * Prints list of missions
-	 */
-	@Override
-	public String toString() {
-
-		return events.entrySet().toString();
-	}
-
-	/**
-	 * Gets the entry corresponding to the specified key; if no such entry
-	 * exists, returns the entry for the greatest key less than the specified
-	 * key; if no such entry exists, returns {@code null}.
-	 */
-	/*
-	 * final Entry<Integer,Event> floorEntry(Integer time) {
-	 * 
-	 * // Since this is not in till API level 9 for android going this is a
-	 * dirty version. for(Entry<Integer, Event> entry :
-	 * events.headMap(time).entrySet()) { return entry; } return null; }
-	 */
-
-	/**
-	 * Gets the entry corresponding to the specified key; if no such entry
-	 * exists, returns the entry for the greatest key less than the specified
-	 * key; if no such entry exists, returns {@code null}.
-	 */
-	final Integer floorKey(Integer time) {
-
-		if (events.containsKey(time)) {
-			return time;
-		}
-
-		SortedMap<Integer, Event> map = events.headMap(time);
-		return map.isEmpty() ? null : map.lastKey();
-	}
-
-	/**
-	 * Returns the least key greater than or equal to the given key, or null if
-	 * there is no such key.
-	 */
-	final Integer ceilingKey(Integer time) {
-
-		if (events.containsKey(time)) {
-			return time;
-		}
-
-		SortedMap<Integer, Event> map = events.tailMap(time);
-		return map.isEmpty() ? null : map.firstKey();
-	}
 }

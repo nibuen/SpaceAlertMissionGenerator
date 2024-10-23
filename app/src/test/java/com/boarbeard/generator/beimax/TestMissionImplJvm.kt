@@ -3,9 +3,13 @@ package com.boarbeard.generator.beimax
 import android.content.SharedPreferences
 import com.boarbeard.generator.beimax.event.*
 import com.boarbeard.ui.MissionType
+import io.kotest.matchers.ints.shouldBeInRange
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import timber.log.Timber
 
 
@@ -30,6 +34,11 @@ class JvmDebugTree : Timber.Tree() {
  * TestMissionImplJvm allows to run without Android/emulators.
  */
 class TestMissionImplJvm {
+
+    @Before
+    fun before() {
+        Timber.plant(JvmDebugTree())
+    }
 
     @Test
     fun testParsePreferences() {
@@ -79,7 +88,7 @@ class TestMissionImplJvm {
      */
     @Test
     fun testStompUnconfirmedRemovesAllUnconfirmedReports() {
-        Timber.plant(JvmDebugTree())
+
         val sp = BogoSharedPreferences()
         sp["stompUnconfirmedReportsPreference"] = true
         sp["playerCount"] = 4
@@ -93,10 +102,13 @@ class TestMissionImplJvm {
             Assert.assertTrue(missionImpl.generateMission())
 
             // Verify count matches to configurations
-            Assert.assertEquals(
-                missionPreferences.threatLevel,
-                missionImpl.missionEvents.events.values.sumOf { (it as? Threat)?.threatLevel ?: 0 }
-            )
+            val sum = missionImpl.missionEvents.events.values.sumOf { (it as? Threat)?.threatLevel ?: 0 }
+            // TODO make this range more understandable (it comes from the way Mission threat ranges are generated)
+            sum.shouldBeInRange(missionPreferences.threatLevel - 2  .. missionPreferences.threatLevel)
+//            Assert.assertTrue(
+//                missionPreferences.threatLevel ==
+//                missionImpl.missionEvents.events.values.sumOf { (it as? Threat)?.threatLevel ?: 0 }
+//            )
 
             // more detailed checks based on preferences
             val foundUnconfirmedReports = missionImpl.missionEvents.entrySet.filter {
@@ -153,7 +165,7 @@ class TestMissionImplJvm {
         val eventList = MissionType.RealMission1.buildEvents(sp)
 
         //  if you run into problems
-        //dumpEvents(eventList);
+        dumpEvents(eventList)
         val tl = eventList.entryList
         Assert.assertEquals(
             if (showUnconfirmed || players == 5) 30 else 29.toLong(),

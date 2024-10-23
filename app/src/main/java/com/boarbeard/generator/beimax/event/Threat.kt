@@ -92,7 +92,7 @@ class Threat : Event {
      */
     var isConfirmed = false
 
-    constructor() {}
+    constructor()
 
     /**
      * Copy constructor.

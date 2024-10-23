@@ -1,6 +1,7 @@
 package com.boarbeard.ui
 
 import android.os.Handler
+import android.os.Looper
 import android.widget.TextView
 import java.util.concurrent.TimeUnit
 
@@ -10,7 +11,7 @@ class StopWatch(private val timeTextView: TextView) {
 
     @Volatile
     private var pauseTime: Long = 0
-    private val timerHandler = Handler()
+    private val timerHandler = Handler(Looper.getMainLooper())
     private val mUpdateTimeTask: Runnable = object : Runnable {
         override fun run() {
             updateClock()
