@@ -47,18 +47,17 @@ class ThreatsGenerator(
      *
      * @return true if generation was successful
      */
-    fun generateThreats(): Array<ThreatGroup?> {
-        var threats: Array<ThreatGroup?> = emptyArray()
+    fun generateThreats(): Array<ThreatGroup> {
         val tg = BasicThreatGenerator(missionPreferences, generator)
 
         // initialize numbers - might fail, then we return false to try again
         if (!tg.initializeThreatNumbers()) {
             Timber.i("Threat initialization failed. Retrying.")
-            return threats
+            return emptyArray()
         }
 
         // generate the basic threats
-        threats = tg.generateThreats()
+        val threats = tg.generateThreats()
 
         // keeps number of threats each phase - used to check sanity further down
         var threatsFirstPhase = 0
@@ -67,61 +66,59 @@ class ThreatsGenerator(
         // generate phases and distribute threats
         val sortedThreats = arrayOfNulls<ThreatGroup>(8)
         for (threatGroup in threats) {
-            if (threatGroup != null) {
-                // for each threat group, set min and max phases
-                var minPhase = 1
-                var maxPhase = 8
-                val externalThreat = threatGroup.external
-                if (externalThreat != null) {
-                    if (externalThreat.threatLevel == Threat.THREAT_LEVEL_SERIOUS) {
-                        if (minPhase < minTSeriousExternalThreat) minPhase =
-                            minTSeriousExternalThreat
-                        if (maxPhase > maxTSeriousExternalThreat) maxPhase =
-                            maxTSeriousExternalThreat
-                    } else {
-                        if (minPhase < minTNormalExternalThreat) minPhase = minTNormalExternalThreat
-                        if (maxPhase > maxTNormalExternalThreat) maxPhase = maxTNormalExternalThreat
-                    }
-                }
-                val internalThreat = threatGroup.internal
-                if (internalThreat != null) {
-                    if (internalThreat.threatLevel == Threat.THREAT_LEVEL_SERIOUS) {
-                        if (minPhase < minTSeriousInternalThreat) minPhase =
-                            minTSeriousInternalThreat
-                        if (maxPhase > maxTSeriousInternalThreat) maxPhase =
-                            maxTSeriousInternalThreat
-                    } else {
-                        if (minPhase < minTNormalInternalThreat) minPhase = minTNormalInternalThreat
-                        if (maxPhase > maxTNormalInternalThreat) maxPhase = maxTNormalInternalThreat
-                    }
-                }
-
-                // create list of possible phases - find remaining possible phases and pick one
-                val possiblePhases: MutableList<Int> = ArrayList()
-                for (i in minPhase..maxPhase) {
-                    if (sortedThreats[i - 1] == null) possiblePhases.add(i)
-                }
-
-                // no possible phases left - giving up to continue again
-                if (possiblePhases.size == 0) {
-                    Timber.i("Threat distribution failed - no possible phases left to put created threat into. Retrying.")
-                    return emptyArray()
-                }
-
-                // pick random phase
-                val phase = possiblePhases[generator.nextInt(possiblePhases.size)]
-
-                // set stuff
-                if (externalThreat != null) externalThreat.time = phase
-                if (internalThreat != null) internalThreat.time = phase
-                sortedThreats[phase - 1] = threatGroup
-
-                // add threat score
-                if (externalThreat != null && internalThreat != null) {
-                    if (phase <= 4) threatsFirstPhase += 2 else threatsSecondPhase += 2
+            // for each threat group, set min and max phases
+            var minPhase = 1
+            var maxPhase = 8
+            val externalThreat = threatGroup.external
+            if (externalThreat != null) {
+                if (externalThreat.threatLevel == Threat.THREAT_LEVEL_SERIOUS) {
+                    if (minPhase < minTSeriousExternalThreat) minPhase =
+                        minTSeriousExternalThreat
+                    if (maxPhase > maxTSeriousExternalThreat) maxPhase =
+                        maxTSeriousExternalThreat
                 } else {
-                    if (phase <= 4) threatsFirstPhase++ else threatsSecondPhase++
+                    if (minPhase < minTNormalExternalThreat) minPhase = minTNormalExternalThreat
+                    if (maxPhase > maxTNormalExternalThreat) maxPhase = maxTNormalExternalThreat
                 }
+            }
+            val internalThreat = threatGroup.internal
+            if (internalThreat != null) {
+                if (internalThreat.threatLevel == Threat.THREAT_LEVEL_SERIOUS) {
+                    if (minPhase < minTSeriousInternalThreat) minPhase =
+                        minTSeriousInternalThreat
+                    if (maxPhase > maxTSeriousInternalThreat) maxPhase =
+                        maxTSeriousInternalThreat
+                } else {
+                    if (minPhase < minTNormalInternalThreat) minPhase = minTNormalInternalThreat
+                    if (maxPhase > maxTNormalInternalThreat) maxPhase = maxTNormalInternalThreat
+                }
+            }
+
+            // create list of possible phases - find remaining possible phases and pick one
+            val possiblePhases = mutableListOf<Int>()
+            for (i in minPhase..maxPhase) {
+                if (sortedThreats[i - 1] == null) possiblePhases.add(i)
+            }
+
+            // no possible phases left - giving up to continue again
+            if (possiblePhases.size == 0) {
+                Timber.i("Threat distribution failed - no possible phases left to put created threat into. Retrying.")
+                return emptyArray()
+            }
+
+            // pick random phase
+            val phase = possiblePhases[generator.nextInt(possiblePhases.size)]
+
+            // set stuff
+            if (externalThreat != null) externalThreat.time = phase
+            if (internalThreat != null) internalThreat.time = phase
+            sortedThreats[phase - 1] = threatGroup
+
+            // add threat score
+            if (externalThreat != null && internalThreat != null) {
+                if (phase <= 4) threatsFirstPhase += 2 else threatsSecondPhase += 2
+            } else {
+                if (phase <= 4) threatsFirstPhase++ else threatsSecondPhase++
             }
         }
 
@@ -131,23 +128,22 @@ class ThreatsGenerator(
             return emptyArray() // the distribution should be equal
         }
 
-        // set sorted threats
-        threats = sortedThreats
-
         // generate attack sectors
         var lastSector = -1 // to not generate same sectors twice
         var lastThreatWasInternal =
             false // sanity check if there are two internal threats in a row - if there are, retry mission
-        for (i in 0..7) {
-            val currentThreatGroup = threats[i]
+        sortedThreats.forEachIndexed { index, threatGroup ->
+            val currentThreatGroup = sortedThreats[index]
             if (currentThreatGroup != null) {
                 var t: Threat? = currentThreatGroup.external
                 if (t != null) {
                     when (generator.nextInt(3)) {
                         0 -> if (lastSector != Threat.THREAT_SECTOR_BLUE) t.sector =
                             Threat.THREAT_SECTOR_BLUE else t.sector = Threat.THREAT_SECTOR_WHITE
+
                         1 -> if (lastSector != Threat.THREAT_SECTOR_WHITE) t.sector =
                             Threat.THREAT_SECTOR_WHITE else t.sector = Threat.THREAT_SECTOR_RED
+
                         2 -> if (lastSector != Threat.THREAT_SECTOR_RED) t.sector =
                             Threat.THREAT_SECTOR_RED else t.sector = Threat.THREAT_SECTOR_BLUE
                     }
@@ -163,10 +159,10 @@ class ThreatsGenerator(
                 }
             } else {
                 // add empty group to not have NPEs later on - this is not so elegant and might be subject to refactoring at some time...
-                threats[i] = ThreatGroup()
+                sortedThreats[index] = ThreatGroup()
             }
         }
-        return threats
+        return sortedThreats.filterNotNull().toTypedArray()
     }
 
 }
@@ -248,6 +244,7 @@ class BasicThreatGenerator(
             normalUnconfirmed += 2
             seriousUnconfirmed--
         }
+
         Timber.v("Normal unconfirmed Threats: $normalUnconfirmed; Serious unconfirmed Threats: $seriousUnconfirmed")
         return true
     }
@@ -321,7 +318,7 @@ class BasicThreatGenerator(
      *
      * @return generated threats
      */
-    fun generateThreats(): Array<ThreatGroup?> {
+    fun generateThreats(): Array<ThreatGroup> {
         val enableDoubleThreats: Boolean = missionPreferences.enableDoubleThreats
         val threats =
             arrayOfNulls<ThreatGroup>(if (enableDoubleThreats) threatsSum - 1 else threatsSum)
@@ -428,7 +425,8 @@ class BasicThreatGenerator(
             }
             threats[threatIdx++] = ThreatGroup(newThreat)
         }
-        return threats
+
+        return threats.filterNotNull().toTypedArray()
     }
 }
 

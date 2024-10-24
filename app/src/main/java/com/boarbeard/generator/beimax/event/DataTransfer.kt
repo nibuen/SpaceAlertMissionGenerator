@@ -22,9 +22,6 @@ package com.boarbeard.generator.beimax.event
  * @author mkalus
  */
 class DataTransfer : Event {
-    /**
-     * @see de.beimax.spacealert.Event#getLengthInSeconds()
-     */
     override val lengthInSeconds: Int
         get() = 15 // fairly long
     override val timeColor: String
@@ -32,11 +29,6 @@ class DataTransfer : Event {
     override val textColor: String
         get() = "#FFF9AD"
 
-    /*
-	 * (non-Javadoc)
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
     override fun toString(): String {
         return ("DataTransfer [getLengthInSeconds()=" + lengthInSeconds
                 + ", getTimeColor()=" + timeColor + ", getTextColor()="

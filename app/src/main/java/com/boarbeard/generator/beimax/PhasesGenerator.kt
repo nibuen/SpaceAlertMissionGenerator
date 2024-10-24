@@ -23,24 +23,40 @@ private val maxTimeForFirst = intArrayOf(20, 40)
  */
 private const val threatsWithInPercent = 70.0f
 
+enum class Phase(val index: Int) {
+    ONE(0),
+    TWO(1),
+    THREE(2),
+    FOUR(3); // Fourth phase only exists in new frontiers expansion
+}
+
 
 class PhasesGenerator(
     private val threats: Array<ThreatGroup>,
     private val generator: Random,
     private val phaseTimes: IntArray,
     private val dataOperationsBundle: DataOperationsBundle,
-    private val whiteNoiseChunksGlob: ArrayList<Int>,
+    private val whiteNoiseChunksGlob: List<Int>,
 ) {
-
-    var eventList = EventList()
 
     /**
      * generate phase stuff from data above
      *
      * @return true if phase generation succeeded
      */
-    fun generatePhases(): Boolean {
-        eventList = EventList()
+    fun generatePhases(tries: Int): EventList? {
+
+        for (i in 0..tries) {
+            val eventList = EventList()
+            if (generatePhases(eventList = eventList)) {
+                return eventList
+            }
+        }
+
+        return null
+    }
+
+    private fun generatePhases(eventList: EventList): Boolean {
 
         Timber.i("Data gathered: Generating phases.")
 
@@ -49,24 +65,29 @@ class PhasesGenerator(
             this.threats.map { original -> ThreatGroup(original.internal, original.external) }
 
         // add fixed events: announcements
-        eventList.addPhaseEvents(phaseTimes[0], phaseTimes[1], phaseTimes[2])
+        eventList.addPhaseEvents(
+            phaseTimes[Phase.ONE.index],
+            phaseTimes[Phase.TWO.index],
+            phaseTimes[Phase.THREE.index],
+            // TODO should there be a phase four announcement?
+        )
 
         var ambushOccurred = false
         // add threats in first phase
         // ambush handling - is there a phase 4, and it is a normal external threat? ... and chance is taken?
-        var maybeAmbush = threats[3].external
+        var maybeAmbush = threats[Phase.FOUR.index].external
         if (maybeAmbush != null && maybeAmbush.threatLevel == Threat.THREAT_LEVEL_NORMAL && generator.nextInt(
                 100
-            ) + 1 < chanceForAmbush[0]
+            ) + 1 < chanceForAmbush[Phase.ONE.index]
         ) {
             //...then add an "ambush" threat between 1 minute and 20 secs warnings
-            eventList.fit {
+            fit {
                 // TODO: remove hardcoded length here:
-                val ambushTime: Int = generator.nextInt(35) + phaseTimes[0] - 59
+                val ambushTime: Int = generator.nextInt(35) + phaseTimes[Phase.ONE.index] - 59
                 Timber.i("Ambush in phase 1 at time: %d", ambushTime)
-                eventList.addEvent(ambushTime, maybeAmbush)
+                eventList.addEvent(ambushTime, maybeAmbush!!)
             }
-            threats[3].removeExternal()
+            threats[Phase.FOUR.index].removeExternal()
             ambushOccurred = true // to disallow two ambushes in one game
         }
 
@@ -82,7 +103,7 @@ class PhasesGenerator(
         // look for first threat
         run {
             var i = 0
-            while (i <= 3) {
+            while (i <= Phase.THREE.index) {
                 val now = threats[i]
                 val activeThreat: Threat? = now.pop()
                 if (activeThreat != null) {
@@ -106,7 +127,7 @@ class PhasesGenerator(
                 } else {
                     var nextTime = 0
                     if (lastTime > currentTime) {
-                        val success = eventList.fit(attempts = 30) { currentAttempt ->
+                        val success = fit(attempts = 30) { currentAttempt ->
                             // next element occurs
                             val divisor = if (currentAttempt > 10) 3 else 2
                             nextTime =
@@ -133,8 +154,8 @@ class PhasesGenerator(
             ) + 1 < chanceForAmbush[1]
         ) {
             //...then add an "ambush" threat between 1 minute and 20 secs warnings
-            eventList.fit {
-                // TODO: remove hardcoded length here:
+            fit {
+                // TODO: remove hardcoded length here, these are the lengths of the start times
                 val ambushTime: Int =
                     generator.nextInt(35) + phaseTimes[0] + phaseTimes[1] - 59
                 val done = eventList.addEvent(ambushTime, maybeAmbush)
@@ -177,7 +198,7 @@ class PhasesGenerator(
                 } else {
                     var nextTime = 0
                     if (lastTime > currentTime) {
-                        val success = eventList.fit(attempts = 30) { currentAttempt ->
+                        val success = fit(attempts = 30) { currentAttempt ->
                             // next element occurs
                             val divisor = if (currentAttempt > 10) 3 else 2
                             nextTime =
@@ -196,14 +217,15 @@ class PhasesGenerator(
             }
         }
 
-        fitDataOperations(lastThreatTime)
-        fitWhiteNoise()
+        fitDataOperations(eventList = eventList, lastThreatTime)
+        fitWhiteNoise(eventList = eventList)
 
         return true
     }
 
-    private fun fitDataOperations(lastThreatTime: IntArray): Boolean {
-        var startTime = 0
+
+    private fun fitDataOperations(eventList: EventList, lastThreatTime: IntArray): Boolean {
+        var startTime: Int
         var endTime = 0
         // special balance: first data transfers in phase 1 and 2 should occur shortly after first threat wave
         for (i in 0..1) {
@@ -231,7 +253,7 @@ class PhasesGenerator(
             endTime += phaseTimes[phase]
             // data transfer first, since these are fairly long
             for (dataTransferIndex in 0 until dataOperationsBundle.dataTransfers[phase]) {
-                eventList.fit {
+                fit {
                     // white noise can pretty much occur everywhere
                     val time: Int =
                         generator.nextInt(endTime - startTime) + startTime - 5 // to fend off events after mission ends
@@ -240,7 +262,7 @@ class PhasesGenerator(
             }
             // incoming data second
             for (incomingDataIndex in 0 until dataOperationsBundle.incomingData[phase]) {
-                eventList.fit {
+                fit {
                     // white noise can pretty much occur everywhere
                     val time: Int =
                         generator.nextInt(endTime - startTime) + startTime - 5 // to fend off events after mission ends
@@ -253,9 +275,9 @@ class PhasesGenerator(
     }
 
     //add white noise at random times
-    private fun fitWhiteNoise() {
+    private fun fitWhiteNoise(eventList: EventList) {
         for (i in whiteNoiseChunksGlob.indices) {
-            eventList.fit {
+            fit {
                 val time: Int =
                     generator.nextInt(phaseTimes[0] + phaseTimes[1] + phaseTimes[2] - 30) + 10
                 eventList.addWhiteNoiseEvents(time, whiteNoiseChunksGlob[i])

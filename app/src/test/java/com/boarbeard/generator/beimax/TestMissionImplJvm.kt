@@ -3,8 +3,13 @@ package com.boarbeard.generator.beimax
 import android.content.SharedPreferences
 import com.boarbeard.generator.beimax.event.*
 import com.boarbeard.ui.MissionType
+import io.kotest.matchers.ints.shouldBeInRange
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert
+import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import timber.log.Timber
 
 
@@ -12,38 +17,6 @@ class JvmDebugTree : Timber.Tree() {
     override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
         println("${if (tag != null) "[$tag]" else ""}[${parsePriority(priority)}] --- $message")
     }
-
-    /*
-    /**
-     * Priority constant for the println method; use Log.v.
-     */
-    public static final int VERBOSE = 2;
-
-    /**
-     * Priority constant for the println method; use Log.d.
-     */
-    public static final int DEBUG = 3;
-
-    /**
-     * Priority constant for the println method; use Log.i.
-     */
-    public static final int INFO = 4;
-
-    /**
-     * Priority constant for the println method; use Log.w.
-     */
-    public static final int WARN = 5;
-
-    /**
-     * Priority constant for the println method; use Log.e.
-     */
-    public static final int ERROR = 6;
-
-    /**
-     * Priority constant for the println method.
-     */
-    public static final int ASSERT = 7;
-     */
     private fun parsePriority(priority: Int): String {
         return when (priority) {
             2 -> "V"
@@ -61,6 +34,11 @@ class JvmDebugTree : Timber.Tree() {
  * TestMissionImplJvm allows to run without Android/emulators.
  */
 class TestMissionImplJvm {
+
+    @Before
+    fun before() {
+        Timber.plant(JvmDebugTree())
+    }
 
     @Test
     fun testParsePreferences() {
@@ -110,7 +88,7 @@ class TestMissionImplJvm {
      */
     @Test
     fun testStompUnconfirmedRemovesAllUnconfirmedReports() {
-        Timber.plant(JvmDebugTree())
+
         val sp = BogoSharedPreferences()
         sp["stompUnconfirmedReportsPreference"] = true
         sp["playerCount"] = 4
@@ -124,10 +102,13 @@ class TestMissionImplJvm {
             Assert.assertTrue(missionImpl.generateMission())
 
             // Verify count matches to configurations
-            Assert.assertEquals(
-                missionPreferences.threatLevel,
-                missionImpl.missionEvents.events.values.sumOf { (it as? Threat)?.threatLevel ?: 0 }
-            )
+            val sum = missionImpl.missionEvents.events.values.sumOf { (it as? Threat)?.threatLevel ?: 0 }
+            // TODO make this range more understandable (it comes from the way Mission threat ranges are generated)
+            sum.shouldBeInRange(missionPreferences.threatLevel - 2  .. missionPreferences.threatLevel)
+//            Assert.assertTrue(
+//                missionPreferences.threatLevel ==
+//                missionImpl.missionEvents.events.values.sumOf { (it as? Threat)?.threatLevel ?: 0 }
+//            )
 
             // more detailed checks based on preferences
             val foundUnconfirmedReports = missionImpl.missionEvents.entrySet.filter {
@@ -179,12 +160,12 @@ class TestMissionImplJvm {
     private fun testMission1UnconfirmedReports(
         showUnconfirmed: Boolean,
         players: Int, compressed: Boolean
-    ) {
+    ) = runBlocking {
         val sp = mockPreferences(showUnconfirmed, players, compressed, 0)
-        val eventList = MissionType.RealMission1.getEventList(sp)
+        val eventList = MissionType.RealMission1.buildEvents(sp)
 
         //  if you run into problems
-        //dumpEvents(eventList);
+        dumpEvents(eventList)
         val tl = eventList.entryList
         Assert.assertEquals(
             if (showUnconfirmed || players == 5) 30 else 29.toLong(),

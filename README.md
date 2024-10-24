@@ -15,3 +15,5 @@ To Participate in Open Beta:
 
 Play Store:
 https://play.google.com/store/apps/details?id=com.boarbeard&hl=en
+
+
