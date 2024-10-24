@@ -18,14 +18,20 @@
  */
 package com.boarbeard.generator.beimax.event
 
+import timber.log.Timber
+
+data class WhiteNoisePreferences(
+    val whiteNoiseTotalRange: IntRange = 45..60,
+    val whiteNoiseEventTimeRange: IntRange = 9..20
+)
+
 /**
- * @author mkalus
+ * @author mkalus, leifnorcott
  */
 class WhiteNoise
 /**
  * Constructor
  *
- * @param length
  * of the white noise in seconds
  */(
     /**
@@ -33,13 +39,8 @@ class WhiteNoise
      */
     override val lengthInSeconds: Int
 ) : Event {
-    /**
-     * white noise time is the the time it takes...
-     */
-    override val timeColor: String
-        get() = "#80A9BC"
-    override val textColor: String
-        get() = "#A8A9A8"
+    override val timeColor: String = "#80A9BC"
+    override val textColor: String = "#A8A9A8"
 
     /*
 	 * (non-Javadoc)
@@ -50,5 +51,50 @@ class WhiteNoise
         return ("WhiteNoise [getLengthInSeconds()=" + lengthInSeconds
                 + ", getTimeColor()=" + timeColor + ", getTextColor()="
                 + textColor + "]")
+    }
+
+    companion object {
+        fun generateEvent(prefs: WhiteNoisePreferences): List<Int> {
+            // generate white noise
+            var whiteNoiseTime = prefs.whiteNoiseTotalRange.random()
+            Timber.tag("generateTimes()").v("White noise time: %d", whiteNoiseTime)
+
+            // create chunks
+            val whiteNoiseChunks = arrayListOf<Int>()
+            while (whiteNoiseTime > 0) {
+                // create random chunk
+                val chunkLength = prefs.whiteNoiseEventTimeRange.random()
+                // check if there is enough time left
+                if (chunkLength > whiteNoiseTime) {
+                    // hard case: smaller than minimum time
+                    if (chunkLength < prefs.whiteNoiseTotalRange.min()) {
+                        // add to last chunk that fits
+                        for (i in whiteNoiseChunks.indices.reversed()) {
+                            val sumChunk = whiteNoiseChunks[i] + chunkLength
+                            // if smaller than maximum time: add to this chunk
+                            if (sumChunk <= prefs.whiteNoiseTotalRange.max()) {
+                                whiteNoiseChunks[i] = sumChunk
+                                whiteNoiseTime = 0
+                                break
+                            }
+                        }
+                        // still not zeroed
+                        if (whiteNoiseTime > 0) { // add to last element, regardless - quite unlikely though
+                            val lastIdx = whiteNoiseChunks.size - 1
+                            whiteNoiseChunks[lastIdx] = whiteNoiseChunks[lastIdx] + chunkLength
+                            whiteNoiseTime = 0
+                        }
+                    } else { // easy case: create smaller rest chunk
+                        whiteNoiseChunks.add(whiteNoiseTime)
+                        whiteNoiseTime = 0
+                    }
+                } else { // add new chunk
+                    whiteNoiseChunks.add(chunkLength)
+                    whiteNoiseTime -= chunkLength
+                }
+            }
+
+            return whiteNoiseChunks
+        }
     }
 }

@@ -18,17 +18,8 @@
  */
 package com.boarbeard.generator.beimax.event
 
-/**
- * Event that can occur on missions...
- *
- * @author mkalus
- */
+
 interface Event {
-    /**
-     * Get length of event in seconds
-     *
-     * @return length of the event in seconds
-     */
     val lengthInSeconds: Int
     val timeColor: String
     val textColor: String

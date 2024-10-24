@@ -22,6 +22,8 @@
 package com.boarbeard.generator.beimax
 
 import android.content.SharedPreferences
+import com.boarbeard.generator.beimax.event.WhiteNoise
+import com.boarbeard.generator.beimax.event.WhiteNoisePreferences
 import com.boarbeard.ui.widget.SeekBarPreference
 import timber.log.Timber
 import java.util.Random
@@ -33,11 +35,6 @@ import java.util.Random
  */
 class MissionImpl(preferences: MissionPreferences) : IMission {
     //private int constantThreatUnconfirmedExpansion = 2;
-    /**
-     * minimum and maximum time for white noise
-     */
-    private val whiteNoiseTotalRange: IntRange = 45..60
-    private val whiteNoiseEventTimeRange: IntRange = 9..20
 
     /**
      * keeps threats
@@ -237,44 +234,8 @@ class MissionImpl(preferences: MissionPreferences) : IMission {
          * simple generation of times for phases, white noise etc.
          */
         private fun generateTimes(missionImpl: MissionImpl) {
-            // generate white noise
-            var whiteNoiseTime = missionImpl.whiteNoiseTotalRange.random()
-            Timber.tag("generateTimes()").v("White noise time: %d", whiteNoiseTime)
-
             // create chunks
-            val whiteNoiseChunks = arrayListOf<Int>()
-            while (whiteNoiseTime > 0) {
-                // create random chunk
-                val chunk = missionImpl.whiteNoiseEventTimeRange.random()
-                // check if there is enough time left
-                if (chunk > whiteNoiseTime) {
-                    // hard case: smaller than minimum time
-                    if (chunk < missionImpl.whiteNoiseTotalRange.min()) {
-                        // add to last chunk that fits
-                        for (i in whiteNoiseChunks.indices.reversed()) {
-                            val sumChunk = whiteNoiseChunks[i] + chunk
-                            // if smaller than maximum time: add to this chunk
-                            if (sumChunk <= missionImpl.whiteNoiseTotalRange.max()) {
-                                whiteNoiseChunks[i] = sumChunk
-                                whiteNoiseTime = 0
-                                break
-                            }
-                        }
-                        // still not zeroed
-                        if (whiteNoiseTime > 0) { // add to last element, regardless - quite unlikely though
-                            val lastIdx = whiteNoiseChunks.size - 1
-                            whiteNoiseChunks[lastIdx] = whiteNoiseChunks[lastIdx] + chunk
-                            whiteNoiseTime = 0
-                        }
-                    } else { // easy case: create smaller rest chunk
-                        whiteNoiseChunks.add(whiteNoiseTime)
-                        whiteNoiseTime = 0
-                    }
-                } else { // add new chunk
-                    whiteNoiseChunks.add(chunk)
-                    whiteNoiseTime -= chunk
-                }
-            }
+            val whiteNoiseChunks = WhiteNoise.generateEvent(prefs = WhiteNoisePreferences())
 
             // ok, add chunks to mission
             //whiteNoise = new WhiteNoise[whiteNoiseChunks.size()];
