@@ -1,6 +1,7 @@
 package com.boarbeard.audio
 
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.HandlerThread
@@ -11,8 +12,8 @@ import com.boarbeard.R
 import com.boarbeard.audio.parser.EventListParserFactory
 import com.boarbeard.ui.MissionActivity
 import com.boarbeard.ui.StopWatch
-import kotlinx.coroutines.android.asCoroutineDispatcher
 import java.util.concurrent.TimeUnit
+import androidx.core.graphics.toColorInt
 
 class MediaPlayerMainMission(
     protected var missionActivity: MissionActivity,
@@ -158,7 +159,9 @@ class MediaPlayerMainMission(
             missionActivity.updateMissionLog(
                 missionLog = MissionLog(
                     Html.fromHtml(actionText.toString(), 0),
-                    Html.fromHtml(timeText.toString(), 0)
+                    Html.fromHtml(timeText.toString(), 0),
+                    actionColor = androidx.compose.ui.graphics.Color(mediaInfo.textColor.toColorInt()),
+                    clockColor = androidx.compose.ui.graphics.Color(mediaInfo.timeColor.toColorInt()),
                 )
             )
         }
@@ -220,9 +223,11 @@ class MediaPlayerMainMission(
      * Prints the mission introduction to the log.
     */
     fun printMissionIntroduction(missionIntroduction: String?) {
-        missionActivity.updateMissionLog(MissionLog.formatIntro(
-            missionActivity.resources,
-            missionIntroduction
-        ),)
+        missionActivity.updateMissionLog(
+            MissionLog.formatIntro(
+                missionActivity.resources,
+                missionIntroduction
+            ),
+        )
     }
 }

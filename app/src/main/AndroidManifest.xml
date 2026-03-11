@@ -19,16 +19,16 @@
         android:theme="@style/SpaceAlertTheme">
         <activity
             android:name=".ui.MissionActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|screenLayout"
             android:exported="true"
             android:launchMode="singleTop"
-            android:multiprocess="false"
-            android:screenOrientation="fullSensor">
+            android:multiprocess="false">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.NewMissionActivity" />
         <activity android:name=".ui.PreferencesActivity" />
         <activity android:name=".ui.AboutActivity" />
         <activity android:name=".ui.HelpActivity" />

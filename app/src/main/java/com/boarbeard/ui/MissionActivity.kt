@@ -1,7 +1,7 @@
 package com.boarbeard.ui
 
+import MissionCard
 import android.Manifest
-import android.app.AlertDialog
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.AudioManager
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
@@ -19,43 +20,79 @@ import android.preference.PreferenceManager
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.ToggleButton
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.boarbeard.R
 import com.boarbeard.audio.MediaPlayerMainMission
 import com.boarbeard.audio.MediaPlayerSequence
 import com.boarbeard.audio.MissionLog
 import com.boarbeard.audio.parser.EventListParserFactory
-import com.boarbeard.ui.MissionType.Companion.toStringValues
+import com.boarbeard.databinding.MainBinding
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.android.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-
 class MissionActivity : AppCompatActivity() {
-    private var systemUiMode = View.SYSTEM_UI_FLAG_VISIBLE
     private var sequence: MediaPlayerSequence? = null
     private lateinit var togglebutton: ToggleButton
     private lateinit var stopWatch: StopWatch
     private var missionType = MissionType.Random
-    private var missionTypeTextView: TextView? = null
-    private val missionLogs = mutableListOf<MissionLog>()
 
-    private lateinit var missionLogsRecyclerView: RecyclerView
-    private lateinit var mAdapter: MissionCardsAdapter
-    private val menuTypeMission: MenuItem? = null
+    private lateinit var missionTypeTextView: TextView
 
-    private val notificationRequestCode = 1001
+    private val missionLogs = mutableStateListOf<MissionLog>()
+
+    private val newMissionLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            val ordinal = result.data?.getIntExtra(
+                NewMissionActivity.RESULT_MISSION_TYPE_ORDINAL, MissionType.Random.ordinal
+            ) ?: MissionType.Random.ordinal
+            missionType = MissionType.entries[ordinal]
+            missionTypeTextView.text = missionType.toString(this@MissionActivity)
+            MainScope().launch {
+                configureMission(true)
+                startMission()
+            }
+        }
+    }
+
+    private lateinit var binding: MainBinding
+
+    private fun hideSystemUI() {
+        val windowInsetsController =
+            WindowCompat.getInsetsController(window, window.decorView)
+
+        // To hide system bars (status and navigation bars)
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+    }
+
+    private fun showSystemUI() {
+        val windowInsetsController =
+            WindowCompat.getInsetsController(window, window.decorView)
+
+        windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
+    }
 
     private val eventParserDispatcher = HandlerThread("EventParserDispatcher")
         .apply { start() }
@@ -67,31 +104,41 @@ class MissionActivity : AppCompatActivity() {
      */
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.main)
+
+        binding = MainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         //  When people hit the volume buttons, we want to change the media
         //  volume, not the ringtone volume.
         volumeControlStream = AudioManager.STREAM_MUSIC
         stopWatch = StopWatch(
-            findViewById(R.id.missionClockTextView)
+            binding.missionClockTextView,
         )
-        missionTypeTextView = findViewById(R.id.mission_type_text_view)
-        missionTypeTextView?.text = missionType
+        missionTypeTextView = binding.missionTypeTextView
+        missionTypeTextView.text = missionType
             .toString(this@MissionActivity)
 
-        missionLogsRecyclerView = findViewById(R.id.mission_cards_recycler_view)
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        missionLogsRecyclerView.setHasFixedSize(true)
 
-        // use a linear layout manager
-        val mLayoutManager = LinearLayoutManager(this)
-        missionLogsRecyclerView.layoutManager = mLayoutManager
+        binding.missionCardsComposeView.setContent {
+            val listState = rememberLazyListState()
+            LazyColumn(modifier = Modifier.fillMaxSize(), state = listState) {
+                itemsIndexed(missionLogs) { _, data ->
+                    Box(modifier = Modifier.animateItem()) {
+                        MissionCard(data)
+                    }
+                }
+            }
+            // Auto-scroll to bottom when new items are added
+            if (missionLogs.isNotEmpty()) {
+                val lastIndex = missionLogs.size - 1
+                androidx.compose.runtime.LaunchedEffect(missionLogs.size) {
+                    listState.animateScrollToItem(lastIndex)
+                }
+            }
+        }
 
-        // specify an adapter (see also next example)
-        mAdapter = MissionCardsAdapter(missionLogs)
-        missionLogsRecyclerView.adapter = mAdapter
-        togglebutton = findViewById(R.id.togglePlayMission)
+        togglebutton = binding.togglePlayMission
         togglebutton.setOnClickListener {
             MainScope().launch {
                 toggleMission(
@@ -134,7 +181,8 @@ class MissionActivity : AppCompatActivity() {
                 return null
             }
         }.execute(this)
-        setSystemUiVisibility(systemUiMode)
+
+        hideSystemUI()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -146,15 +194,6 @@ class MissionActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Request that the visibility of the status bar of the main view be changed
-     *
-     * @param visibility Bitwise-or of flags [View.SYSTEM_UI_FLAG_LOW_PROFILE] or
-     * [View.SYSTEM_UI_FLAG_HIDE_NAVIGATION].
-     */
-    private fun setSystemUiVisibility(visibility: Int) = runOnUiThread {
-            window.decorView.systemUiVisibility = visibility
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
@@ -166,33 +205,35 @@ class MissionActivity : AppCompatActivity() {
         // Handle item selection
         return when (item.itemId) {
             R.id.menuNewMission -> {
-                MainScope().launch {
-                    configureMission(true)
+                val intent = Intent(this, NewMissionActivity::class.java).apply {
+                    putExtra(NewMissionActivity.RESULT_MISSION_TYPE_ORDINAL, missionType.ordinal)
                 }
+                newMissionLauncher.launch(intent)
                 true
             }
-            R.id.menuResetMission -> {
+
+            R.id.menuRestartMission -> {
                 MainScope().launch {
                     configureMission(false)
+                    Snackbar.make(
+                        binding.root,
+                        getString(R.string.mission_restarted),
+                        Snackbar.LENGTH_SHORT
+                    ).show()
                 }
                 true
             }
-            R.id.menuMissionOptions -> {
-                startActivity(Intent(this, PreferencesActivity::class.java))
-                true
-            }
+
             R.id.menuMissionAbout -> {
                 startActivity(Intent(this, AboutActivity::class.java))
                 true
             }
+
             R.id.menuMissionHelp -> {
                 startActivity(Intent(this, HelpActivity::class.java))
                 true
             }
-            R.id.menuTypeMissionIcon -> {
-                showMissionTypeDialog()
-                true
-            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -204,8 +245,10 @@ class MissionActivity : AppCompatActivity() {
         // Displays the log texts, so needs the log color preferences
         if (sequence == null || newGame) {
             // TODO replace with some real scopes and error handling
-            sequence = MediaPlayerMainMission(this@MissionActivity,
-                stopWatch, preferences)
+            sequence = MediaPlayerMainMission(
+                this@MissionActivity,
+                stopWatch, preferences
+            )
             withContext(eventParserDispatcher) {
                 EventListParserFactory.getInstance().getParser(this@MissionActivity)
                     .parse(missionType.buildEvents(preferences), sequence)
@@ -217,7 +260,6 @@ class MissionActivity : AppCompatActivity() {
 
         runOnUiThread {
             missionLogs.clear()
-            mAdapter.notifyDataSetChanged()
         }
 
         if (missionType.missionIntroductionResId != 0) {
@@ -262,31 +304,12 @@ class MissionActivity : AppCompatActivity() {
         }
     }
 
-    private fun showMissionTypeDialog() {
-        val builder = AlertDialog.Builder(this)
-            .setTitle(getString(R.string.pref_choose_mission))
-            .setItems(
-            toStringValues(this)
-        ) { dialog, item ->
-            missionType = MissionType.values()[item]
-            val missionName = missionType
-                .toString(this@MissionActivity)
-            missionTypeTextView?.text = missionName
-            MainScope().launch {
-                configureMission(true)
-            }
-        }
-        val alertDialog = builder.create()
-        alertDialog.show()
-    }
-
     private suspend fun toggleMission(start: Boolean) {
         if (start) {
             if (sequence == null) {
                 configureMission(true)
             }
             startMission()
-
         } else {
             pauseMission()
         }
@@ -297,7 +320,7 @@ class MissionActivity : AppCompatActivity() {
             start()
             toggleOn()
             setKeepScreenOn(true)
-            setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE.also { systemUiMode = it })
+            hideSystemUI()
         }
     }
 
@@ -307,7 +330,7 @@ class MissionActivity : AppCompatActivity() {
             toggleOff()
             setKeepScreenOn(false)
         }
-        setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE.also { systemUiMode = it })
+        showSystemUI()
     }
 
     private fun stopMission() {
@@ -316,12 +339,12 @@ class MissionActivity : AppCompatActivity() {
             toggleOff()
             setKeepScreenOn(false)
         }
-        setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE.also { systemUiMode = it })
+        showSystemUI()
     }
 
     private fun setKeepScreenOn(keepScreenOn: Boolean) = runOnUiThread {
         if (keepScreenOn) {
-            setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE.also { systemUiMode = it })
+            hideSystemUI()
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         } else {
             window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -329,24 +352,25 @@ class MissionActivity : AppCompatActivity() {
     }
 
     fun updateMissionLog(missionLog: MissionLog) = runOnUiThread {
-            missionLogs.add(missionLog)
-            mAdapter.notifyItemInserted(missionLogs.size - 1)
-            missionLogsRecyclerView.post { missionLogsRecyclerView.smoothScrollToPosition(mAdapter.itemCount) }
+        missionLogs.add(missionLog)
     }
 
     fun clearMissionLog() = runOnUiThread {
         missionLogs.clear()
-        mAdapter.notifyDataSetChanged()
     }
 
     private fun toggleOn() = runOnUiThread {
         togglebutton.isChecked = true
-        notificationUpdate(true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            notificationUpdate(true)
+        }
     }
 
     fun toggleOff() = runOnUiThread {
         togglebutton.isChecked = false
-        notificationUpdate(false)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            notificationUpdate(false)
+        }
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -367,6 +391,7 @@ class MissionActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun notificationUpdate(isRunning: Boolean) {
         val notificationId = 1
         val id = "mission_channel"
@@ -438,13 +463,18 @@ class MissionActivity : AppCompatActivity() {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            requestPermissions(arrayOf(Manifest.permission.POST_NOTIFICATIONS), notificationRequestCode)
+            requestPermissions(
+                arrayOf(Manifest.permission.POST_NOTIFICATIONS),
+                NOTIFICATION_REQUEST_CODE
+            )
             return
         }
         notificationManager.notify(notificationId, notificationBuilder.build())
     }
 
     companion object {
+        private const val NOTIFICATION_REQUEST_CODE = 1001
+
         private const val MEDIA_ACTION = "com.boarbeard.spacealert.media.action"
     }
 }

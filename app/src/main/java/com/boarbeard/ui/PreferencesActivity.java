@@ -37,6 +37,7 @@ public class PreferencesActivity extends PreferenceActivity implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.preferences);
+        getWindow().getDecorView().setFitsSystemWindows(true);
 
         onCreateVoicePreferences();
     }

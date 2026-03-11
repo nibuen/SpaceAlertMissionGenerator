@@ -135,22 +135,22 @@ class ThreatsGenerator(
         sortedThreats.forEachIndexed { index, threatGroup ->
             val currentThreatGroup = sortedThreats[index]
             if (currentThreatGroup != null) {
-                var t: Threat? = currentThreatGroup.external
-                if (t != null) {
+                var threat: Threat? = currentThreatGroup.external
+                if (threat != null) {
                     when (generator.nextInt(3)) {
-                        0 -> if (lastSector != Threat.THREAT_SECTOR_BLUE) t.sector =
-                            Threat.THREAT_SECTOR_BLUE else t.sector = Threat.THREAT_SECTOR_WHITE
+                        0 -> if (lastSector != Threat.THREAT_SECTOR_BLUE) threat.sector =
+                            Threat.THREAT_SECTOR_BLUE else threat.sector = Threat.THREAT_SECTOR_WHITE
 
-                        1 -> if (lastSector != Threat.THREAT_SECTOR_WHITE) t.sector =
-                            Threat.THREAT_SECTOR_WHITE else t.sector = Threat.THREAT_SECTOR_RED
+                        1 -> if (lastSector != Threat.THREAT_SECTOR_WHITE) threat.sector =
+                            Threat.THREAT_SECTOR_WHITE else threat.sector = Threat.THREAT_SECTOR_RED
 
-                        2 -> if (lastSector != Threat.THREAT_SECTOR_RED) t.sector =
-                            Threat.THREAT_SECTOR_RED else t.sector = Threat.THREAT_SECTOR_BLUE
+                        2 -> if (lastSector != Threat.THREAT_SECTOR_RED) threat.sector =
+                            Threat.THREAT_SECTOR_RED else threat.sector = Threat.THREAT_SECTOR_BLUE
                     }
-                    lastSector = t.sector
+                    lastSector = threat.sector
                 }
-                t = currentThreatGroup.internal
-                if (t != null) {
+                threat = currentThreatGroup.internal
+                if (threat != null) {
                     if (lastThreatWasInternal) {
                         Timber.i("Two internal threats in a row. Retrying.")
                         return emptyArray()
