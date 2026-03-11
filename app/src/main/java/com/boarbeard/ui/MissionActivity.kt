@@ -16,12 +16,12 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
 import android.preference.PreferenceManager
-import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.ToggleButton
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Box
@@ -106,6 +106,14 @@ class MissionActivity : AppCompatActivity() {
         binding = MainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                lifecycleScope.launch {
+                    configureMission(false)
+                }
+            }
+        })
 
         //  When people hit the volume buttons, we want to change the media
         //  volume, not the ringtone volume.
@@ -369,15 +377,6 @@ class MissionActivity : AppCompatActivity() {
     fun toggleOff() = runOnUiThread {
         togglebutton.isChecked = false
         notificationUpdate(false)
-    }
-
-    override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            lifecycleScope.launch {
-                configureMission(false)
-            }
-        }
-        return super.onKeyDown(keyCode, event)
     }
 
     public override fun onDestroy() {

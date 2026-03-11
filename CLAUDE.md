@@ -21,6 +21,9 @@ Android app that generates random missions for the Space Alert board game. Packa
 # Single test class
 ./gradlew testDebugUnitTest --tests "com.boarbeard.generator.beimax.TestMissionImplJvm"
 
+# Lint (run before pushing — CI checks this)
+./gradlew lint
+
 # Instrumented tests (requires emulator/device)
 ./gradlew connectedAndroidTest
 ```

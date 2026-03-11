@@ -6,8 +6,19 @@
     <string name="start">Starten</string>
     <string name="mission_reset">Reset</string>
     <string name="mission_new">Neu</string>
+    <string name="mission_new_mission">Neue Mission</string>
+    <string name="mission_restart">Mission neu starten</string>
+    <string name="mission_restarted">Mission neu gestartet</string>
     <string name="mission_options">Optionen</string>
     <string name="mission_type">Missionsart</string>
+    <string name="start_new_mission">Mission starten</string>
+    <string name="group_random">Benutzerdefiniert</string>
+    <string name="group_test_runs">Testläufe</string>
+    <string name="group_simulations">Simulationen</string>
+    <string name="group_advanced_simulations">Fortgeschrittene Simulationen</string>
+    <string name="group_real_missions">Echte Missionen</string>
+    <string name="group_double_action_easy">Doppelaktionen Vereinfacht</string>
+    <string name="group_double_action_standard">Doppelaktionen Standard</string>
     
     <string name="pref_stomp_unconfirmed_reports_title">Unbestätigte Berichte entfernen</string>
     <string name="pref_stomp_unconfirmed_reports_summary">Unbestätigte Berichte entfernen oder je nach Anzahl der Spieler in normale Bedrohungen umwandeln.</string>
