@@ -36,6 +36,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.boarbeard.R
 import com.boarbeard.audio.MediaPlayerMainMission
 import com.boarbeard.audio.MediaPlayerSequence
@@ -79,7 +80,8 @@ class MissionActivity : AppCompatActivity() {
     private fun hideSystemUI() {
         val windowInsetsController =
             WindowCompat.getInsetsController(window, window.decorView)
-
+        windowInsetsController.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
     }
 
@@ -303,7 +305,13 @@ class MissionActivity : AppCompatActivity() {
     private suspend fun toggleMission(start: Boolean) {
         if (start) {
             if (sequence == null) {
-                configureMission(true)
+                // No mission configured yet — show the new mission screen
+                toggleOff()
+                val intent = Intent(this, NewMissionActivity::class.java).apply {
+                    putExtra(NewMissionActivity.RESULT_MISSION_TYPE_ORDINAL, missionType.ordinal)
+                }
+                newMissionLauncher.launch(intent)
+                return
             }
             startMission()
         } else {
@@ -326,7 +334,6 @@ class MissionActivity : AppCompatActivity() {
             toggleOff()
             setKeepScreenOn(false)
         }
-        showSystemUI()
     }
 
     private fun stopMission() {
@@ -335,7 +342,6 @@ class MissionActivity : AppCompatActivity() {
             toggleOff()
             setKeepScreenOn(false)
         }
-        showSystemUI()
     }
 
     private fun setKeepScreenOn(keepScreenOn: Boolean) = runOnUiThread {

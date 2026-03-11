@@ -4,161 +4,212 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.ParagraphStyle
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextIndent
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.boarbeard.R
 
 class AboutActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     public override fun onCreate(icicle: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(icicle)
         setContent {
-            MaterialTheme {
-                Surface(
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(12.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                ) {
-                    AboutContent()
+            MaterialTheme(colorScheme = SpaceAlertColorScheme) {
+                Scaffold(
+                    topBar = {
+                        TopAppBar(
+                            title = { Text("About") },
+                            navigationIcon = {
+                                IconButton(onClick = { finish() }) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = "Back",
+                                        tint = Color.White
+                                    )
+                                }
+                            },
+                            colors = TopAppBarDefaults.topAppBarColors(
+                                containerColor = SpaceAlertRedDark,
+                                titleContentColor = Color.White
+                            )
+                        )
+                    },
+                    containerColor = SpaceAlertBackground
+                ) { padding ->
+                    AboutContent(modifier = Modifier.padding(padding))
                 }
             }
         }
     }
 }
 
-class Person(
-    val name: String,
-)
-
-private val attirbutions = listOf(
-    Person(
-        name = "Leif Norcott",
-    ),
-    Person(
-        name = "Thomas Arnold",
-    ),
-    Person(
-        name = "Christoph König",
-    ),
-    Person(
-        name = "Torbjörn Eklund",
-    ),
-    Person(
-        name = "kuhrusty",
-    ),
-    Person(
-        name = "Marcus Zuber",
-    ),
+private val contributors = listOf(
+    "Leif Norcott",
+    "Thomas Arnold",
+    "Christoph König",
+    "Torbjörn Eklund",
+    "kuhrusty",
+    "Marcus Zuber",
 )
 
 @Composable
-fun AboutContent() {
+fun AboutContent(modifier: Modifier = Modifier) {
+    val uriHandler = LocalUriHandler.current
+
     Column(
-        Modifier
+        modifier
             .fillMaxSize()
-            .padding(2.dp)
-            .background(Color.White)
+            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // UriHandler parse and opens URI inside AnnotatedString Item in Browse
-        val uriHandler = LocalUriHandler.current
+        Text(
+            text = "Links",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+        )
+
+        LinkCard(
+            painter = rememberVectorPainter(Icons.Filled.Info),
+            iconTint = Color(0xFF64B5F6),
+            title = "Iterary Blog",
+            description = "Dev updates, project write-ups, and behind-the-scenes on all my apps",
+            onClick = { uriHandler.openUri("https://blog.iterary.com") }
+        )
+
+        LinkCard(
+            painter = painterResource(R.drawable.iterary_logo),
+            iconTint = Color(0xFF8D6E63),
+            title = "Iterary",
+            description = "Plan your next adventure with smart travel itineraries and trip tools",
+            onClick = { uriHandler.openUri("https://iterary.com") }
+        )
+
+        LinkCard(
+            painter = rememberVectorPainter(Icons.Filled.Star),
+            iconTint = Color(0xFFFFB74D),
+            title = "Gamers Paper",
+            description = "Board game news, reviews, and tips from the tabletop community",
+            onClick = { uriHandler.openUri("https://gamerspaper.com") }
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+        HorizontalDivider(color = Color.White.copy(alpha = 0.2f))
+        Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = "About",
-            style = MaterialTheme.typography.headlineMedium,
-            modifier = Modifier
-                .align(alignment = Alignment.CenterHorizontally)
-                .padding(top = 12.dp)
+            text = "Designed and developed by",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
         )
-        Spacer(modifier = Modifier.padding(vertical = 6.dp))
 
-        val iteraryAnnotatedString = buildAnnotatedString {
-            val text = "Find all my apps on my Iterary Blog"
-            val startIndex = text.indexOf("Iterary")
-            val endIndex = text.indexOf("Blog") + 4
-            append(text)
-            addStyle(
-                style = SpanStyle(
-                    color = Color(0xff64B5F6),
-                    //fontSize = 18.sp,
-                    textDecoration = TextDecoration.Underline
-                ), start = startIndex, end = endIndex
-            )
-            addStringAnnotation(
-                tag = "URL",
-                annotation = "https://blog.iterary.com",
-                start = startIndex,
-                end = endIndex
+        contributors.forEach { name ->
+            Text(
+                text = name,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(start = 8.dp)
             )
         }
 
-        ClickableText(
-            text = iteraryAnnotatedString,
-            style = MaterialTheme.typography.labelLarge,
-            modifier = Modifier.padding(horizontal = 24.dp, vertical = 2.dp).align(alignment = Alignment.CenterHorizontally),
-            onClick = {
-                iteraryAnnotatedString
-                    .getStringAnnotations("URL", it, it)
-                    .firstOrNull()?.let { stringAnnotation ->
-                        uriHandler.openUri(stringAnnotation.item)
-                    }
-            }
-        )
-        Spacer(modifier = Modifier.padding(vertical = 6.dp))
+        Spacer(modifier = Modifier.height(8.dp))
+
         Text(
-            text = "Designed and developed by",
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 2.dp).align(alignment = Alignment.CenterHorizontally),
-        )
-        val bullet = "\u2022"
-        val paragraphStyle = ParagraphStyle(textIndent = TextIndent(restLine = 12.sp))
-        Text(
-            text = buildAnnotatedString {
-                attirbutions.forEach {
-                    withStyle(style = paragraphStyle) {
-                        //append(bullet)
-                        //append("\t\t")
-                        append(it.name)
-                    }
-                }
-            },
-            modifier = Modifier.padding(horizontal = 24.dp, 12.dp).align(alignment = Alignment.CenterHorizontally),
-        )
-        Text(
-            text = "Special Thanks to Maximilian Kalus for Java version that is the new basis for the original algorithm.",
-            modifier = Modifier.padding(horizontal = 12.dp, 12.dp),
+            text = "Special thanks to Maximilian Kalus for the Java version that is the basis for the original algorithm.",
             style = MaterialTheme.typography.bodyMedium,
+            color = Color.White.copy(alpha = 0.7f),
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun LinkCard(
+    painter: Painter,
+    iconTint: Color,
+    title: String,
+    description: String,
+    onClick: () -> Unit
+) {
+    Card(
+        onClick = onClick,
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White.copy(alpha = 0.1f),
+            contentColor = Color.White
+        ),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painter,
+                contentDescription = null,
+                colorFilter = ColorFilter.tint(iconTint),
+                modifier = Modifier.size(36.dp)
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    text = description,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.7f),
+                )
+            }
+        }
     }
 }
 
 @Preview
 @Composable
-private fun HelpPreview() {
-    MaterialTheme {
+private fun AboutPreview() {
+    MaterialTheme(colorScheme = SpaceAlertColorScheme) {
         AboutContent()
     }
 }

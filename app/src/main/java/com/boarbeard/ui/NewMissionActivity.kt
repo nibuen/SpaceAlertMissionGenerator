@@ -32,9 +32,11 @@ import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.RangeSlider
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.darkColorScheme
@@ -50,17 +52,21 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import android.preference.PreferenceManager
 import com.boarbeard.R
 import kotlin.math.roundToInt
 
 // App color constants matching the XML theme (style.xml / colors.xml)
-private val SpaceAlertRed = Color(0xFFF44336)
-private val SpaceAlertRedDark = Color(0xFFB71C1C)
-private val SpaceAlertSurface = Color.Black
-private val SpaceAlertBackground = Color(0xFF424242)
+internal val SpaceAlertRed = Color(0xFFF44336)
+internal val SpaceAlertRedDark = Color(0xFFB71C1C)
+internal val SpaceAlertSurface = Color.Black
+internal val SpaceAlertBackground = Color(0xFF424242)
 
-private val SpaceAlertColorScheme = darkColorScheme(
+internal val SpaceAlertColorScheme = darkColorScheme(
     primary = SpaceAlertRed,
     onPrimary = Color.White,
     primaryContainer = SpaceAlertRedDark,
@@ -106,6 +112,15 @@ class NewMissionActivity : ComponentActivity() {
                     topBar = {
                         TopAppBar(
                             title = { Text(stringResource(R.string.mission_new_mission)) },
+                            navigationIcon = {
+                                IconButton(onClick = { finish() }) {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                        contentDescription = "Back",
+                                        tint = Color.White
+                                    )
+                                }
+                            },
                             colors = TopAppBarDefaults.topAppBarColors(
                                 containerColor = SpaceAlertRedDark,
                                 titleContentColor = Color.White
@@ -118,107 +133,8 @@ class NewMissionActivity : ComponentActivity() {
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(padding)
-                            .verticalScroll(rememberScrollState())
-                            .padding(16.dp)
                     ) {
-                        // Mission type dropdown
-                        MissionTypeDropdown(selectedType) { selectedType = it }
-
-                        HorizontalDivider(
-                            modifier = Modifier.padding(vertical = 12.dp),
-                            color = Color.White.copy(alpha = 0.2f)
-                        )
-
-                        // Options section
-                        Text(
-                            text = stringResource(R.string.mission_options),
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        // Common options (all mission types)
-                        CheckboxRow(
-                            label = stringResource(R.string.pref_stomp_unconfirmed_reports_title),
-                            checked = stompUnconfirmed,
-                            onCheckedChange = { stompUnconfirmed = it }
-                        )
-
-                        if (stompUnconfirmed) {
-                            SliderRow(
-                                label = stringResource(R.string.pref_player_count_dialog_title),
-                                value = playerCount,
-                                valueRange = 1..5,
-                                formatValue = { "$it" },
-                                onValueChange = { playerCount = it }
-                            )
-                        }
-
-                        CheckboxRow(
-                            label = stringResource(R.string.pref_compress_time_title),
-                            checked = compressTime,
-                            onCheckedChange = { compressTime = it }
-                        )
-
-                        // Random-only options
-                        if (selectedType.group.isRandom) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = stringResource(R.string.pref_mission),
-                                style = MaterialTheme.typography.titleSmall,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Spacer(modifier = Modifier.height(4.dp))
-
-                            SliderRow(
-                                label = stringResource(R.string.pref_mission_length_dialog_title),
-                                value = missionLength,
-                                valueRange = 540..840,
-                                step = 30,
-                                formatValue = { "${it}s" },
-                                onValueChange = { missionLength = it }
-                            )
-
-                            SliderRow(
-                                label = stringResource(R.string.pref_threat_difficulty_dialog_title),
-                                value = threatDifficulty,
-                                valueRange = 1..14,
-                                formatValue = { "$it" },
-                                onValueChange = { threatDifficulty = it }
-                            )
-
-                            SliderRow(
-                                label = stringResource(R.string.pref_incoming_data_dialog_title) + " Min",
-                                value = incomingDataMin,
-                                valueRange = 1..6,
-                                formatValue = { "$it" },
-                                onValueChange = {
-                                    incomingDataMin = it
-                                    if (incomingDataMax < it) incomingDataMax = it
-                                }
-                            )
-
-                            SliderRow(
-                                label = stringResource(R.string.pref_incoming_data_dialog_title) + " Max",
-                                value = incomingDataMax,
-                                valueRange = 1..6,
-                                formatValue = { "$it" },
-                                onValueChange = {
-                                    incomingDataMax = it
-                                    if (incomingDataMin > it) incomingDataMin = it
-                                }
-                            )
-
-                            CheckboxRow(
-                                label = stringResource(R.string.pref_enableDoubleThreats_title),
-                                checked = enableDoubleThreats,
-                                onCheckedChange = { enableDoubleThreats = it }
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.height(24.dp))
-
-                        // Start button
+                        // Start button pinned at top
                         Button(
                             onClick = {
                                 // Save preferences
@@ -242,13 +158,125 @@ class NewMissionActivity : ComponentActivity() {
                                 setResult(Activity.RESULT_OK, resultIntent)
                                 finish()
                             },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = SpaceAlertRed,
                                 contentColor = Color.White
                             )
                         ) {
                             Text(stringResource(R.string.start_new_mission))
+                        }
+
+                        HorizontalDivider(color = Color.White.copy(alpha = 0.2f))
+
+                        // Scrollable options below
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                                .padding(16.dp)
+                        ) {
+                            // Mission type dropdown
+                            MissionTypeDropdown(selectedType) { selectedType = it }
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            // Options section
+                            Text(
+                                text = stringResource(R.string.mission_options),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            // Common options (all mission types)
+                            CheckboxRow(
+                                label = stringResource(R.string.pref_stomp_unconfirmed_reports_title),
+                                checked = stompUnconfirmed,
+                                onCheckedChange = { stompUnconfirmed = it }
+                            )
+
+                            if (stompUnconfirmed) {
+                                SliderRow(
+                                    label = stringResource(R.string.pref_player_count_dialog_title),
+                                    value = playerCount,
+                                    valueRange = 1..5,
+                                    formatValue = { "$it" },
+                                    onValueChange = { playerCount = it }
+                                )
+                            }
+
+                            CheckboxRow(
+                                label = stringResource(R.string.pref_compress_time_title),
+                                checked = compressTime,
+                                onCheckedChange = { compressTime = it }
+                            )
+
+                            // Random-only options
+                            if (selectedType.group.isRandom) {
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text(
+                                    text = stringResource(R.string.pref_mission),
+                                    style = MaterialTheme.typography.titleSmall,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Spacer(modifier = Modifier.height(4.dp))
+
+                                SliderRow(
+                                    label = stringResource(R.string.pref_mission_length_dialog_title),
+                                    value = missionLength,
+                                    valueRange = 540..840,
+                                    step = 30,
+                                    formatValue = { "${it}s" },
+                                    onValueChange = { missionLength = it }
+                                )
+
+                                SliderRow(
+                                    label = stringResource(R.string.pref_threat_difficulty_dialog_title),
+                                    value = threatDifficulty,
+                                    valueRange = 1..14,
+                                    formatValue = { "$it" },
+                                    onValueChange = { threatDifficulty = it }
+                                )
+
+                                RangeSliderRow(
+                                    label = stringResource(R.string.pref_incoming_data_dialog_title),
+                                    minValue = incomingDataMin,
+                                    maxValue = incomingDataMax,
+                                    valueRange = 1..6,
+                                    formatValue = { "$it" },
+                                    onValueChange = { min, max ->
+                                        incomingDataMin = min
+                                        incomingDataMax = max
+                                    }
+                                )
+
+                                CheckboxRow(
+                                    label = stringResource(R.string.pref_enableDoubleThreats_title),
+                                    checked = enableDoubleThreats,
+                                    onCheckedChange = { enableDoubleThreats = it }
+                                )
+
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                TextButton(
+                                    onClick = {
+                                        missionLength = 540
+                                        threatDifficulty = 8
+                                        incomingDataMin = 2
+                                        incomingDataMax = 4
+                                        enableDoubleThreats = false
+                                    },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text(
+                                        "Reset to defaults",
+                                        color = Color.White.copy(alpha = 0.6f)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
@@ -359,6 +387,41 @@ private fun CheckboxRow(
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(label)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun RangeSliderRow(
+    label: String,
+    minValue: Int,
+    maxValue: Int,
+    valueRange: IntRange,
+    formatValue: (Int) -> String,
+    onValueChange: (min: Int, max: Int) -> Unit
+) {
+    Column(modifier = Modifier.padding(vertical = 4.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(label)
+            Text("${formatValue(minValue)} – ${formatValue(maxValue)}", fontWeight = FontWeight.Bold)
+        }
+        val steps = valueRange.last - valueRange.first - 1
+        RangeSlider(
+            value = minValue.toFloat()..maxValue.toFloat(),
+            onValueChange = { range ->
+                onValueChange(range.start.roundToInt(), range.endInclusive.roundToInt())
+            },
+            valueRange = valueRange.first.toFloat()..valueRange.last.toFloat(),
+            steps = if (steps > 0) steps else 0,
+            colors = SliderDefaults.colors(
+                thumbColor = SpaceAlertRed,
+                activeTrackColor = SpaceAlertRed,
+                inactiveTrackColor = Color.White.copy(alpha = 0.3f)
+            )
+        )
     }
 }
 

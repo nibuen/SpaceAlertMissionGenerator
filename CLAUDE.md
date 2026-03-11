@@ -12,6 +12,9 @@ Android app that generates random missions for the Space Alert board game. Packa
 # Build (requires Android SDK)
 ./gradlew assembleDebug
 
+# Build and deploy to connected phone via adb
+./gradlew assembleDebug && adb install -r app/build/outputs/apk/debug/app-debug.apk
+
 # Unit tests (JVM, no emulator needed - uses Robolectric)
 ./gradlew test
 
@@ -21,6 +24,8 @@ Android app that generates random missions for the Space Alert board game. Packa
 # Instrumented tests (requires emulator/device)
 ./gradlew connectedAndroidTest
 ```
+
+After building UI changes, deploy to the user's phone for testing.
 
 **Build targets:** compileSdk 36, minSdk 30, targetSdk 36, Java 11.
 
