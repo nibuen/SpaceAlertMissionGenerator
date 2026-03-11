@@ -42,7 +42,6 @@ import com.boarbeard.audio.MediaPlayerSequence
 import com.boarbeard.audio.MissionLog
 import com.boarbeard.audio.parser.EventListParserFactory
 import com.boarbeard.databinding.MainBinding
-import com.google.android.material.snackbar.Snackbar
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.android.asCoroutineDispatcher
 import kotlinx.coroutines.launch
@@ -81,7 +80,6 @@ class MissionActivity : AppCompatActivity() {
         val windowInsetsController =
             WindowCompat.getInsetsController(window, window.decorView)
 
-        // To hide system bars (status and navigation bars)
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
     }
 
@@ -213,10 +211,10 @@ class MissionActivity : AppCompatActivity() {
             R.id.menuRestartMission -> {
                 lifecycleScope.launch {
                     configureMission(false)
-                    Snackbar.make(
-                        binding.root,
+                    android.widget.Toast.makeText(
+                        this@MissionActivity,
                         getString(R.string.mission_restarted),
-                        Snackbar.LENGTH_SHORT
+                        android.widget.Toast.LENGTH_SHORT
                     ).show()
                 }
                 true
