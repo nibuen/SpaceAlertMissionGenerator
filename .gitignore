@@ -93,3 +93,18 @@ lint/tmp/
 
 # Mac
 .DS_Store
+
+# Claude Code
+.claude/
+
+# Kotlin compiler sessions
+.kotlin/
+
+# IntelliJ additional generated files
+.idea/appInsightsSettings.xml
+.idea/codeStyles/
+.idea/compiler.xml
+.idea/deploymentTargetSelector.xml
+.idea/misc.xml
+.idea/studiobot.xml
+.idea/AndroidProjectSystem.xml
