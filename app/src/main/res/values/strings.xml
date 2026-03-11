@@ -6,9 +6,52 @@
     <string name="start">Start</string>
     <string name="mission_reset">Reset</string>
     <string name="mission_new">New</string>
+    <string name="mission_new_mission">New Mission</string>
+    <string name="mission_restart">Restart Mission</string>
+    <string name="mission_restarted">Mission restarted</string>
     <string name="mission_options">Options</string>
     <string name="mission_type">Mission Type</string>
-    
+    <string name="start_new_mission">Start Mission</string>
+
+    <string name="group_random">Custom</string>
+    <string name="group_test_runs">Test Runs</string>
+    <string name="group_simulations">Simulations</string>
+    <string name="group_advanced_simulations">Advanced Simulations</string>
+    <string name="group_real_missions">Real Missions</string>
+    <string name="group_double_action_easy">Double Action Easy</string>
+    <string name="group_double_action_standard">Double Action Standard</string>
+
+    <string name="navigate_back">Back</string>
+    <string name="reset_to_defaults">Reset to defaults</string>
+
+    <!-- About screen -->
+    <string name="about_links">Links</string>
+    <string name="about_iterary_blog_title">Iterary Blog</string>
+    <string name="about_iterary_blog_description">Dev updates, project write-ups, and behind-the-scenes on all my apps</string>
+    <string name="about_iterary_title">Iterary</string>
+    <string name="about_iterary_description">Plan your next adventure with smart travel itineraries and trip tools</string>
+    <string name="about_gamers_paper_title">Gamers Paper</string>
+    <string name="about_gamers_paper_description">Board game news, reviews, and tips from the tabletop community</string>
+    <string name="about_contributors_title">Designed and developed by</string>
+    <string name="about_special_thanks">Special thanks to Maximilian Kalus for the Java version that is the basis for the original algorithm.</string>
+
+    <!-- Help screen -->
+    <string name="help_getting_started">Getting Started</string>
+    <string name="help_intro">This app generates and plays audio missions for the Space Alert board game. It narrates threats, data transfers, and phase changes in real time so you can focus on playing.</string>
+    <string name="help_play_pause_title">Play / Pause</string>
+    <string name="help_play_pause_description">Tap play to start. If no mission is loaded yet, you\'ll be taken to the New Mission screen first to pick a mission type and configure options. Tap again to pause mid-mission.</string>
+    <string name="help_new_mission_title">New Mission</string>
+    <string name="help_new_mission_description">Open from the menu (\u22EE) to pick a mission type and adjust settings. Choose Random to generate a unique mission each time, or select a pre-built mission from the book \u2014 test runs, simulations, real missions, and Double Action variants are all included.</string>
+    <string name="help_restart_title">Restart Mission</string>
+    <string name="help_restart_description">Resets the current mission back to the beginning without generating a new one. Useful if you want to replay the same mission.</string>
+    <string name="help_options_title">Mission Options</string>
+    <string name="help_unconfirmed_title">Unconfirmed Reports</string>
+    <string name="help_unconfirmed_description">When enabled, unconfirmed threat reports are automatically resolved based on your player count. With 5 players they are discarded; with fewer players they become normal threats. Turn this off to handle unconfirmed reports manually with the threat cards.</string>
+    <string name="help_compress_title">Compress Time</string>
+    <string name="help_compress_description">Speeds up the silence between events, making missions shorter and more intense. Great for experienced crews who want less downtime.</string>
+    <string name="help_random_params_title">Random Mission Parameters</string>
+    <string name="help_random_params_description">When playing random missions, you can tune mission length, threat difficulty, incoming data frequency, and enable double threats. If you\'re unsure, the defaults are a good starting point \u2014 use \"Reset to defaults\" at the bottom of the options to restore them.</string>
+
     <string name="pref_stomp_unconfirmed_reports_title">Stomp Unconfirmed Reports</string>
     <string name="pref_stomp_unconfirmed_reports_summary">Remove Unconfirmed Reports, or change them to normal threats, depending on the number of players.</string>
     <string name="pref_player_count_dialog_title">Players</string>

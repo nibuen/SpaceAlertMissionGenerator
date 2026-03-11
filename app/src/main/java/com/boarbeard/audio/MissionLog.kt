@@ -2,11 +2,14 @@ package com.boarbeard.audio
 
 import android.content.res.Resources
 import android.text.Html
+import androidx.compose.ui.graphics.Color
 import com.boarbeard.R
 
-class MissionLog @JvmOverloads constructor(
+class MissionLog(
     val actionText: CharSequence,
-    val clockText: CharSequence? = null
+    val clockText: CharSequence? = null,
+    val actionColor: Color = Color.White,
+    val clockColor: Color = Color.White,
 ) {
 
     companion object {
@@ -23,7 +26,10 @@ class MissionLog @JvmOverloads constructor(
                     "<b><i><span style=\"color:" +
                             colorToHTML(res.getColor(R.color.mission_card_intro_text_color)) +
                             ";\">" + message + "</span></i></b>", 0
-                )
+                ),
+                actionColor = Color(res.getColor(R.color.mission_card_intro_text_color)),
+                clockText = null,
+                clockColor = Color.Black
             )
         }
 
