@@ -1,3 +1,5 @@
+package com.boarbeard.ui
+
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState

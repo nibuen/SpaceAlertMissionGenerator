@@ -160,8 +160,8 @@ class MediaPlayerMainMission(
                 missionLog = MissionLog(
                     Html.fromHtml(actionText.toString(), 0),
                     Html.fromHtml(timeText.toString(), 0),
-                    actionColor = androidx.compose.ui.graphics.Color(mediaInfo.textColor.toColorInt()),
-                    clockColor = androidx.compose.ui.graphics.Color(mediaInfo.timeColor.toColorInt()),
+                    actionColor = mediaInfo.textColor?.let { androidx.compose.ui.graphics.Color(it.toColorInt()) } ?: androidx.compose.ui.graphics.Color.White,
+                    clockColor = mediaInfo.timeColor?.let { androidx.compose.ui.graphics.Color(it.toColorInt()) } ?: androidx.compose.ui.graphics.Color.White,
                 )
             )
         }

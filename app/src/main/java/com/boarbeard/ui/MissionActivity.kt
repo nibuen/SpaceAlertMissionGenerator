@@ -1,6 +1,5 @@
 package com.boarbeard.ui
 
-import MissionCard
 import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -25,7 +24,6 @@ import android.widget.TextView
 import android.widget.ToggleButton
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -45,7 +43,7 @@ import com.boarbeard.audio.MissionLog
 import com.boarbeard.audio.parser.EventListParserFactory
 import com.boarbeard.databinding.MainBinding
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.MainScope
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.android.asCoroutineDispatcher
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -70,7 +68,7 @@ class MissionActivity : AppCompatActivity() {
             ) ?: MissionType.Random.ordinal
             missionType = MissionType.entries[ordinal]
             missionTypeTextView.text = missionType.toString(this@MissionActivity)
-            MainScope().launch {
+            lifecycleScope.launch {
                 configureMission(true)
                 startMission()
             }
@@ -140,7 +138,7 @@ class MissionActivity : AppCompatActivity() {
 
         togglebutton = binding.togglePlayMission
         togglebutton.setOnClickListener {
-            MainScope().launch {
+            lifecycleScope.launch {
                 toggleMission(
                     togglebutton.isChecked
                 )
@@ -188,7 +186,7 @@ class MissionActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (MEDIA_ACTION == intent.action) {
-            MainScope().launch {
+            lifecycleScope.launch {
                 toggleMission(intent.getBooleanExtra(Intent.EXTRA_SUBJECT, false))
             }
         }
@@ -213,7 +211,7 @@ class MissionActivity : AppCompatActivity() {
             }
 
             R.id.menuRestartMission -> {
-                MainScope().launch {
+                lifecycleScope.launch {
                     configureMission(false)
                     Snackbar.make(
                         binding.root,
@@ -361,21 +359,17 @@ class MissionActivity : AppCompatActivity() {
 
     private fun toggleOn() = runOnUiThread {
         togglebutton.isChecked = true
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            notificationUpdate(true)
-        }
+        notificationUpdate(true)
     }
 
     fun toggleOff() = runOnUiThread {
         togglebutton.isChecked = false
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            notificationUpdate(false)
-        }
+        notificationUpdate(false)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            MainScope().launch {
+            lifecycleScope.launch {
                 configureMission(false)
             }
         }
@@ -391,7 +385,6 @@ class MissionActivity : AppCompatActivity() {
         }
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun notificationUpdate(isRunning: Boolean) {
         val notificationId = 1
         val id = "mission_channel"
@@ -450,19 +443,13 @@ class MissionActivity : AppCompatActivity() {
         val notificationManager = NotificationManagerCompat.from(this)
         notificationManager.createNotificationChannel(channel)
 
-        // Build the notification and issues it with notification manager.
-        if (ActivityCompat.checkSelfPermission(
+        // On Android 13+, POST_NOTIFICATIONS requires a runtime permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ActivityCompat.checkSelfPermission(
                 this,
                 Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            // TODO: Notifications are broken, Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             requestPermissions(
                 arrayOf(Manifest.permission.POST_NOTIFICATIONS),
                 NOTIFICATION_REQUEST_CODE
