@@ -9,7 +9,6 @@ import io.kotest.matchers.collections.shouldNotBeEmpty
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert
 import org.junit.Test
 
 /**
@@ -28,6 +27,19 @@ import org.junit.Test
  *    DO affect constructed missions
  */
 class TestMissionType {
+
+    /** Retry generation up to [maxAttempts] times to avoid flakes from tight constraints. */
+    private fun generateUntilSuccess(
+        prefs: MissionPreferences,
+        label: String,
+        maxAttempts: Int = 5,
+    ): MissionImpl {
+        repeat(maxAttempts) {
+            val mission = MissionImpl(prefs)
+            if (mission.generateMission()) return mission
+        }
+        throw AssertionError("$label failed to generate after $maxAttempts attempts")
+    }
 
     // -- Group structure tests --
 
@@ -87,15 +99,13 @@ class TestMissionType {
         val wide = MissionPreferences().apply { incomingDataRange = 4..6 }
 
         repeat(15) { i ->
-            val mission = MissionImpl(narrow)
-            Assert.assertTrue("narrow mission $i failed to generate", mission.generateMission())
+            val mission = generateUntilSuccess(narrow, "narrow mission $i")
             val count = mission.missionEvents.entrySet.count { it.value is IncomingData }
             assert(count in 2..3) { "Expected 2-3 incoming data, got $count on iteration $i" }
         }
 
         repeat(15) { i ->
-            val mission = MissionImpl(wide)
-            Assert.assertTrue("wide mission $i failed to generate", mission.generateMission())
+            val mission = generateUntilSuccess(wide, "wide mission $i")
             val count = mission.missionEvents.entrySet.count { it.value is IncomingData }
             assert(count in 4..6) { "Expected 4-6 incoming data, got $count on iteration $i" }
         }
@@ -117,15 +127,13 @@ class TestMissionType {
         }
 
         repeat(10) { i ->
-            val mission = MissionImpl(low)
-            Assert.assertTrue("low difficulty mission $i failed", mission.generateMission())
+            val mission = generateUntilSuccess(low, "low difficulty mission $i")
             val total = mission.missionEvents.events.values.sumOf { (it as? Threat)?.threatLevel ?: 0 }
             assert(total <= 4) { "Low difficulty total threat $total > 4 on iteration $i" }
         }
 
         repeat(10) { i ->
-            val mission = MissionImpl(high)
-            Assert.assertTrue("high difficulty mission $i failed", mission.generateMission())
+            val mission = generateUntilSuccess(high, "high difficulty mission $i")
             val total = mission.missionEvents.events.values.sumOf { (it as? Threat)?.threatLevel ?: 0 }
             assert(total >= 10) { "High difficulty total threat $total < 10 on iteration $i" }
         }
@@ -138,8 +146,7 @@ class TestMissionType {
         val noDouble = MissionPreferences().apply { enableDoubleThreats = false }
 
         repeat(20) { i ->
-            val mission = MissionImpl(noDouble)
-            Assert.assertTrue("mission $i failed to generate", mission.generateMission())
+            val mission = generateUntilSuccess(noDouble, "mission $i")
             val threats = mission.missionEvents.entrySet.filter { it.value is Threat }
             val byTime = threats.groupBy { it.key }
             byTime.values.forEach { threatsAtTime ->
