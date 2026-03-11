@@ -248,10 +248,5 @@ enum class MissionType {
         return context.getString(resId)
     }
 
-    companion object {
-        @JvmStatic
-        fun toStringValues(context: Context): Array<String> {
-            return entries.map { item -> context.getString(item.resId) }.toTypedArray()
-        }
-    }
+    companion object
 }

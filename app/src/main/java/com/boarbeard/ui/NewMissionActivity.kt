@@ -56,7 +56,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.boarbeard.R
 import kotlin.math.roundToInt
 
@@ -96,7 +96,7 @@ class NewMissionActivity : ComponentActivity() {
 
         setContent {
             MaterialTheme(colorScheme = SpaceAlertColorScheme) {
-                var selectedType by remember { mutableStateOf(MissionType.entries[currentOrdinal]) }
+                var selectedType by remember { mutableStateOf(MissionType.entries.getOrNull(currentOrdinal) ?: MissionType.Random) }
 
                 // Preference state
                 var playerCount by remember { mutableIntStateOf(prefs.getInt("playerCount", 5)) }
@@ -116,7 +116,7 @@ class NewMissionActivity : ComponentActivity() {
                                 IconButton(onClick = { finish() }) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = "Back",
+                                        contentDescription = stringResource(R.string.navigate_back),
                                         tint = Color.White
                                     )
                                 }
@@ -272,7 +272,7 @@ class NewMissionActivity : ComponentActivity() {
                                     modifier = Modifier.fillMaxWidth()
                                 ) {
                                     Text(
-                                        "Reset to defaults",
+                                        stringResource(R.string.reset_to_defaults),
                                         color = Color.White.copy(alpha = 0.6f)
                                     )
                                 }

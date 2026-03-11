@@ -42,6 +42,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,12 +58,12 @@ class AboutActivity : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         TopAppBar(
-                            title = { Text("About") },
+                            title = { Text(stringResource(R.string.mission_about)) },
                             navigationIcon = {
                                 IconButton(onClick = { finish() }) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = "Back",
+                                        contentDescription = stringResource(R.string.navigate_back),
                                         tint = Color.White
                                     )
                                 }
@@ -103,7 +104,7 @@ fun AboutContent(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = "Links",
+            text = stringResource(R.string.about_links),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
         )
@@ -111,24 +112,24 @@ fun AboutContent(modifier: Modifier = Modifier) {
         LinkCard(
             painter = rememberVectorPainter(Icons.Filled.Info),
             iconTint = Color(0xFF64B5F6),
-            title = "Iterary Blog",
-            description = "Dev updates, project write-ups, and behind-the-scenes on all my apps",
+            title = stringResource(R.string.about_iterary_blog_title),
+            description = stringResource(R.string.about_iterary_blog_description),
             onClick = { uriHandler.openUri("https://blog.iterary.com") }
         )
 
         LinkCard(
             painter = painterResource(R.drawable.iterary_logo),
             iconTint = Color(0xFF8D6E63),
-            title = "Iterary",
-            description = "Plan your next adventure with smart travel itineraries and trip tools",
+            title = stringResource(R.string.about_iterary_title),
+            description = stringResource(R.string.about_iterary_description),
             onClick = { uriHandler.openUri("https://iterary.com") }
         )
 
         LinkCard(
             painter = rememberVectorPainter(Icons.Filled.Star),
             iconTint = Color(0xFFFFB74D),
-            title = "Gamers Paper",
-            description = "Board game news, reviews, and tips from the tabletop community",
+            title = stringResource(R.string.about_gamers_paper_title),
+            description = stringResource(R.string.about_gamers_paper_description),
             onClick = { uriHandler.openUri("https://gamerspaper.com") }
         )
 
@@ -137,7 +138,7 @@ fun AboutContent(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = "Designed and developed by",
+            text = stringResource(R.string.about_contributors_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
         )
@@ -153,7 +154,7 @@ fun AboutContent(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Special thanks to Maximilian Kalus for the Java version that is the basis for the original algorithm.",
+            text = stringResource(R.string.about_special_thanks),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White.copy(alpha = 0.7f),
         )

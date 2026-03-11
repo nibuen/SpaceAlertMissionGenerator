@@ -39,6 +39,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
+import com.boarbeard.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,12 +55,12 @@ class HelpActivity : ComponentActivity() {
                 Scaffold(
                     topBar = {
                         TopAppBar(
-                            title = { Text("Help") },
+                            title = { Text(stringResource(R.string.mission_help)) },
                             navigationIcon = {
                                 IconButton(onClick = { finish() }) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = "Back",
+                                        contentDescription = stringResource(R.string.navigate_back),
                                         tint = Color.White
                                     )
                                 }
@@ -89,14 +91,13 @@ fun HelpContent(modifier: Modifier = Modifier) {
     ) {
         // Getting started
         Text(
-            text = "Getting Started",
+            text = stringResource(R.string.help_getting_started),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Bold,
         )
 
         Text(
-            text = "This app generates and plays audio missions for the Space Alert board game. " +
-                    "It narrates threats, data transfers, and phase changes in real time so you can focus on playing.",
+            text = stringResource(R.string.help_intro),
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White.copy(alpha = 0.8f),
         )
@@ -104,27 +105,22 @@ fun HelpContent(modifier: Modifier = Modifier) {
         HelpCard(
             icon = Icons.Filled.PlayArrow,
             iconTint = Color(0xFF81C784),
-            title = "Play / Pause",
-            description = "Tap play to start. If no mission is loaded yet, you'll be taken to the " +
-                    "New Mission screen first to pick a mission type and configure options. " +
-                    "Tap again to pause mid-mission."
+            title = stringResource(R.string.help_play_pause_title),
+            description = stringResource(R.string.help_play_pause_description)
         )
 
         HelpCard(
             icon = Icons.Filled.Add,
             iconTint = Color(0xFF64B5F6),
-            title = "New Mission",
-            description = "Open from the menu (\u22EE) to pick a mission type and adjust settings. " +
-                    "Choose Random to generate a unique mission each time, or select a pre-built " +
-                    "mission from the book \u2014 test runs, simulations, real missions, and Double Action variants are all included."
+            title = stringResource(R.string.help_new_mission_title),
+            description = stringResource(R.string.help_new_mission_description)
         )
 
         HelpCard(
             icon = Icons.Filled.Refresh,
             iconTint = Color(0xFFFFB74D),
-            title = "Restart Mission",
-            description = "Resets the current mission back to the beginning without generating a new one. " +
-                    "Useful if you want to replay the same mission."
+            title = stringResource(R.string.help_restart_title),
+            description = stringResource(R.string.help_restart_description)
         )
 
         Spacer(modifier = Modifier.height(4.dp))
@@ -132,7 +128,7 @@ fun HelpContent(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(4.dp))
 
         Text(
-            text = "Mission Options",
+            text = stringResource(R.string.help_options_title),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
         )
@@ -140,27 +136,22 @@ fun HelpContent(modifier: Modifier = Modifier) {
         HelpCard(
             icon = Icons.Filled.Settings,
             iconTint = Color(0xFFCE93D8),
-            title = "Unconfirmed Reports",
-            description = "When enabled, unconfirmed threat reports are automatically resolved based on your player count. " +
-                    "With 5 players they are discarded; with fewer players they become normal threats. " +
-                    "Turn this off to handle unconfirmed reports manually with the threat cards."
+            title = stringResource(R.string.help_unconfirmed_title),
+            description = stringResource(R.string.help_unconfirmed_description)
         )
 
         HelpCard(
             icon = Icons.Filled.Settings,
             iconTint = Color(0xFFCE93D8),
-            title = "Compress Time",
-            description = "Speeds up the silence between events, making missions shorter and more intense. " +
-                    "Great for experienced crews who want less downtime."
+            title = stringResource(R.string.help_compress_title),
+            description = stringResource(R.string.help_compress_description)
         )
 
         HelpCard(
             icon = Icons.Filled.Info,
             iconTint = Color(0xFFCE93D8),
-            title = "Random Mission Parameters",
-            description = "When playing random missions, you can tune mission length, threat difficulty, " +
-                    "incoming data frequency, and enable double threats. If you're unsure, the defaults are a good starting point \u2014 " +
-                    "use \"Reset to defaults\" at the bottom of the options to restore them."
+            title = stringResource(R.string.help_random_params_title),
+            description = stringResource(R.string.help_random_params_description)
         )
     }
 }

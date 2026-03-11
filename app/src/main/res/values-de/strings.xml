@@ -19,7 +19,38 @@
     <string name="group_real_missions">Echte Missionen</string>
     <string name="group_double_action_easy">Doppelaktionen Vereinfacht</string>
     <string name="group_double_action_standard">Doppelaktionen Standard</string>
-    
+
+    <string name="navigate_back">Zurück</string>
+    <string name="reset_to_defaults">Auf Standardwerte zurücksetzen</string>
+
+    <!-- About screen -->
+    <string name="about_links">Links</string>
+    <string name="about_iterary_blog_title">Iterary Blog</string>
+    <string name="about_iterary_blog_description">Entwickler-Updates, Projektberichte und Hintergründe zu allen meinen Apps</string>
+    <string name="about_iterary_title">Iterary</string>
+    <string name="about_iterary_description">Plane dein nächstes Abenteuer mit smarten Reiserouten und Reise-Tools</string>
+    <string name="about_gamers_paper_title">Gamers Paper</string>
+    <string name="about_gamers_paper_description">Brettspiel-Nachrichten, Rezensionen und Tipps aus der Tabletop-Community</string>
+    <string name="about_contributors_title">Entworfen und entwickelt von</string>
+    <string name="about_special_thanks">Besonderer Dank an Maximilian Kalus für die Java-Version, die die Grundlage für den ursprünglichen Algorithmus bildet.</string>
+
+    <!-- Help screen -->
+    <string name="help_getting_started">Erste Schritte</string>
+    <string name="help_intro">Diese App generiert und spielt Audio-Missionen für das Brettspiel Space Alert. Sie erzählt Bedrohungen, Datenübertragungen und Phasenwechsel in Echtzeit, damit du dich aufs Spielen konzentrieren kannst.</string>
+    <string name="help_play_pause_title">Abspielen / Pause</string>
+    <string name="help_play_pause_description">Tippe auf Abspielen, um zu starten. Wenn noch keine Mission geladen ist, wirst du zuerst zum Neue-Mission-Bildschirm weitergeleitet, um einen Missionstyp zu wählen und Optionen zu konfigurieren. Tippe erneut, um mitten in der Mission zu pausieren.</string>
+    <string name="help_new_mission_title">Neue Mission</string>
+    <string name="help_new_mission_description">Öffne über das Menü (\u22EE) um einen Missionstyp zu wählen und Einstellungen anzupassen. Wähle Zufall für eine einzigartige Mission oder wähle eine vorgefertigte Mission aus dem Buch \u2014 Testläufe, Simulationen, echte Missionen und Doppelaktionen-Varianten sind alle enthalten.</string>
+    <string name="help_restart_title">Mission neu starten</string>
+    <string name="help_restart_description">Setzt die aktuelle Mission auf den Anfang zurück, ohne eine neue zu generieren. Nützlich, wenn du dieselbe Mission wiederholen möchtest.</string>
+    <string name="help_options_title">Missionsoptionen</string>
+    <string name="help_unconfirmed_title">Unbestätigte Berichte</string>
+    <string name="help_unconfirmed_description">Wenn aktiviert, werden unbestätigte Bedrohungsberichte automatisch basierend auf der Spieleranzahl aufgelöst. Bei 5 Spielern werden sie verworfen; bei weniger Spielern werden sie zu normalen Bedrohungen. Deaktiviere dies, um unbestätigte Berichte manuell mit den Bedrohungskarten zu behandeln.</string>
+    <string name="help_compress_title">Zeit komprimieren</string>
+    <string name="help_compress_description">Beschleunigt die Stille zwischen Ereignissen und macht Missionen kürzer und intensiver. Ideal für erfahrene Teams, die weniger Leerlauf wollen.</string>
+    <string name="help_random_params_title">Zufallsmissions-Parameter</string>
+    <string name="help_random_params_description">Bei Zufallsmissionen kannst du Missionsdauer, Bedrohungsgrad, Häufigkeit eingehender Daten und doppelte Bedrohungen einstellen. Im Zweifelsfall sind die Standardwerte ein guter Ausgangspunkt \u2014 nutze \"Auf Standardwerte zurücksetzen\" am Ende der Optionen, um sie wiederherzustellen.</string>
+
     <string name="pref_stomp_unconfirmed_reports_title">Unbestätigte Berichte entfernen</string>
     <string name="pref_stomp_unconfirmed_reports_summary">Unbestätigte Berichte entfernen oder je nach Anzahl der Spieler in normale Bedrohungen umwandeln.</string>
     <string name="pref_player_count_dialog_title">Spieler</string>

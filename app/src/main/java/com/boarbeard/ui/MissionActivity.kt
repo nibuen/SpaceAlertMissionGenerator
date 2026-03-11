@@ -4,18 +4,16 @@ import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.media.AudioManager
-import android.os.AsyncTask
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.HandlerThread
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.WindowManager
@@ -66,7 +64,7 @@ class MissionActivity : AppCompatActivity() {
             val ordinal = result.data?.getIntExtra(
                 NewMissionActivity.RESULT_MISSION_TYPE_ORDINAL, MissionType.Random.ordinal
             ) ?: MissionType.Random.ordinal
-            missionType = MissionType.entries[ordinal]
+            missionType = MissionType.entries.getOrNull(ordinal) ?: MissionType.Random
             missionTypeTextView.text = missionType.toString(this@MissionActivity)
             lifecycleScope.launch {
                 configureMission(true)
@@ -92,10 +90,8 @@ class MissionActivity : AppCompatActivity() {
         windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
     }
 
-    private val eventParserDispatcher = HandlerThread("EventParserDispatcher")
-        .apply { start() }
-        .looper.let { Handler(it) }
-        .asCoroutineDispatcher()
+    private val eventParserThread = HandlerThread("EventParserDispatcher").apply { start() }
+    private val eventParserDispatcher = Handler(eventParserThread.looper).asCoroutineDispatcher()
 
     /**
      * Called when the activity is first created.
@@ -109,8 +105,14 @@ class MissionActivity : AppCompatActivity() {
 
         onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                lifecycleScope.launch {
-                    configureMission(false)
+                if (togglebutton.isChecked) {
+                    // Mission is actively playing — pause instead of destroying
+                    lifecycleScope.launch { pauseMission() }
+                    showSystemUI()
+                } else {
+                    // No mission playing — allow normal back behavior
+                    isEnabled = false
+                    onBackPressedDispatcher.onBackPressed()
                 }
             }
         })
@@ -181,12 +183,9 @@ class MissionActivity : AppCompatActivity() {
         super.onResume()
 
         // Prepare parser
-        object : AsyncTask<Context?, Void?, Void?>() {
-            override fun doInBackground(vararg params: Context?): Void? {
-                EventListParserFactory.getInstance().getParser(params[0])
-                return null
-            }
-        }.execute(this)
+        lifecycleScope.launch(eventParserDispatcher) {
+            EventListParserFactory.getInstance().getParser(this@MissionActivity)
+        }
 
         hideSystemUI()
     }
@@ -269,7 +268,7 @@ class MissionActivity : AppCompatActivity() {
         }
 
         if (missionType.missionIntroductionResId != 0) {
-            (sequence as MediaPlayerMainMission).printMissionIntroduction(
+            (sequence as? MediaPlayerMainMission)?.printMissionIntroduction(
                 resources.getString(
                     missionType.missionIntroductionResId
                 )
@@ -381,6 +380,7 @@ class MissionActivity : AppCompatActivity() {
 
     public override fun onDestroy() {
         super.onDestroy()
+        eventParserThread.quitSafely()
 
         // Cancel any ongoing notifications
         NotificationManagerCompat.from(this).apply {
