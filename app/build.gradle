@@ -32,7 +32,8 @@ android {
         applicationId "com.boarbeard"
         minSdkVersion 30
         targetSdkVersion 36
-
+        versionCode 22
+        versionName "3.5.0"
     }
 
     buildTypes {
