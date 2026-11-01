@@ -51,14 +51,22 @@ jobs:
             found && /^## / { exit }
             found { print }
           ' CHANGELOG.md > "$RUNNER_TEMP/notes.md"
-          cp app/build/outputs/apk/release/app-release*.apk "SpaceAlertMissionGenerator-${GITHUB_REF_NAME}.apk"
 
+      # Only a signed APK is attached: Android can't install an unsigned one,
+      # so without signing secrets the release ships notes only.
       - name: Create draft release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          assets=()
+          if [ -f app/build/outputs/apk/release/app-release.apk ]; then
+            cp app/build/outputs/apk/release/app-release.apk "SpaceAlertMissionGenerator-${GITHUB_REF_NAME}.apk"
+            assets+=("SpaceAlertMissionGenerator-${GITHUB_REF_NAME}.apk")
+          else
+            echo "::warning::No signing secrets, so no APK is attached to this release."
+          fi
           gh release create "$GITHUB_REF_NAME" \
             --draft \
             --title "$GITHUB_REF_NAME" \
             --notes-file "$RUNNER_TEMP/notes.md" \
-            "SpaceAlertMissionGenerator-${GITHUB_REF_NAME}.apk"
+            "${assets[@]}"

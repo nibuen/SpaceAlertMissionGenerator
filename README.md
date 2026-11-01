@@ -18,7 +18,7 @@ An Android companion app for the [Space Alert](https://boardgamegeek.com/boardga
 ## Install
 
 - [Google Play](https://play.google.com/store/apps/details?id=com.boarbeard)
-- Signed APKs are attached to each [GitHub release](https://github.com/nibuen/SpaceAlertMissionGenerator/releases)
+- [GitHub releases](https://github.com/nibuen/SpaceAlertMissionGenerator/releases) include a signed APK when one is attached. Releases without one are notes only; use Google Play or build from source.
 
 Requires Android 11 (API 30) or newer.
 
