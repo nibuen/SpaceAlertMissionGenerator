@@ -31,8 +31,25 @@ android {
         versionName "3.6.0"
     }
 
+    // Release signing comes from environment variables (set by the release
+    // workflow from repository secrets). Without them the release build is unsigned.
+    def keystorePath = System.getenv("SIGNING_KEYSTORE_PATH")
+    if (keystorePath) {
+        signingConfigs {
+            release {
+                storeFile file(keystorePath)
+                storePassword System.getenv("SIGNING_STORE_PASSWORD")
+                keyAlias System.getenv("SIGNING_KEY_ALIAS")
+                keyPassword System.getenv("SIGNING_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
+            if (keystorePath) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.txt'
         }
