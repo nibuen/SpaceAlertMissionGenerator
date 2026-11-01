@@ -46,6 +46,11 @@ android {
     }
 
     buildTypes {
+        debug {
+            // Lets a debug build sit next to the Play install on the same phone
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
         release {
             if (keystorePath) {
                 signingConfig signingConfigs.release
