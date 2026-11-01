@@ -45,7 +45,7 @@ After building UI changes, deploy to the user's phone for testing.
 
 **Audio Playback:**
 - `MediaPlayerMainMission` sequences audio files, updates the mission log, and syncs with `StopWatch`
-- `EventListParser` (with `EnglishParser`/`GermanParser`) converts events into audio cue sequences
+- `EventListParser` (`EnglishParser` over the bundled `DefaultGrammar`) converts events into audio cue sequences. Custom voice packs were removed in 3.6.0; only English audio ships.
 - `MediaPlayerSequence` (Java) is the base audio sequencing class
 
 **UI:** Hybrid — XML layouts for activities with Jetpack Compose (`MissionCard`) embedded for the mission log display. `MissionActivity` is the main entry point.

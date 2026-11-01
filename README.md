@@ -13,7 +13,7 @@ An Android companion app for the [Space Alert](https://boardgamegeek.com/boardga
 - **Every mission from the book**: test runs, simulations, advanced simulations, real missions, and the Double Action variants
 - **Unconfirmed reports** resolved automatically for your player count, or left for you to handle with the cards
 - **Compress time** for experienced crews who want less silence between events
-- English and German narration
+- English narration, with the interface in English and German
 
 ## Install
 

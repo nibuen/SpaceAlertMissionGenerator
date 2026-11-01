@@ -21,7 +21,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.NewMissionActivity" />
-        <activity android:name=".ui.PreferencesActivity" />
         <activity android:name=".ui.AboutActivity" />
         <activity android:name=".ui.HelpActivity" />
     </application>
