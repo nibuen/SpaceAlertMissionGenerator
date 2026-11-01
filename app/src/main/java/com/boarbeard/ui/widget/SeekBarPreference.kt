@@ -8,11 +8,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
 import com.boarbeard.R
-import com.jaygoo.widget.OnRangeChangedListener
-import com.jaygoo.widget.RangeSeekBar
+import com.google.android.material.slider.RangeSlider
 import kotlin.math.roundToInt
 
-class SeekBarPreference(context: Context?, attrs: AttributeSet) : DialogPreference(context, attrs), OnRangeChangedListener {
+class SeekBarPreference(context: Context?, attrs: AttributeSet) : DialogPreference(context, attrs) {
     private val mMinValue: Int
     private val mMaxValue: Int
     private val mDefaultLeftValue: Int
@@ -24,7 +23,7 @@ class SeekBarPreference(context: Context?, attrs: AttributeSet) : DialogPreferen
 
     private lateinit var mValueText: TextView
 
-    private lateinit var rangeSeekBar: RangeSeekBar
+    private val isRange: Boolean get() = mDefaultRightValue != DEFAULT_RIGHT_VALUE
 
     override fun onCreateDialogView(): View {
         val settings = PreferenceManager.getDefaultSharedPreferences(this.context)
@@ -34,26 +33,39 @@ class SeekBarPreference(context: Context?, attrs: AttributeSet) : DialogPreferen
         val view = inflater.inflate(R.layout.dialog_slider, null)
         mValueText = view.findViewById<View>(R.id.current_value) as TextView
 
-        // Setup SeekBar
-        rangeSeekBar = view.findViewById<View>(R.id.seek_bar) as RangeSeekBar
-        rangeSeekBar.setRange(mMinValue.toFloat(), mMaxValue.toFloat())
+        val slider = view.findViewById<RangeSlider>(R.id.seek_bar)
+        slider.valueFrom = mMinValue.toFloat()
+        slider.valueTo = mMaxValue.toFloat()
 
-        // Get current value from settings
-        leftValue = getPersistedInt(mDefaultLeftValue)
+        // Get current value from settings, clamped so out-of-range saved values can't crash the slider
+        leftValue = clamp(getPersistedInt(mDefaultLeftValue))
 
-        if (mDefaultRightValue != DEFAULT_RIGHT_VALUE) {
-            rightValue = settings.getInt(key + RIGHT_VALUE_SUFFIX, mDefaultRightValue)
-            rangeSeekBar.seekBarMode = RangeSeekBar.SEEKBAR_MODE_RANGE
-            rangeSeekBar.setProgress(leftValue.toFloat(), rightValue.toFloat())
-            mValueText.text = intervalText(leftValue, rightValue)
+        if (isRange) {
+            rightValue = clamp(settings.getInt(key + RIGHT_VALUE_SUFFIX, mDefaultRightValue))
+            if (rightValue < leftValue) {
+                leftValue = rightValue.also { rightValue = leftValue }
+            }
+            slider.setValues(leftValue.toFloat(), rightValue.toFloat())
         } else {
-            rangeSeekBar.seekBarMode = RangeSeekBar.SEEKBAR_MODE_SINGLE
-            rangeSeekBar.setProgress(leftValue.toFloat())
-            mValueText.text = leftValue.toString()
+            slider.setValues(leftValue.toFloat())
         }
+        updateValueText()
 
-        rangeSeekBar.setOnRangeChangedListener(this)
+        slider.addOnChangeListener { s, _, _ ->
+            val values = s.values
+            leftValue = values[0].roundToInt()
+            if (isRange) {
+                rightValue = values[1].roundToInt()
+            }
+            updateValueText()
+        }
         return view
+    }
+
+    private fun clamp(value: Int): Int = value.coerceIn(mMinValue, mMaxValue)
+
+    private fun updateValueText() {
+        mValueText.text = if (isRange) intervalText(leftValue, rightValue) else leftValue.toString()
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
@@ -90,22 +102,6 @@ class SeekBarPreference(context: Context?, attrs: AttributeSet) : DialogPreferen
     private fun intervalText(min: Int, max: Int): String {
         return "$min - $max"
     }
-
-    override fun onRangeChanged(view: RangeSeekBar, leftValue: Float, rightValue: Float, isFromUser: Boolean) {
-        //Timber.i("leftValue: $leftValue and rightValue: $rightValue")
-
-        this.leftValue = leftValue.roundToInt()
-        this.rightValue = rightValue.roundToInt()
-
-        if (rangeSeekBar.seekBarMode == RangeSeekBar.SEEKBAR_MODE_SINGLE) {
-            mValueText.text = this.leftValue.toString()
-        } else {
-            mValueText.text = intervalText(this.leftValue, this.rightValue)
-        }
-    }
-
-    override fun onStartTrackingTouch(view: RangeSeekBar, isLeft: Boolean) {}
-    override fun onStopTrackingTouch(view: RangeSeekBar, isLeft: Boolean) {}
 
     companion object {
         private const val PREFERENCE_NS = "http://schemas.android.com/apk/res-auto"
