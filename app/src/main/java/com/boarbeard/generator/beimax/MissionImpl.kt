@@ -24,7 +24,6 @@ package com.boarbeard.generator.beimax
 import android.content.SharedPreferences
 import com.boarbeard.generator.beimax.event.WhiteNoise
 import com.boarbeard.generator.beimax.event.WhiteNoisePreferences
-import com.boarbeard.ui.widget.SeekBarPreference
 import timber.log.Timber
 import java.util.Random
 
@@ -205,7 +204,7 @@ class MissionImpl(preferences: MissionPreferences) : IMission {
             prefs.incomingDataRange = IntRange(
                 preferences.getInt("numberIncomingData", prefs.getMinIncomingData()),
                 preferences.getInt(
-                    "numberIncomingData" + SeekBarPreference.RIGHT_VALUE_SUFFIX,
+                    "numberIncomingDataRightValue",
                     prefs.getMaxIncomingData()
                 )
             )

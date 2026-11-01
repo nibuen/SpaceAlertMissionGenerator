@@ -19,8 +19,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -46,6 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.boarbeard.BuildConfig
 import com.boarbeard.R
 
 class AboutActivity : ComponentActivity() {
@@ -83,6 +87,9 @@ class AboutActivity : ComponentActivity() {
     }
 }
 
+private const val REPO_URL = "https://github.com/nibuen/SpaceAlertMissionGenerator"
+private const val PLAY_URL = "https://play.google.com/store/apps/details?id=com.boarbeard"
+
 private val contributors = listOf(
     "Leif Norcott",
     "Thomas Arnold",
@@ -103,6 +110,63 @@ fun AboutContent(modifier: Modifier = Modifier) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+        Text(
+            text = stringResource(R.string.about_this_app_title),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+        )
+
+        Text(
+            text = stringResource(R.string.about_version, BuildConfig.VERSION_NAME),
+            style = MaterialTheme.typography.bodyLarge,
+        )
+
+        Text(
+            text = stringResource(R.string.about_promise),
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.White.copy(alpha = 0.7f),
+        )
+
+        Text(
+            text = stringResource(R.string.about_whats_new_title),
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.Bold,
+        )
+
+        Text(
+            text = stringResource(R.string.about_whats_new_body),
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier.padding(start = 8.dp)
+        )
+
+        LinkCard(
+            painter = rememberVectorPainter(Icons.Filled.Build),
+            iconTint = Color(0xFFB0BEC5),
+            title = stringResource(R.string.about_source_title),
+            description = stringResource(R.string.about_source_description),
+            onClick = { uriHandler.openUri(REPO_URL) }
+        )
+
+        LinkCard(
+            painter = rememberVectorPainter(Icons.Filled.Warning),
+            iconTint = Color(0xFFE57373),
+            title = stringResource(R.string.about_report_bug_title),
+            description = stringResource(R.string.about_report_bug_description),
+            onClick = { uriHandler.openUri("$REPO_URL/issues") }
+        )
+
+        LinkCard(
+            painter = rememberVectorPainter(Icons.Filled.ThumbUp),
+            iconTint = Color(0xFF81C784),
+            title = stringResource(R.string.about_rate_title),
+            description = stringResource(R.string.about_rate_description),
+            onClick = { uriHandler.openUri(PLAY_URL) }
+        )
+
+        Spacer(modifier = Modifier.height(4.dp))
+        HorizontalDivider(color = Color.White.copy(alpha = 0.2f))
+        Spacer(modifier = Modifier.height(4.dp))
+
         Text(
             text = stringResource(R.string.about_links),
             style = MaterialTheme.typography.titleMedium,

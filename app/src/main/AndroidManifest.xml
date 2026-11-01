@@ -1,15 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    android:versionCode="22"
-    android:versionName="3.5.0">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="31" />
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="28" />
 
     <application
         android:name="SpaceAlertApplication"
@@ -29,7 +21,6 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.NewMissionActivity" />
-        <activity android:name=".ui.PreferencesActivity" />
         <activity android:name=".ui.AboutActivity" />
         <activity android:name=".ui.HelpActivity" />
     </application>

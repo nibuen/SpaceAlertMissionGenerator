@@ -30,11 +30,13 @@ Android app that generates random missions for the Space Alert board game. Packa
 
 After building UI changes, deploy to the user's phone for testing.
 
-**Build targets:** compileSdk 36, minSdk 30, targetSdk 36, Java 11.
+**Build targets:** compileSdk 37, minSdk 30, targetSdk 37, Java 11 bytecode. AGP 9.5 (built-in Kotlin, no `kotlin-android` plugin), Gradle 9.8, Kotlin 2.4, JDK 21.
+
+**Release notes:** update `CHANGELOG.md` and the "What's new" strings (`about_whats_new_body`, English and German) together.
 
 ## Architecture
 
-**Modules:** `app` (main), `wear` (prototype Wear OS app).
+**Modules:** `app` only.
 
 **Mission Generation Pipeline:**
 1. `MissionType` enum defines all mission variants and acts as a factory — calls `MissionImpl.generateMission()` for random missions or returns pre-built `EventList` from `ConstructedMissions`
@@ -43,7 +45,7 @@ After building UI changes, deploy to the user's phone for testing.
 
 **Audio Playback:**
 - `MediaPlayerMainMission` sequences audio files, updates the mission log, and syncs with `StopWatch`
-- `EventListParser` (with `EnglishParser`/`GermanParser`) converts events into audio cue sequences
+- `EventListParser` (`EnglishParser` over the bundled `DefaultGrammar`) converts events into audio cue sequences. Custom voice packs were removed in 3.6.0; only English audio ships.
 - `MediaPlayerSequence` (Java) is the base audio sequencing class
 
 **UI:** Hybrid — XML layouts for activities with Jetpack Compose (`MissionCard`) embedded for the mission log display. `MissionActivity` is the main entry point.

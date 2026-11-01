@@ -2,9 +2,12 @@ package com.boarbeard.audio;
 
 import android.net.Uri;
 
+import com.boarbeard.BuildConfig;
+
 public class MediaInfo {
 
-	public static final String BASE_RESOURCE = "android.resource://com.boarbeard/";
+	// Uses the build's application id so variants with an id suffix resolve their own resources
+	public static final String BASE_RESOURCE = "android.resource://" + BuildConfig.APPLICATION_ID + "/";
 
 	private Uri resUri;
 	private int duration;
