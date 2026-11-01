@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.6.0 (unreleased)
+## 3.6.0 (2026-10-31)
 
 - Updated for Android 17 (target SDK 37), with current AndroidX and Compose libraries
 - Removed the old settings screen and custom voice packs. Nothing has opened that screen since 3.5.0, so voice packs couldn't be chosen anyway.
