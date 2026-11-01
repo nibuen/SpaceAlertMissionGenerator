@@ -3,7 +3,7 @@
 ## 3.6.0 (unreleased)
 
 - Updated for Android 17 (target SDK 37), with current AndroidX and Compose libraries
-- The range sliders in Options now use Material's RangeSlider, replacing an unmaintained third-party library
+- Replaced an unmaintained third-party slider library with Material's RangeSlider
 - Removed storage permissions the app never needed. Notifications are now the only permission.
 - About screen shows the version, what's new, and links to the source code, the issue tracker and the Play listing
 - Build: AGP 9.5, Gradle 9.8, Kotlin 2.4; CI runs on JDK 21

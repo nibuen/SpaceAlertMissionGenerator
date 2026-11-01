@@ -29,7 +29,7 @@
     <string name="about_version">Version %1$s</string>
     <string name="about_promise">Free and open source. No ads, no tracking, and no internet access.</string>
     <string name="about_whats_new_title">What\'s new</string>
-    <string name="about_whats_new_body">• Updated for Android 17\n• Rebuilt the range sliders in Options\n• Removed storage permissions the app never needed</string>
+    <string name="about_whats_new_body">• Updated for Android 17\n• Removed storage permissions the app never needed</string>
     <string name="about_source_title">Source code</string>
     <string name="about_source_description">See how it works, or contribute on GitHub</string>
     <string name="about_report_bug_title">Report a bug</string>
