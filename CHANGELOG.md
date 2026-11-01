@@ -7,6 +7,7 @@
 - Removed storage permissions the app never needed. Notifications are now the only permission.
 - About screen shows the version, what's new, and links to the source code, the issue tracker and the Play listing
 - Build: AGP 9.5, Gradle 9.8, Kotlin 2.4; CI runs on JDK 21
+- License is now GPL-3.0-or-later to match the generator code it is built on (it was labeled MIT before)
 
 ## 3.5.0
 

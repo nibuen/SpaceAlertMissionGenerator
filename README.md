@@ -48,4 +48,6 @@ More of my projects and dev write-ups are on [my blog](https://blog.iterary.com)
 
 ## License
 
-The app code is under the [MIT License](LICENSE). Files under `generator/beimax` that are derived from JSpaceAlertMissionGenerator keep their original GPL-3.0 headers.
+Licensed under the [GNU General Public License v3.0 or later](LICENSE), because the mission generator is derived from JSpaceAlertMissionGenerator, which is GPL-3.0.
+
+Before 3.6.0 the repository was labeled MIT. Contributions made under that license are still covered by their original notice in [LICENSE-MIT](LICENSE-MIT), and are distributed here as part of the GPL-licensed app.
